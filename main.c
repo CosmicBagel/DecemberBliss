@@ -19,9 +19,10 @@ int main()
 		ClearBackground(WHITE);
 		char *msg = BLISS_TITLE " " BLISS_VERSION;
 		Vector2 textDim = MeasureTextEx(fontRobotoMono, msg, (float)fontRobotoMono.baseSize, 0);
-		DrawTextEx(fontRobotoMono,
-				   msg,
-				   (Vector2){(800 - textDim.x) / 2.0f, (600 - textDim.y) / 2.0f},
+		Vector2 textPos;
+		textPos.x = (800 - textDim.x) / 2.0f;
+		textPos.y = (600 - textDim.y) / 2.0f;
+		DrawTextEx(fontRobotoMono, msg, textPos,
 				   (float)fontRobotoMono.baseSize, 0, DARKGRAY);
 		EndDrawing();
 	}
