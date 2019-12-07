@@ -10,6 +10,7 @@ int main()
 	InitWindow(800, 600, "DecemberBliss " BLISS_VERSION);
 
 	Font fontRobotoMono = LoadFontEx("fonts/RobotoMono-Regular.ttf", 28, 0, 255);
+	Font fontRobotoMonoSm = LoadFontEx("fonts/RobotoMono-Regular.ttf", 16, 0, 255);
 
 	SetTargetFPS(60);
 
@@ -22,8 +23,18 @@ int main()
 		Vector2 textPos;
 		textPos.x = (800 - textDim.x) / 2.0f;
 		textPos.y = (600 - textDim.y) / 2.0f;
+
 		DrawTextEx(fontRobotoMono, msg, textPos,
 				   (float)fontRobotoMono.baseSize, 0, DARKGRAY);
+
+		char fpsStr[50] = {'\0'};
+		sprintf_s(fpsStr, 50, "FPS: %d", GetFPS());
+		Vector2 fpsPos;
+		fpsPos.x = 10;
+		fpsPos.y = 10;
+		DrawTextEx(fontRobotoMonoSm, fpsStr, fpsPos,
+				   (float)fontRobotoMonoSm.baseSize, 0, RED);
+
 		EndDrawing();
 	}
 
