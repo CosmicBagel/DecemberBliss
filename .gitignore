@@ -1,6 +1,8 @@
 *.tlog
 *.idb
 *.exe
+!rguilayout.exe
+!rguistyler.exe
 *vcxproj.filters
 /temp
 raylib.dll

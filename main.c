@@ -2,17 +2,6 @@
 
 #define BLISS_TITLE "DecemberBliss"
 #define BLISS_VERSION "v0.0.0 dev"
-#define MAX_MEMORY 1024
-
-// init gui state
-enum
-{
-	EASY,
-	HARD
-};
-static int op = EASY;
-static float value = 0.6f;
-static int i = 20;
 
 int main(void)
 {
@@ -20,7 +9,8 @@ int main(void)
 	InitWindow(800, 600, BLISS_TITLE " " BLISS_VERSION);
 
 	Font fontRobotoMono = LoadFontEx("fonts/RobotoMono-Regular.ttf", 28, 0, 255);
-	Font fontRobotoMonoSm = LoadFontEx("fonts/RobotoMono-Regular.ttf", 16, 0, 255);
+	Font fontRobotoMonoSm = LoadFontEx("fonts/RobotoMono-Regular.ttf", 12, 0, 255);
+	Font font = LoadFontEx("fonts/Merriweather-Regular.ttf", 14, 0, 255);
 
 	// GUI controls initialization
 	//----------------------------------------------------------------------------------
@@ -67,8 +57,9 @@ int main(void)
 	//----------------------------------------------------------------------------------
 
 	// Custom GUI font loading
-	// Font font = LoadFontEx("fonts/rainyhearts16.ttf", 12, 0, 0);
-	GuiSetFont(fontRobotoMonoSm);
+
+	GuiSetFont(font);
+	GuiLoadStyle("styles/merriweather.rgs");
 
 	bool showMessageBox = false;
 	bool exitWindow = false;
@@ -247,6 +238,7 @@ int main(void)
 
 	UnloadFont(fontRobotoMono);
 	UnloadFont(fontRobotoMonoSm);
+	UnloadFont(font);
 	CloseWindow();
 
 	return 0;
