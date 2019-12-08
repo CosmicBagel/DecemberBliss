@@ -74,28 +74,28 @@
     <OutDir>.\</OutDir>
     <IntDir>.\temp\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>.\raygui;.\raylib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>.\</OutDir>
     <IntDir>.\temp\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>.\raygui;.\raylib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>.\</OutDir>
     <IntDir>.\temp\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>.\raygui;.\raylib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>.\</OutDir>
     <IntDir>.\temp\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>.\raygui;.\raylib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GRAPHICS_API_OPENGL_33;PLATFORM_DESKTOP</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\raygui;.\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GRAPHICS_API_OPENGL_33;PLATFORM_DESKTOP</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\raygui;.\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +136,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GRAPHICS_API_OPENGL_33;PLATFORM_DESKTOP</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\raygui;.\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +155,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GRAPHICS_API_OPENGL_33;PLATFORM_DESKTOP</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Users\samue\OneDrive\Dev\DecemberBliss\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\raygui;.\raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

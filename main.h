@@ -8,10 +8,10 @@ int main(void);
 
 #define RAYGUI_IMPLEMENTATION
 #define RAYGUI_SUPPORT_ICONS
-#include "raygui/raygui.h"
+#include "raygui.h"
 #undef RAYGUI_IMPLEMENTATION // Avoid including raygui implementation again
 
-#include "raygui/ricons.h"
+#include "ricons.h"
 
 typedef char Fixed256String[255];
 

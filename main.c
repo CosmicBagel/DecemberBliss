@@ -67,11 +67,11 @@ int main(void)
 	//----------------------------------------------------------------------------------
 
 	// Custom GUI font loading
-	Font font = LoadFontEx("fonts/rainyhearts16.ttf", 12, 0, 0);
-	GuiSetFont(font);
+	// Font font = LoadFontEx("fonts/rainyhearts16.ttf", 12, 0, 0);
+	GuiSetFont(fontRobotoMonoSm);
 
-	bool exitWindow = false;
 	bool showMessageBox = false;
+	bool exitWindow = false;
 
 	char textInput[256] = {0};
 	bool showTextInputBox = false;
@@ -82,8 +82,28 @@ int main(void)
 	// UIState state;
 	// initUI(&state);
 
-	while (!WindowShouldClose())
+	while (!exitWindow)
 	{
+		exitWindow = WindowShouldClose();
+		// Update
+		//----------------------------------------------------------------------------------
+
+		if (IsKeyPressed(KEY_ESCAPE))
+			showMessageBox = !showMessageBox;
+
+		if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S))
+			showTextInputBox = true;
+
+		if (IsFileDropped())
+		{
+			int dropsCount = 0;
+			char **droppedFiles = GetDroppedFiles(&dropsCount);
+
+			if ((dropsCount > 0) && IsFileExtension(droppedFiles[0], ".rgs"))
+				GuiLoadStyle(droppedFiles[0]);
+
+			ClearDroppedFiles();
+		}
 
 		BeginDrawing();
 
@@ -107,192 +127,308 @@ int main(void)
 
 		// drawUI(&state);
 
+		// ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+		// raygui: controls drawing
+		//----------------------------------------------------------------------------------
+		if (dropDown000EditMode || dropDown001EditMode)
+			GuiLock();
+		//GuiDisable();
+
+		// First GUI column
+		//GuiSetStyle(CHECKBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+		forceSquaredChecked = GuiCheckBox((Rectangle){25, 108, 15, 15}, "FORCE CHECK!", forceSquaredChecked);
+
+		GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+		//GuiSetStyle(VALUEBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+		if (GuiSpinner((Rectangle){25, 135, 125, 30}, NULL, &spinner001Value, 0, 100, spinnerEditMode))
+			spinnerEditMode = !spinnerEditMode;
+		if (GuiValueBox((Rectangle){25, 175, 125, 30}, NULL, &valueBox002Value, 0, 100, valueBoxEditMode))
+			valueBoxEditMode = !valueBoxEditMode;
+		GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+		if (GuiTextBox((Rectangle){25, 215, 125, 30}, textBoxText, 64, textBoxEditMode))
+			textBoxEditMode = !textBoxEditMode;
+
+		GuiSetStyle(BUTTON, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+
+		if (GuiButton((Rectangle){25, 255, 125, 30}, GuiIconText(RICON_FILE_SAVE, "Save File")))
+			showTextInputBox = true;
+
+		GuiGroupBox((Rectangle){25, 310, 125, 150}, "STATES");
+		GuiLock();
+		GuiSetState(GUI_STATE_NORMAL);
+		if (GuiButton((Rectangle){30, 320, 115, 30}, "NORMAL"))
+		{
+		}
+		GuiSetState(GUI_STATE_FOCUSED);
+		if (GuiButton((Rectangle){30, 355, 115, 30}, "FOCUSED"))
+		{
+		}
+		GuiSetState(GUI_STATE_PRESSED);
+		if (GuiButton((Rectangle){30, 390, 115, 30}, "#15#PRESSED"))
+		{
+		}
+		GuiSetState(GUI_STATE_DISABLED);
+		if (GuiButton((Rectangle){30, 425, 115, 30}, "DISABLED"))
+		{
+		}
+		GuiSetState(GUI_STATE_NORMAL);
+		GuiUnlock();
+
+		comboBoxActive = GuiComboBox((Rectangle){25, 470, 125, 30}, "ONE;TWO;THREE;FOUR", comboBoxActive);
+
+		// NOTE: GuiDropdownBox must draw after any other control that can be covered on unfolding
+		GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+		if (GuiDropdownBox((Rectangle){25, 65, 125, 30}, "#01#ONE;#02#TWO;#03#THREE;#04#FOUR", &dropdownBox001Active, dropDown001EditMode))
+			dropDown001EditMode = !dropDown001EditMode;
+
+		GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+		if (GuiDropdownBox((Rectangle){25, 25, 125, 30}, "ONE;TWO;THREE", &dropdownBox000Active, dropDown000EditMode))
+			dropDown000EditMode = !dropDown000EditMode;
+
+		// Second GUI column
+		listViewActive = GuiListView((Rectangle){165, 25, 140, 140}, "Charmander;Bulbasaur;#18#Squirtel;Pikachu;Eevee;Pidgey", &listViewScrollIndex, listViewActive);
+		listViewExActive = GuiListViewEx((Rectangle){165, 180, 140, 200}, listViewExList, 8, &listViewExFocus, &listViewExScrollIndex, listViewExActive);
+
+		toggleGroupActive = GuiToggleGroup((Rectangle){165, 400, 140, 25}, "#1#ONE\n#3#TWO\n#8#THREE\n#23#", toggleGroupActive);
+
+		// Third GUI column
+		if (GuiTextBoxMulti((Rectangle){320, 25, 225, 140}, multiTextBoxText, 141, multiTextBoxEditMode))
+			multiTextBoxEditMode = !multiTextBoxEditMode;
+		colorPickerValue = GuiColorPicker((Rectangle){320, 185, 196, 192}, colorPickerValue);
+
+		sliderValue = GuiSlider((Rectangle){355, 400, 165, 20}, "TEST", TextFormat("%2.2f", (float)sliderValue), sliderValue, -50, 100);
+		sliderBarValue = GuiSliderBar((Rectangle){320, 430, 200, 20}, NULL, TextFormat("%i", (int)sliderBarValue), sliderBarValue, 0, 100);
+		progressValue = GuiProgressBar((Rectangle){320, 460, 200, 20}, NULL, NULL, progressValue, 0, 1);
+
+		// NOTE: View rectangle could be used to perform some scissor test
+		/*Rectangle view = */ GuiScrollPanel((Rectangle){560, 25, 100, 160}, (Rectangle){560, 25, 200, 400}, &viewScroll);
+
+		GuiStatusBar((Rectangle){0, GetScreenHeight() - 20, GetScreenWidth(), 20}, "This is a status bar");
+
+		alphaValue = GuiColorBarAlpha((Rectangle){320, 490, 200, 30}, alphaValue);
+
+		if (showMessageBox)
+		{
+			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
+			int result = GuiMessageBox((Rectangle){GetScreenWidth() / 2 - 125, GetScreenHeight() / 2 - 50, 250, 100}, GuiIconText(RICON_EXIT, "Close Window"), "Do you really want to exit?", "Yes;No");
+
+			if ((result == 0) || (result == 2))
+				showMessageBox = false;
+			else if (result == 1)
+				exitWindow = true;
+		}
+
+		if (showTextInputBox)
+		{
+			DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
+			int result = GuiTextInputBox((Rectangle){GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 - 60, 240, 140}, GuiIconText(RICON_FILE_SAVE, "Save file as..."), "Introduce a save file name", "Ok;Cancel", textInput);
+
+			if (result == 1)
+			{
+				// TODO: Validate textInput value and save
+
+				strcpy(textInputFileName, textInput);
+			}
+
+			if ((result == 0) || (result == 1) || (result == 2))
+			{
+				showTextInputBox = false;
+				strcpy(textInput, "\0");
+			}
+		}
+
+		GuiUnlock();
+		//----------------------------------------------------------------------------------
+
 		EndDrawing();
+		//----------------------------------------------------------------------------------
 	}
 
 	UnloadFont(fontRobotoMono);
+	UnloadFont(fontRobotoMonoSm);
 	CloseWindow();
 
 	return 0;
 }
 
-void initUI(UIState *state)
-{
-	// GUI controls initialization
-	//----------------------------------------------------------------------------------
-	state->dropdownBox000Active = 0;
-	state->dropDown000EditMode = false;
+// void initUI(UIState * state)
+// {
+// 	// GUI controls initialization
+// 	//----------------------------------------------------------------------------------
+// 	state->dropdownBox000Active = 0;
+// 	state->dropDown000EditMode = false;
 
-	state->dropdownBox001Active = 0;
-	state->dropDown001EditMode = false;
+// 	state->dropdownBox001Active = 0;
+// 	state->dropDown001EditMode = false;
 
-	state->spinner001Value = 0;
-	state->spinnerEditMode = false;
+// 	state->spinner001Value = 0;
+// 	state->spinnerEditMode = false;
 
-	state->valueBox002Value = 0;
-	state->valueBoxEditMode = false;
+// 	state->valueBox002Value = 0;
+// 	state->valueBoxEditMode = false;
 
-	char textBoxText[64] = "Text box";
-	bool textBoxEditMode = false;
+// 	char textBoxText[64] = "Text box";
+// 	bool textBoxEditMode = false;
 
-	state->listViewScrollIndex = 0;
-	state->listViewActive = -1;
+// 	state->listViewScrollIndex = 0;
+// 	state->listViewActive = -1;
 
-	state->listViewExScrollIndex = 0;
-	state->listViewExActive = 2;
-	state->listViewExFocus = -1;
+// 	state->listViewExScrollIndex = 0;
+// 	state->listViewExActive = 2;
+// 	state->listViewExFocus = -1;
 
-	Fixed256String list[] = {"This", "is", "a", "list view", "with", "disable", "elements", "amazing!"};
-	state->listViewActive = list;
+// 	Fixed256String list[] = {"This", "is", "a", "list view", "with", "disable", "elements", "amazing!"};
+// 	state->listViewActive = list;
 
-	state->multiTextBoxText[141] = "Multi text box";
-	state->multiTextBoxEditMode = false;
-	state->colorPickerValue = RED;
+// 	state->multiTextBoxText[141] = "Multi text box";
+// 	state->multiTextBoxEditMode = false;
+// 	state->colorPickerValue = RED;
 
-	state->sliderValue = 50;
-	state->sliderBarValue = 60;
-	state->progressValue = 0.4f;
+// 	state->sliderValue = 50;
+// 	state->sliderBarValue = 60;
+// 	state->progressValue = 0.4f;
 
-	state->forceSquaredChecked = false;
+// 	state->forceSquaredChecked = false;
 
-	state->alphaValue = 0.5f;
+// 	state->alphaValue = 0.5f;
 
-	state->comboBoxActive = 1;
+// 	state->comboBoxActive = 1;
 
-	state->toggleGroupActive = 0;
+// 	state->toggleGroupActive = 0;
 
-	Vector2 viewScroll = {0, 0};
-	state->viewScroll = viewScroll;
-	//----------------------------------------------------------------------------------
+// 	Vector2 viewScroll = {0, 0};
+// 	state->viewScroll = viewScroll;
+// 	//----------------------------------------------------------------------------------
 
-	// Custom GUI font loading
-	state->font = LoadFontEx("fonts/rainyhearts16.ttf", 12, 0, 0);
-	GuiSetFont(state->font);
+// 	// Custom GUI font loading
+// 	state->font = LoadFontEx("fonts/rainyhearts16.ttf", 12, 0, 0);
+// 	GuiSetFont(state->font);
 
-	state->exitWindow = false;
-	state->showMessageBox = false;
+// 	state->exitWindow = false;
+// 	state->showMessageBox = false;
 
-	// state->textInput;
-	memset(state->textInput, 0, 256);
+// 	// state->textInput;
+// 	memset(state->textInput, 0, 256);
 
-	state->showTextInputBox = false;
+// 	state->showTextInputBox = false;
 
-	// state->textInputFileName = textInputFileName;
-	memset(state->textInputFileName, 0, 256);
-}
+// 	// state->textInputFileName = textInputFileName;
+// 	memset(state->textInputFileName, 0, 256);
+// }
 
-void drawUI(UIState *state)
-{
-	// raygui: controls drawing
-	//----------------------------------------------------------------------------------
-	if (state->dropDown000EditMode || state->dropDown001EditMode)
-		GuiLock();
-	//GuiDisable();
+// void drawUI(UIState * state)
+// {
+// 	// raygui: controls drawing
+// 	//----------------------------------------------------------------------------------
+// 	if (state->dropDown000EditMode || state->dropDown001EditMode)
+// 		GuiLock();
+// 	//GuiDisable();
 
-	// First GUI column
-	//GuiSetStyle(CHECKBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
-	state->forceSquaredChecked = GuiCheckBox((Rectangle){25, 108, 15, 15}, "FORCE CHECK!", state->forceSquaredChecked);
+// 	// First GUI column
+// 	//GuiSetStyle(CHECKBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+// 	state->forceSquaredChecked = GuiCheckBox((Rectangle){25, 108, 15, 15}, "FORCE CHECK!", state->forceSquaredChecked);
 
-	GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
-	//GuiSetStyle(VALUEBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
-	if (GuiSpinner((Rectangle){25, 135, 125, 30}, NULL, &state->spinner001Value, 0, 100, state->spinnerEditMode))
-		state->spinnerEditMode = !state->spinnerEditMode;
-	if (GuiValueBox((Rectangle){25, 175, 125, 30}, NULL, &state->valueBox002Value, 0, 100, state->valueBoxEditMode))
-		state->valueBoxEditMode = !state->valueBoxEditMode;
-	GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
-	if (GuiTextBox((Rectangle){25, 215, 125, 30}, state->textBoxText, 64, state->textBoxEditMode))
-		state->textBoxEditMode = !state->textBoxEditMode;
+// 	GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+// 	//GuiSetStyle(VALUEBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+// 	if (GuiSpinner((Rectangle){25, 135, 125, 30}, NULL, &state->spinner001Value, 0, 100, state->spinnerEditMode))
+// 		state->spinnerEditMode = !state->spinnerEditMode;
+// 	if (GuiValueBox((Rectangle){25, 175, 125, 30}, NULL, &state->valueBox002Value, 0, 100, state->valueBoxEditMode))
+// 		state->valueBoxEditMode = !state->valueBoxEditMode;
+// 	GuiSetStyle(TEXTBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+// 	if (GuiTextBox((Rectangle){25, 215, 125, 30}, state->textBoxText, 64, state->textBoxEditMode))
+// 		state->textBoxEditMode = !state->textBoxEditMode;
 
-	GuiSetStyle(BUTTON, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+// 	GuiSetStyle(BUTTON, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
 
-	if (GuiButton((Rectangle){25, 255, 125, 30}, GuiIconText(RICON_FILE_SAVE, "Save File")))
-		state->showTextInputBox = true;
+// 	if (GuiButton((Rectangle){25, 255, 125, 30}, GuiIconText(RICON_FILE_SAVE, "Save File")))
+// 		state->showTextInputBox = true;
 
-	GuiGroupBox((Rectangle){25, 310, 125, 150}, "STATES");
-	GuiLock();
-	GuiSetState(GUI_STATE_NORMAL);
-	if (GuiButton((Rectangle){30, 320, 115, 30}, "NORMAL"))
-	{
-	}
-	GuiSetState(GUI_STATE_FOCUSED);
-	if (GuiButton((Rectangle){30, 355, 115, 30}, "FOCUSED"))
-	{
-	}
-	GuiSetState(GUI_STATE_PRESSED);
-	if (GuiButton((Rectangle){30, 390, 115, 30}, "#15#PRESSED"))
-	{
-	}
-	GuiSetState(GUI_STATE_DISABLED);
-	if (GuiButton((Rectangle){30, 425, 115, 30}, "DISABLED"))
-	{
-	}
-	GuiSetState(GUI_STATE_NORMAL);
-	GuiUnlock();
+// 	GuiGroupBox((Rectangle){25, 310, 125, 150}, "STATES");
+// 	GuiLock();
+// 	GuiSetState(GUI_STATE_NORMAL);
+// 	if (GuiButton((Rectangle){30, 320, 115, 30}, "NORMAL"))
+// 	{
+// 	}
+// 	GuiSetState(GUI_STATE_FOCUSED);
+// 	if (GuiButton((Rectangle){30, 355, 115, 30}, "FOCUSED"))
+// 	{
+// 	}
+// 	GuiSetState(GUI_STATE_PRESSED);
+// 	if (GuiButton((Rectangle){30, 390, 115, 30}, "#15#PRESSED"))
+// 	{
+// 	}
+// 	GuiSetState(GUI_STATE_DISABLED);
+// 	if (GuiButton((Rectangle){30, 425, 115, 30}, "DISABLED"))
+// 	{
+// 	}
+// 	GuiSetState(GUI_STATE_NORMAL);
+// 	GuiUnlock();
 
-	state->comboBoxActive = GuiComboBox((Rectangle){25, 470, 125, 30}, "ONE;TWO;THREE;FOUR", state->comboBoxActive);
+// 	state->comboBoxActive = GuiComboBox((Rectangle){25, 470, 125, 30}, "ONE;TWO;THREE;FOUR", state->comboBoxActive);
 
-	// NOTE: GuiDropdownBox must draw after any other control that can be covered on unfolding
-	GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
-	if (GuiDropdownBox((Rectangle){25, 65, 125, 30}, "#01#ONE;#02#TWO;#03#THREE;#04#FOUR", &state->dropdownBox001Active, state->dropDown001EditMode))
-		state->dropDown001EditMode = !state->dropDown001EditMode;
+// 	// NOTE: GuiDropdownBox must draw after any other control that can be covered on unfolding
+// 	GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_LEFT);
+// 	if (GuiDropdownBox((Rectangle){25, 65, 125, 30}, "#01#ONE;#02#TWO;#03#THREE;#04#FOUR", &state->dropdownBox001Active, state->dropDown001EditMode))
+// 		state->dropDown001EditMode = !state->dropDown001EditMode;
 
-	GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
-	if (GuiDropdownBox((Rectangle){25, 25, 125, 30}, "ONE;TWO;THREE", &state->dropdownBox000Active, state->dropDown000EditMode))
-		state->dropDown000EditMode = !state->dropDown000EditMode;
+// 	GuiSetStyle(DROPDOWNBOX, TEXT_ALIGNMENT, GUI_TEXT_ALIGN_CENTER);
+// 	if (GuiDropdownBox((Rectangle){25, 25, 125, 30}, "ONE;TWO;THREE", &state->dropdownBox000Active, state->dropDown000EditMode))
+// 		state->dropDown000EditMode = !state->dropDown000EditMode;
 
-	// Second GUI column
-	state->listViewActive = GuiListView((Rectangle){165, 25, 140, 140}, "Charmander;Bulbasaur;#18#Squirtel;Pikachu;Eevee;Pidgey", &state->listViewScrollIndex, state->listViewActive);
-	state->listViewExActive = GuiListViewEx((Rectangle){165, 180, 140, 200}, state->listViewExList, 8, &state->listViewExFocus, &state->listViewExScrollIndex, state->listViewExActive);
+// 	// Second GUI column
+// 	state->listViewActive = GuiListView((Rectangle){165, 25, 140, 140}, "Charmander;Bulbasaur;#18#Squirtel;Pikachu;Eevee;Pidgey", &state->listViewScrollIndex, state->listViewActive);
+// 	state->listViewExActive = GuiListViewEx((Rectangle){165, 180, 140, 200}, state->listViewExList, 8, &state->listViewExFocus, &state->listViewExScrollIndex, state->listViewExActive);
 
-	state->toggleGroupActive = GuiToggleGroup((Rectangle){165, 400, 140, 25}, "#1#ONE\n#3#TWO\n#8#THREE\n#23#", state->toggleGroupActive);
+// 	state->toggleGroupActive = GuiToggleGroup((Rectangle){165, 400, 140, 25}, "#1#ONE\n#3#TWO\n#8#THREE\n#23#", state->toggleGroupActive);
 
-	// Third GUI column
-	if (GuiTextBoxMulti((Rectangle){320, 25, 225, 140}, state->multiTextBoxText, 141, state->multiTextBoxEditMode))
-		state->multiTextBoxEditMode = !state->multiTextBoxEditMode;
-	state->colorPickerValue = GuiColorPicker((Rectangle){320, 185, 196, 192}, state->colorPickerValue);
+// 	// Third GUI column
+// 	if (GuiTextBoxMulti((Rectangle){320, 25, 225, 140}, state->multiTextBoxText, 141, state->multiTextBoxEditMode))
+// 		state->multiTextBoxEditMode = !state->multiTextBoxEditMode;
+// 	state->colorPickerValue = GuiColorPicker((Rectangle){320, 185, 196, 192}, state->colorPickerValue);
 
-	state->sliderValue = GuiSlider((Rectangle){355, 400, 165, 20}, "TEST", TextFormat("%2.2f", (float)state->sliderValue), state->sliderValue, -50, 100);
-	state->sliderBarValue = GuiSliderBar((Rectangle){320, 430, 200, 20}, NULL, TextFormat("%i", (int)state->sliderBarValue), state->sliderBarValue, 0, 100);
-	state->progressValue = GuiProgressBar((Rectangle){320, 460, 200, 20}, NULL, NULL, state->progressValue, 0, 1);
+// 	state->sliderValue = GuiSlider((Rectangle){355, 400, 165, 20}, "TEST", TextFormat("%2.2f", (float)state->sliderValue), state->sliderValue, -50, 100);
+// 	state->sliderBarValue = GuiSliderBar((Rectangle){320, 430, 200, 20}, NULL, TextFormat("%i", (int)state->sliderBarValue), state->sliderBarValue, 0, 100);
+// 	state->progressValue = GuiProgressBar((Rectangle){320, 460, 200, 20}, NULL, NULL, state->progressValue, 0, 1);
 
-	// NOTE: View rectangle could be used to perform some scissor test
-	Rectangle view = GuiScrollPanel((Rectangle){560, 25, 100, 160}, (Rectangle){560, 25, 200, 400}, &state->viewScroll);
+// 	// NOTE: View rectangle could be used to perform some scissor test
+// 	Rectangle view = GuiScrollPanel((Rectangle){560, 25, 100, 160}, (Rectangle){560, 25, 200, 400}, &state->viewScroll);
 
-	GuiStatusBar((Rectangle){0, GetScreenHeight() - 20, GetScreenWidth(), 20}, "This is a status bar");
+// 	GuiStatusBar((Rectangle){0, GetScreenHeight() - 20, GetScreenWidth(), 20}, "This is a status bar");
 
-	state->alphaValue = GuiColorBarAlpha((Rectangle){320, 490, 200, 30}, state->alphaValue);
+// 	state->alphaValue = GuiColorBarAlpha((Rectangle){320, 490, 200, 30}, state->alphaValue);
 
-	if (state->showMessageBox)
-	{
-		DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
-		int result = GuiMessageBox((Rectangle){GetScreenWidth() / 2 - 125, GetScreenHeight() / 2 - 50, 250, 100},
-								   GuiIconText(RICON_EXIT, "Close Window"), "Do you really want to exit?", "Yes;No");
+// 	if (state->showMessageBox)
+// 	{
+// 		DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
+// 		int result = GuiMessageBox((Rectangle){GetScreenWidth() / 2 - 125, GetScreenHeight() / 2 - 50, 250, 100},
+// 								   GuiIconText(RICON_EXIT, "Close Window"), "Do you really want to exit?", "Yes;No");
 
-		if ((result == 0) || (result == 2))
-			state->showMessageBox = false;
-		else if (result == 1)
-			state->exitWindow = true;
-	}
+// 		if ((result == 0) || (result == 2))
+// 			state->showMessageBox = false;
+// 		else if (result == 1)
+// 			state->exitWindow = true;
+// 	}
 
-	if (state->showTextInputBox)
-	{
-		DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
-		int result = GuiTextInputBox((Rectangle){GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 - 60, 240, 140},
-									 GuiIconText(RICON_FILE_SAVE, "Save file as..."), "Introduce a save file name", "Ok;Cancel", state->textInput);
+// 	if (state->showTextInputBox)
+// 	{
+// 		DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(RAYWHITE, 0.8f));
+// 		int result = GuiTextInputBox((Rectangle){GetScreenWidth() / 2 - 120, GetScreenHeight() / 2 - 60, 240, 140},
+// 									 GuiIconText(RICON_FILE_SAVE, "Save file as..."), "Introduce a save file name", "Ok;Cancel", state->textInput);
 
-		if (result == 1)
-		{
-			// TODO: Validate textInput value and save
+// 		if (result == 1)
+// 		{
+// 			// TODO: Validate textInput value and save
 
-			strcpy(state->textInputFileName, state->textInput);
-		}
+// 			strcpy(state->textInputFileName, state->textInput);
+// 		}
 
-		if ((result == 0) || (result == 1) || (result == 2))
-		{
-			state->showTextInputBox = false;
-			strcpy(state->textInput, "\0");
-		}
-	}
+// 		if ((result == 0) || (result == 1) || (result == 2))
+// 		{
+// 			state->showTextInputBox = false;
+// 			strcpy(state->textInput, "\0");
+// 		}
+// 	}
 
-	GuiUnlock();
-}
+// 	GuiUnlock();
+// }
