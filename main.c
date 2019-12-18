@@ -5,8 +5,11 @@
 
 int main(void)
 {
+
 	printf(BLISS_TITLE " " BLISS_VERSION "\n");
 	InitWindow(800, 600, BLISS_TITLE " " BLISS_VERSION);
+
+	void *window = GetGLFWwindowHandle();
 
 	Font fontRobotoMono = LoadFontEx("fonts/RobotoMono-Regular.ttf", 28, 0, 255);
 	Font fontRobotoMonoSm = LoadFontEx("fonts/RobotoMono-Regular.ttf", 12, 0, 255);
