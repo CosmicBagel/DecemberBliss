@@ -3,8 +3,13 @@
 *.exe
 !rguilayout.exe
 !rguistyler.exe
+!raylib_static.pdb
 *vcxproj.filters
 /temp
+/build
+/.vscode
+/CMakeFiles
+CMakeCache.txt
 raylib.dll
 
 ###################################################################################################
