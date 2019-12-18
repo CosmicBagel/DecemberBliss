@@ -3,6 +3,8 @@ project(DecemberBliss VERSION 0.1.0)
 
 include(BlissBuildHelpers.cmake)
 
+# Trying to stick with Effective Modern CMake https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
+
 # use message(STATUS "message info ${variable}") for rnd print statements
 
 #lists are ; separated stings
@@ -80,18 +82,25 @@ don't use variables, but
 
 # avoid custom variables in the arguments of project commands
 # do not use file(GLOB) in project
+# Don't abouse requirements, Eg -Wall is not a requirement to build a project
+
+#[[
+todo
+- Project name & version injected into c code
+- include raylib as subdirectory?
+    - figure out how to source and link library
+#]]
 
 add_executable(DecemberBliss)
 target_compile_features(DecemberBliss PRIVATE c_std_11)
 bliss_enable_warnings(DecemberBliss)
 
-target_include_directories(DecemberBliss PRIVATE raylib)
 target_include_directories(DecemberBliss PRIVATE raygui)
 
-target_link_directories(DecemberBliss PRIVATE raylib)
-target_link_libraries(DecemberBliss PRIVATE raylib_static_msvc_amd64; winmm)
+add_subdirectory(raylib)
+target_link_libraries(DecemberBliss PRIVATE raylib)
 
-set_target_properties(DecemberBliss PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+# set_target_properties(DecemberBliss PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 
 target_sources(DecemberBliss PRIVATE main.c)
 
