@@ -1,7 +1,3 @@
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4204)
-#pragma warning(disable : 4100)
-#pragma warning(disable : 4456)
 /*******************************************************************************************
 *
 *   raygui v2.6 - A simple and easy-to-use immediate-mode gui library

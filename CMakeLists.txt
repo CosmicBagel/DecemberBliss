@@ -1,30 +1,16 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(DecemberBliss VERSION 0.1.0)
+# Trying to stick with Effective Modern CMake 
+#   https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
 
-include(BlissBuildHelpers.cmake)
-
-# Trying to stick with Effective Modern CMake https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
-
-# use message(STATUS "message info ${variable}") for rnd print statements
+# use message(STATUS "message info ${variable}") for print statements
 
 #lists are ; separated stings
 #CMake variables are NOT environment variables (unlike makefile)
 
 #avoid custom variables in arguments of project commands
 
-#[==[
- arbitrary = count in comment start, must match the number in comment end
- multiline comment block
-   #[=[
-    some kind of nesting functionality??
-   #]=]
-#]==]
-
-#[[
-don't use variables, but 
-   set(varName varText) varName and varText are strings, and don't need ""
-   unset(varName) makes a string empty
-#]]
+#don't use variables, but 
+#   set(varName varText) varName and varText are strings, and don't need ""
+#   unset(varName) makes a string empty
 
 # don't use add_compile_options(), include_directories()
 #       link_directories(), link_libraries()
@@ -39,8 +25,6 @@ don't use variables, but
 # target_compile_definitions(), target_compile_features(), target_compile_options()
 # target_include_directories(), target_link_libraries(), target_sources()
 
-#18:33
-
 #[[
     A generator expression
     $<IF:$<CONFIG:Debug>,30,10>
@@ -48,9 +32,7 @@ don't use variables, but
     not evaluated by command interpreter (it is just a string with $<>)
     evaluated during build system generation
     not supported in all commands
- #]]
-
-#if(thing) endif()
+#]]
 
 #[[
     function() and macro()
@@ -64,7 +46,6 @@ don't use variables, but
 
     variables are scoped to the function, unless set with PARENT_SCOPE
     available variables: input, output, ARGC, ARGV, ARGN, ARG0, ARG1,...
-
 #]]
 
 #when using add_subdirectory(DIR), that directory must have its own CMakeLists.txt
@@ -73,12 +54,12 @@ don't use variables, but
 #a module is a scriptName.cmake file located int the CMAKE_MODULE_PATH
 #   which can be loaded with include()
 
-
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:main")
-
-# all cmake properties https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html#target-properties
-# available c compile features https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_C_KNOWN_FEATURES.html#prop_gbl:CMAKE_C_KNOWN_FEATURES 
-# avialable c++ compile features https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html#prop_gbl:CMAKE_CXX_KNOWN_FEATURES
+# all cmake properties 
+#   https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html
+# available c compile features
+#   https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_C_KNOWN_FEATURES.html
+# avialable c++ compile features
+#   https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html
 
 # avoid custom variables in the arguments of project commands
 # do not use file(GLOB) in project
@@ -86,22 +67,48 @@ don't use variables, but
 
 #[[
 todo
+- remove unwanted warnings from raylib and its dependencies
+    (only warnings from DecemberBliss are wanted, not its dependencies)
 - Project name & version injected into c code
-- include raylib as subdirectory?
-    - figure out how to source and link library
+- Project linting / static analyzing
+- Enforce c standard 
 #]]
 
+cmake_minimum_required(VERSION 3.16.0)
+project(DecemberBliss VERSION 0.1.0 LANGUAGES C)
+
+include(BlissBuildHelpers.cmake)
+
 add_executable(DecemberBliss)
-target_compile_features(DecemberBliss PRIVATE c_std_11)
-bliss_enable_warnings(DecemberBliss)
 
-target_include_directories(DecemberBliss PRIVATE raygui)
+#ie if this is the top most level script
+#   these options should only be set if not being used by another project
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
-add_subdirectory(raylib)
-target_link_libraries(DecemberBliss PRIVATE raylib)
+    # Add warnings as global options, and ONLY at the root level of the project
+    # Also set the c standrd desired, this should also only be done at a global level
+    # as you can't mix ABI standards, everything must compile under one standard
+    if(MSVC)
+        target_compile_options(DecemberBliss PRIVATE /W4)
+    else()
+        target_compile_options(DecemberBliss PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
 
-# set_target_properties(DecemberBliss PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+    # this will give us a soft enforcement of the c11 standard, project won't error out, but 
+    # because of our warning flags, we will still be told when we're using non-standard c    
+    # mixing c / c++ standard can cause weird ABI issues when linking
+    target_compile_features(DecemberBliss PRIVATE c_std_11)
 
+endif()
+
+### Included dependencies' source code
+add_subdirectory(raylib/)
+add_subdirectory(raygui/)
+
+### Declare dependencies
+target_link_libraries(DecemberBliss PRIVATE raylib raygui)
+
+### Project source
 target_sources(DecemberBliss PRIVATE main.c)
 
 
