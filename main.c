@@ -1,8 +1,5 @@
 #include "main.h"
 
-#define BLISS_TITLE "DecemberBliss"
-#define BLISS_VERSION "v0.0.0 dev"
-
 int main(void)
 {
 
