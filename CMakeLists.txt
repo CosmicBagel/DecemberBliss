@@ -1,7 +1,7 @@
 # Trying to stick with Effective Modern CMake 
 #   https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.11.0)
 project(DecemberBliss VERSION 0.1.0 LANGUAGES C)
 
 include(BlissBuildHelpers.cmake)
