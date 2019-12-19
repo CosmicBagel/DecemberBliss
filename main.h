@@ -1,10 +1,16 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+//don't give warnings for external stuff that can't be controlled
+#ifdef _MSC_VER //msvc
+#pragma warning(push, 0)
+#else //gcc or clang
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-W"
+#endif
+
 #include <stdio.h>
 #include "raylib.h"
-
-int main(void);
 
 #define RAYGUI_IMPLEMENTATION
 #define RAYGUI_SUPPORT_ICONS
@@ -12,6 +18,14 @@ int main(void);
 #undef RAYGUI_IMPLEMENTATION // Avoid including raygui implementation again
 
 #include "ricons.h"
+
+#ifdef _MSC_VER //msvc
+#pragma warning(pop)
+#else //gcc or clang
+#pragma GCC diagnostic pop
+#endif
+
+int main(void);
 
 typedef char Fixed256String[255];
 
