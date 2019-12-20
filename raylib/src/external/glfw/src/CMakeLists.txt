@@ -100,6 +100,15 @@ set_target_properties(glfw PROPERTIES
                       VERSION ${GLFW_VERSION_MAJOR}.${GLFW_VERSION_MINOR}
                       SOVERSION ${GLFW_VERSION_MAJOR}
                       FOLDER "GLFW3")
+                      
+# Added for DecemberBliss: disable warnings outside of project
+if(MSVC)
+    target_compile_options(glfw_objlib PRIVATE /W0)
+    target_compile_options(glfw PRIVATE /W0)
+else()
+    target_compile_options(glfw_objlib PRIVATE -Wno-reserved-id-macro)
+    target_compile_options(glfw PRIVATE -w)
+endif()
 
 if (${CMAKE_VERSION} VERSION_EQUAL "3.1.0" OR
     ${CMAKE_VERSION} VERSION_GREATER "3.1.0")

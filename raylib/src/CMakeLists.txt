@@ -151,6 +151,12 @@ if(STATIC)
   endif()
 
   add_library(raylib_static STATIC ${sources})
+  # Added for DecemberBliss: disable warnings outside of project
+  if(MSVC)
+    target_compile_options(raylib_static PRIVATE /W0)
+  else()
+    target_compile_options(raylib_static PRIVATE -w)
+  endif()
 
   target_compile_definitions(raylib_static
       PUBLIC ${PLATFORM_CPP}
@@ -184,6 +190,12 @@ endif(STATIC)
 if(SHARED)
   MESSAGE(STATUS "Building raylib shared library")
   add_library(raylib SHARED ${sources})
+  # Added for DecemberBliss: disable warnings outside of project
+  if(MSVC)
+    target_compile_options(raylib PRIVATE /W0)
+  else()
+    target_compile_options(raylib PRIVATE -w)
+  endif()
 
   target_compile_definitions(raylib
       PUBLIC ${PLATFORM_CPP}
