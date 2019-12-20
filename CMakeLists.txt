@@ -38,7 +38,7 @@ target_link_libraries(DecemberBliss PRIVATE raylib raygui)
 ### Project source
 target_sources(DecemberBliss PRIVATE main.c)
 
-###Configure build info header, so that info is transfered to code
+### Pass name and version to compiler via defines (as opposed to having it in multiple places)
 target_compile_definitions(DecemberBliss PRIVATE 
     BLISS_TITLE="${CMAKE_PROJECT_NAME}" 
     BLISS_VERSION="${CMAKE_PROJECT_VERSION}")
