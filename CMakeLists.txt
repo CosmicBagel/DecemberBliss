@@ -44,4 +44,8 @@ target_compile_definitions(DecemberBliss PRIVATE
     BLISS_VERSION="${CMAKE_PROJECT_VERSION}")
 
 
+### Pass name and version to code via defines (as opposed to having it in multiple places)
+configure_file(buildInfo.h.in buildInfo.h)
+#the resulting buildInfo.h will be put into the build results, so we need to include that
+target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR}) 
 
