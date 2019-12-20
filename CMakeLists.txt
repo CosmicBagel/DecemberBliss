@@ -4,7 +4,7 @@
 # 
 
 cmake_minimum_required(VERSION 3.11.0)
-project(DecemberBliss VERSION 0.1.0 LANGUAGES C)
+project(DecemberBliss VERSION 0.1.0)
 
 include(BlissBuildHelpers.cmake)
 
@@ -26,19 +26,21 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # this will give us a soft enforcement of the c11 standard, project won't error out, but 
     # because of our warning flags, we will still be told when we're using non-standard c    
     # mixing c / c++ standard can cause weird ABI issues when linking
-    target_compile_features(DecemberBliss PRIVATE c_std_11)
+    # target_compile_features(DecemberBliss PRIVATE c_std_11)
 
 endif()
 
 ### Included dependencies' source code
 add_subdirectory(raylib/)
 add_subdirectory(raygui/)
+add_subdirectory(entt-3.2.2/)
+add_subdirectory(Chipmunk2D-Chipmunk-7.0.3)
 
 ### Declare dependencies
-target_link_libraries(DecemberBliss PRIVATE raylib raygui)
+target_link_libraries(DecemberBliss PRIVATE raylib raygui EnTT chipmunk imgui)
 
 ### Project source
-target_sources(DecemberBliss PRIVATE main.c)
+target_sources(DecemberBliss PRIVATE main.c enttTest.cpp)
 
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)

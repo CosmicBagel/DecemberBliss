@@ -2,6 +2,9 @@
 
 int main(void)
 {
+	//todo test chipmunk and imgui builds and links
+
+	tryEntt();
 
 	printf(BLISS_TITLE " " BLISS_VERSION "\n");
 	InitWindow(800, 600, BLISS_TITLE " " BLISS_VERSION);
