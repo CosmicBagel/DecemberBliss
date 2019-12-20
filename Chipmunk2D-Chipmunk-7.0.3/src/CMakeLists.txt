@@ -1,3 +1,6 @@
+option(BUILD_SHARED__ "Build and install the shared library" OFF)
+option(BUILD_STATIC "Build as static library" ON)
+
 file(GLOB chipmunk_source_files "*.c")
 file(GLOB chipmunk_public_header "${chipmunk_SOURCE_DIR}/include/chipmunk/*.h")
 
@@ -11,7 +14,7 @@ set(CHIPMUNK_VERSION "${CHIPMUNK_VERSION_MAJOR}.${CHIPMUNK_VERSION_MINOR}.${CHIP
 message("Configuring Chipmunk2D version ${CHIPMUNK_VERSION}")
 
 
-if(BUILD_SHARED)
+if(BUILD_SHARED__)
   add_library(chipmunk SHARED
     ${chipmunk_source_files}
   )

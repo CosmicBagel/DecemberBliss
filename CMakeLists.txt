@@ -34,10 +34,11 @@ endif()
 add_subdirectory(raylib/)
 add_subdirectory(raygui/)
 add_subdirectory(entt-3.2.2/)
-add_subdirectory(Chipmunk2D-Chipmunk-7.0.3)
+add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/src)
+add_subdirectory(imgui-1.74/)
 
 ### Declare dependencies
-target_link_libraries(DecemberBliss PRIVATE raylib raygui EnTT chipmunk imgui)
+target_link_libraries(DecemberBliss PRIVATE raylib raygui EnTT chipmunk_static imgui)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE main.c enttTest.cpp)
