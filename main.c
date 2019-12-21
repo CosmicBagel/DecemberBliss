@@ -83,15 +83,6 @@ int main(void)
 	const char* glsl_version = "#version 130";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
-	// igImplGl
-	/*
-	ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-	 ImGui::StyleColorsDark();
-	 ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-	*/
-
 	while (!exitWindow)
 	{
 		exitWindow = WindowShouldClose();

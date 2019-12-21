@@ -74,7 +74,6 @@ static GLFWcharfun g_PrevUserCallbackChar = NULL;
 
 static const char *ImGui_ImplGlfw_GetClipboardText(void *user_data)
 {
-    rl
     return glfwGetClipboardString((GLFWwindow *)user_data);
 }
 

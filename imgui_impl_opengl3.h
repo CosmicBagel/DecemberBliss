@@ -23,8 +23,6 @@
 
 #pragma once
 
-#include "raylib//src//external/glfw/deps/
-
 #if defined __cplusplus
 #define GL3_IMPL_EXTERN extern "C"
 #else

@@ -12,8 +12,9 @@
 // #include "imgui-1.74/imgui_internal.h"
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui-master\cimgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui_impl_raylib.h"
+//#include "imgui_impl_glfw.h"
+//#include "imgui_impl_opengl3.h"
 
 int main(void);
 
