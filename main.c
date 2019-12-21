@@ -2,8 +2,6 @@
 
 int main(void)
 {
-	//todo test chipmunk and imgui builds and links
-
 	tryEntt();
 
 	printf(BLISS_TITLE " " BLISS_VERSION "\n");
@@ -75,6 +73,24 @@ int main(void)
 	SetTargetFPS(60);
 	// UIState state;
 	// initUI(&state);
+
+	bool isOpen = true;
+
+	ImGuiContext *guiContext = igCreateContext(NULL);
+	void *igIO = igGetIO();
+	igStyleColorsDark(NULL);
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	const char* glsl_version = "#version 130";
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	// igImplGl
+	/*
+	ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+	 ImGui::StyleColorsDark();
+	 ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+	*/
 
 	while (!exitWindow)
 	{
@@ -237,6 +253,9 @@ int main(void)
 
 		EndDrawing();
 		//----------------------------------------------------------------------------------
+
+		//------------------------imgui
+		igShowDemoWindow(&isOpen);
 	}
 
 	UnloadFont(fontRobotoMono);

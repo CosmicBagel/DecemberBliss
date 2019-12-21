@@ -4,7 +4,7 @@
 # 
 
 cmake_minimum_required(VERSION 3.11.0)
-project(DecemberBliss VERSION 0.1.0)
+project(DecemberBliss VERSION 0.1.0 LANGUAGES C CXX)
 
 include(BlissBuildHelpers.cmake)
 
@@ -26,7 +26,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # this will give us a soft enforcement of the c11 standard, project won't error out, but 
     # because of our warning flags, we will still be told when we're using non-standard c    
     # mixing c / c++ standard can cause weird ABI issues when linking
-    # target_compile_features(DecemberBliss PRIVATE c_std_11)
+    target_compile_features(DecemberBliss PRIVATE c_std_11)
 
 endif()
 
@@ -34,14 +34,20 @@ endif()
 add_subdirectory(raylib/)
 add_subdirectory(raygui/)
 add_subdirectory(entt-3.2.2/)
-add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/src)
-add_subdirectory(imgui-1.74/)
+add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/)
+# add_subdirectory(imgui-1.74/)
+add_subdirectory(cimgui-master/)
+#add_subdirectory(gl3w/)
 
 ### Declare dependencies
-target_link_libraries(DecemberBliss PRIVATE raylib raygui EnTT chipmunk_static imgui)
+target_link_libraries(DecemberBliss PRIVATE 
+    raylib raygui EnTT chipmunk_static cimgui GLFW)
 
 ### Project source
-target_sources(DecemberBliss PRIVATE main.c enttTest.cpp)
+target_sources(DecemberBliss PRIVATE 
+    main.c enttTest.cpp 
+    imgui_impl_glfw.cpp imgui_impl_glfw.cpp
+    imgui_impl_opengl3.cpp)
 
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)

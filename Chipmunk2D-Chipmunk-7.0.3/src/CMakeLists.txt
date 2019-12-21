@@ -37,7 +37,7 @@ if(BUILD_SHARED__)
   install(TARGETS chipmunk RUNTIME DESTINATION ${BIN_INSTALL_DIR}
                            LIBRARY DESTINATION ${LIB_INSTALL_DIR}
                            ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
-endif(BUILD_SHARED)
+endif(BUILD_SHARED__)
 
 if(BUILD_STATIC)
   add_library(chipmunk_static STATIC
