@@ -3,7 +3,7 @@
 #include <float.h>
 #include <raylib.h>
 #include <rlgl.h>
-#include <raylib/src/external/glad.h>
+
 
 //#include <glfw/glfw3.h>
 //#include <GLFW/glfw3native.h>
@@ -160,10 +160,10 @@ void    ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
 	// Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
 	int fb_width = (int)(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
 	int fb_height = (int)(draw_data->DisplaySize.y * draw_data->FramebufferScale.y);
-	if (fb_width <= 0 || fb_height <= 0)
-		return;
+	//if (fb_width <= 0 || fb_height <= 0)
+	//	return;
 
-	// Backup GL state
+//	// Backup GL state
 	GLenum last_active_texture; glGetIntegerv(GL_ACTIVE_TEXTURE, (GLint*)&last_active_texture);
 	glActiveTexture(GL_TEXTURE0);
 	GLint last_program; glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
@@ -178,14 +178,22 @@ void    ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
 #ifdef GL_POLYGON_MODE
 	GLint last_polygon_mode[2]; glGetIntegerv(GL_POLYGON_MODE, last_polygon_mode);
 #endif
-	GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
-	GLint last_scissor_box[4]; glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
-	GLenum last_blend_src_rgb; glGetIntegerv(GL_BLEND_SRC_RGB, (GLint*)&last_blend_src_rgb);
-	GLenum last_blend_dst_rgb; glGetIntegerv(GL_BLEND_DST_RGB, (GLint*)&last_blend_dst_rgb);
-	GLenum last_blend_src_alpha; glGetIntegerv(GL_BLEND_SRC_ALPHA, (GLint*)&last_blend_src_alpha);
-	GLenum last_blend_dst_alpha; glGetIntegerv(GL_BLEND_DST_ALPHA, (GLint*)&last_blend_dst_alpha);
-	GLenum last_blend_equation_rgb; glGetIntegerv(GL_BLEND_EQUATION_RGB, (GLint*)&last_blend_equation_rgb);
-	GLenum last_blend_equation_alpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, (GLint*)&last_blend_equation_alpha);
+	GLint last_viewport[4];
+	glGetIntegerv(GL_VIEWPORT, last_viewport);
+	GLint last_scissor_box[4];
+	glGetIntegerv(GL_SCISSOR_BOX, last_scissor_box);
+	GLenum last_blend_src_rgb;
+	glGetIntegerv(GL_BLEND_SRC_RGB, (GLint*)&last_blend_src_rgb);
+	GLenum last_blend_dst_rgb;
+	glGetIntegerv(GL_BLEND_DST_RGB, (GLint*)&last_blend_dst_rgb);
+	GLenum last_blend_src_alpha;
+	glGetIntegerv(GL_BLEND_SRC_ALPHA, (GLint*)&last_blend_src_alpha);
+	GLenum last_blend_dst_alpha;
+	glGetIntegerv(GL_BLEND_DST_ALPHA, (GLint*)&last_blend_dst_alpha);
+	GLenum last_blend_equation_rgb;
+	glGetIntegerv(GL_BLEND_EQUATION_RGB, (GLint*)&last_blend_equation_rgb);
+	GLenum last_blend_equation_alpha;
+	glGetIntegerv(GL_BLEND_EQUATION_ALPHA, (GLint*)&last_blend_equation_alpha);
 	GLboolean last_enable_blend = glIsEnabled(GL_BLEND);
 	GLboolean last_enable_cull_face = glIsEnabled(GL_CULL_FACE);
 	GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
@@ -203,6 +211,7 @@ void    ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
 	GLuint vertex_array_object = 0;
 #ifndef IMGUI_IMPL_OPENGL_ES2
 	glGenVertexArrays(1, &vertex_array_object);
+
 #endif
 	ImGui_ImplRaylibGL3_SetupRenderState(draw_data, fb_width, fb_height, vertex_array_object);
 
@@ -221,7 +230,7 @@ void    ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
 
 		for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
 		{
-			const ImDrawCmd* pcmd = &(cmd_list->CmdBuffer.Data[cmd_i]);
+			const ImDrawCmd* pcmd = &cmd_list->CmdBuffer.Data[cmd_i];
 			if (pcmd->UserCallback != NULL)
 			{
 				// User callback, registered via ImDrawList::AddCallback()

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string.h>
+#include <raylib/src/external/glad.h>
 
 //-----------opengl
 
