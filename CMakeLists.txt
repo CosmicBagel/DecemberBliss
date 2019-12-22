@@ -41,11 +41,11 @@ add_subdirectory(cimgui-master/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE 
-    raylib raygui EnTT chipmunk_static cimgui GLFW)
+    raylib raygui EnTT chipmunk_static cimgui)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    main.c enttTest.cpp imgui_impl_raylib.c)
+    main.c enttTest.cpp imgui_impl_raylib.c imgui_impl_raylibgl3.c)
 
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)

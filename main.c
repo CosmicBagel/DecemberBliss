@@ -79,9 +79,9 @@ int main(void)
 	ImGuiContext *guiContext = igCreateContext(NULL);
 	void *igIO = igGetIO();
 	igStyleColorsDark(NULL);
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplRaylib_InitForOpenGL(window, true);
 	const char* glsl_version = "#version 130";
-	ImGui_ImplOpenGL3_Init(glsl_version);
+	ImGui_ImplRaylibGL3_Init(glsl_version);
 
 	while (!exitWindow)
 	{
