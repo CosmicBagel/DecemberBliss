@@ -1,6 +1,14 @@
 
-typedef struct GLFWwindow GLFWwindow;
 #include <stdbool.h>
+#include <assert.h>
+
+//stolen macros
+#define IM_ARRAYSIZE(_ARR)          ((int)(sizeof(_ARR) / sizeof(*_ARR)))       // Size of a static C-style array. Don't use on pointers!
+#define IM_UNUSED(_VAR)             ((void)_VAR)  
+
+#define IM_ASSERT(_EXPR)            assert(_EXPR)
+
+typedef struct GLFWwindow GLFWwindow;
 
 //-----------glfw
 

@@ -74,7 +74,9 @@ int main(void)
 	// UIState state;
 	// initUI(&state);
 
-	bool isOpen = true;
+	bool show_demo_window = true;
+	bool show_another_window = true;
+	float clear_color = 0xffffff;
 
 	ImGuiContext *guiContext = igCreateContext(NULL);
 	void *igIO = igGetIO();
@@ -242,16 +244,53 @@ int main(void)
 		GuiUnlock();
 		//----------------------------------------------------------------------------------
 
+		
+		//------------------------imgui
+		ImGui_ImplRaylibGL3_NewFrame();
+		ImGui_ImplRaylib_NewFrame();
+		igNewFrame();
+		//igShowDemoWindow(&show_demo_window);
+
+
+		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+
+		static float f = 0.0f;
+		static int counter = 0;
+
+		igBegin("Hello, world!", 0, 0);                          // Create a window called "Hello, world!" and append into it.
+
+		igText("This is some useful text.");               // Display some text (you can use a format strings too)
+		igCheckbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+		igCheckbox("Another Window", &show_another_window);
+
+		igSliderFloat("float", &f, 0.0f, 1.0f, "%.3f", 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+		igColorEdit3("clear color", (float*)&clear_color, 0); // Edit 3 floats representing a color
+
+		if (igButton("Button", (ImVec2) { 0.0f, 0.0f }))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+			counter++;
+		igSameLine(0.0f, -1.0f);
+		igText("counter = %d", counter);
+
+		igText("Application average %.3f ms/frame (%.1f FPS)",
+			1000.0f / igGetIO()->Framerate, igGetIO()->Framerate);
+		igEnd();
+		// 2. end
+
+		igRender();
+		ImGui_ImplRaylibGL3_RenderDrawData(igGetDrawData);
+
 		EndDrawing();
 		//----------------------------------------------------------------------------------
-
-		//------------------------imgui
-		igShowDemoWindow(&isOpen);
 	}
 
 	UnloadFont(fontRobotoMono);
 	UnloadFont(fontRobotoMonoSm);
 	UnloadFont(font);
+
+	ImGui_ImplRaylibGL3_Shutdown();
+	ImGui_ImplRaylib_Shutdown();
+	igDestroyContext(guiContext);
+
 	CloseWindow();
 
 	return 0;

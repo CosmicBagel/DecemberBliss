@@ -189,7 +189,7 @@ bool ImGui_ImplRaylib_Init(GLFWwindow* window, bool install_callbacks, GlfwClien
 
 bool ImGui_ImplRaylib_InitForOpenGL(GLFWwindow* window, bool install_callbacks)
 {
-	return ImGui_ImplGlfw_Init(window, install_callbacks, GlfwClientApi_OpenGL);
+	return ImGui_ImplRaylib_Init(window, install_callbacks, GlfwClientApi_OpenGL);
 }
 
 void ImGui_ImplRaylib_Shutdown()
@@ -214,7 +214,7 @@ void ImGui_ImplRaylib_Shutdown()
 void ImGui_ImplRaylib_NewFrame()
 {
 	ImGuiIO* io = igGetIO();
-	IM_ASSERT(ImFontAtlas_IsBuilt(&io->Fonts) && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
+	IM_ASSERT(ImFontAtlas_IsBuilt(io->Fonts) && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
 	// Setup display size (every frame to accommodate for window resizing)
 	int w, h;
