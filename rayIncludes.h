@@ -21,13 +21,7 @@
 #endif
 
 #include "raylib.h"
-
-#define RAYGUI_IMPLEMENTATION
-#define RAYGUI_SUPPORT_ICONS
-#include "raygui.h"
-#undef RAYGUI_IMPLEMENTATION // Avoid including raygui implementation again
-
-#include "ricons.h"
+#include "rlgl.h"
 
 #ifdef _MSC_VER
 #pragma warning(pop)

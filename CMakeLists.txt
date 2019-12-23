@@ -32,16 +32,13 @@ endif()
 
 ### Included dependencies' source code
 add_subdirectory(raylib/)
-add_subdirectory(raygui/)
 add_subdirectory(entt-3.2.2/)
 add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/)
-# add_subdirectory(imgui-1.74/)
 add_subdirectory(cimgui-master/)
-#add_subdirectory(gl3w/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE 
-    raylib raygui EnTT chipmunk_static cimgui)
+    raylib EnTT chipmunk_static cimgui)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
