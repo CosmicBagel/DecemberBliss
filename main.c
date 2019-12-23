@@ -14,8 +14,11 @@ int main(void)
 {
 	tryEntt();
 
+	unsigned int screenWidth = 800;
+	unsigned int screenHeight = 600;
+
 	printf(BLISS_TITLE " " BLISS_VERSION "\n");
-	InitWindow(800, 600, BLISS_TITLE " " BLISS_VERSION);
+	InitWindow(screenWidth, screenHeight, BLISS_TITLE " " BLISS_VERSION);
 
 	void *window = GetGLFWwindowHandle();
 
@@ -96,6 +99,8 @@ int main(void)
 	const char* glsl_version = "#version 130";
 	ImGui_ImplRaylibGL3_Init(glsl_version);
 
+	Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
+
 	while (!exitWindow)
 	{
 		exitWindow = WindowShouldClose();
@@ -120,12 +125,15 @@ int main(void)
 		}
 
 		BeginDrawing();
-		
+		ClearBackground(WHITE);
+
+		DrawTexture(santaTex, screenWidth / 2 - santaTex.width / 2, screenHeight / 2 - santaTex.height / 2, WHITE);
+
 		// int display_w, display_h;
 		//glfwGetFramebufferSize(window, &display_w, &display_h);
 		//glViewport(0, 0, display_w, display_h);
 
-		ClearBackground(WHITE);
+		
 		char *msg = BLISS_TITLE " " BLISS_VERSION;
 		Vector2 textDim = MeasureTextEx(fontRobotoMono, msg, (float)fontRobotoMono.baseSize, 0);
 		Vector2 textPos;
@@ -145,7 +153,7 @@ int main(void)
 
 		// drawUI(&state);
 
-		// ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+		
 
 		// raygui: controls drawing
 		//----------------------------------------------------------------------------------
@@ -263,7 +271,7 @@ int main(void)
 		//----------------------------------------------------------------------------------
 
 		//------------------------imgui
-		
+
 		ImGui_ImplRaylibGL3_NewFrame();
 		ImGui_ImplRaylib_NewFrame();
 		igNewFrame();
@@ -313,6 +321,8 @@ int main(void)
 	UnloadFont(fontRobotoMono);
 	UnloadFont(fontRobotoMonoSm);
 	UnloadFont(font);
+
+	UnloadTexture(santaTex);
 
 	ImGui_ImplRaylibGL3_Shutdown();
 	ImGui_ImplRaylib_Shutdown();
