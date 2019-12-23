@@ -312,6 +312,8 @@ int main(void)
 			igEnd();
 		}// 3. end
 
+		rlglDraw();
+
 		igRender();
 		ImGui_ImplRaylibGL3_RenderDrawData(igGetDrawData());
 
