@@ -12,126 +12,134 @@
 
 int main(void)
 {
-	tryEntt();
+    tryEntt();
 
-	unsigned int screenWidth = 800;
-	unsigned int screenHeight = 600;
+    unsigned int screenWidth = 800;
+    unsigned int screenHeight = 600;
 
-	printf(BLISS_TITLE " " BLISS_VERSION "\n");
-	InitWindow(screenWidth, screenHeight, BLISS_TITLE " " BLISS_VERSION);
+    printf(BLISS_TITLE " " BLISS_VERSION "\n");
+    InitWindow(screenWidth, screenHeight, BLISS_TITLE " " BLISS_VERSION);
 
-	void *window = GetGLFWwindowHandle();
+    void *window = GetGLFWwindowHandle();
 
-	Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, 0, 255);
-	Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, 0, 255);
-	Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, 0, 255);
+    Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, 0, 255);
+    Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, 0, 255);
+    Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, 0, 255);
 
-	SetTargetFPS(60);
+    SetTargetFPS(60);
 
-	bool show_demo_window = true;
-	bool show_another_window = true;
-	Color clear_color = { 115, 140, 153, 255 };
+    bool show_demo_window = true;
+    bool show_another_window = true;
+    bool show_imgui_metrics_window = true;
+    Color clear_color = { 115, 140, 153, 255 };
 
-	ImGuiContext *guiContext = igCreateContext(NULL);
-	void *igIO = igGetIO();
-	igStyleColorsDark(NULL);
-	ImGui_ImplRaylib_InitForOpenGL(window, true);
-	const char* glsl_version = "#version 130";
-	ImGui_ImplRaylibGL3_Init(glsl_version);
+    ImGuiContext *guiContext = igCreateContext(NULL);
+    void *igIO = igGetIO();
+    igStyleColorsDark(NULL);
+    ImGui_ImplRaylib_InitForOpenGL(window, true);
+    const char* glsl_version = "#version 130";
+    ImGui_ImplRaylibGL3_Init(glsl_version);
 
-	Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
+    Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
 
-	bool exitWindow = false;
-	while (!exitWindow)
-	{
-		exitWindow = WindowShouldClose();
-		// Update
-		//----------------------------------------------------------------------------------
-		BeginDrawing();
-		ClearBackground(WHITE);
+    bool exitWindow = false;
+    while (!exitWindow)
+    {
+        exitWindow = WindowShouldClose();
+        // Update
+        //----------------------------------------------------------------------------------
+        BeginDrawing();
+        ClearBackground(WHITE);
 
-		DrawTexture(santaTex, screenWidth / 2 - santaTex.width / 2, screenHeight / 2 - santaTex.height / 2, WHITE);
-		
-		char *msg = BLISS_TITLE " " BLISS_VERSION;
-		Vector2 textDim = MeasureTextEx(fontRobotoMono, msg, (float)fontRobotoMono.baseSize, 0);
-		Vector2 textPos;
-		textPos.x = (800 - textDim.x) / 2.0f;
-		textPos.y = (600 - textDim.y) / 2.0f;
+        DrawTexture(santaTex, screenWidth / 2 - santaTex.width / 2, screenHeight / 2 - santaTex.height / 2, WHITE);
 
-		DrawTextEx(fontRobotoMono, msg, textPos,
-				   (float)fontRobotoMono.baseSize, 0, DARKGRAY);
+        char* msg = BLISS_TITLE " " BLISS_VERSION;
+        Vector2 textDim = MeasureTextEx(fontRobotoMono, msg, (float)fontRobotoMono.baseSize, 0);
+        Vector2 textPos;
+        textPos.x = (800 - textDim.x) / 2.0f;
+        textPos.y = (600 - textDim.y) / 2.0f;
 
-		char fpsStr[50] = {'\0'};
-		sprintf_s(fpsStr, 50, "FPS: %d", GetFPS());
-		Vector2 fpsPos;
-		fpsPos.x = 10;
-		fpsPos.y = 10;
-		DrawTextEx(fontRobotoMonoSm, fpsStr, fpsPos,
-				   (float)fontRobotoMonoSm.baseSize, 0, RED);
+        DrawTextEx(fontRobotoMono, msg, textPos,
+            (float)fontRobotoMono.baseSize, 0, DARKGRAY);
 
-		//----------------------------------------------------------------------------------
+        char fpsStr[50] = { '\0' };
+        sprintf_s(fpsStr, 50, "FPS: %d", GetFPS());
+        Vector2 fpsPos;
+        fpsPos.x = 10;
+        fpsPos.y = 10;
+        DrawTextEx(fontRobotoMonoSm, fpsStr, fpsPos,
+            (float)fontRobotoMonoSm.baseSize, 0, RED);
 
-		//------------------------imgui
+        //----------------------------------------------------------------------------------
 
-		ImGui_ImplRaylibGL3_NewFrame();
-		ImGui_ImplRaylib_NewFrame();
-		igNewFrame();
+        //------------------------imgui
 
-		igShowDemoWindow(&show_demo_window);
+        ImGui_ImplRaylibGL3_NewFrame();
+        ImGui_ImplRaylib_NewFrame();
+        igNewFrame();
 
-		// 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        igBegin("Runtime Stats", 0, 0);
+        igShowMetricsWindow(&show_imgui_metrics_window);
+        igText("This is some useful text.");
+        igEnd();
 
-		static float f = 0.0f;
-		static int counter = 0;
+        igShowDemoWindow(&show_demo_window);
 
-		igBegin("Hello, world!", 0, 0);                          // Create a window called "Hello, world!" and append into it.
+        
 
-		igText("This is some useful text.");               // Display some text (you can use a format strings too)
-		igCheckbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		igCheckbox("Another Window", &show_another_window);
+        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
 
-		igSliderFloat("float", &f, 0.0f, 1.0f, "%.3f", 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		igColorEdit3("clear color", (float*)&clear_color, 0); // Edit 3 floats representing a color
+        static float f = 0.0f;
+        static int counter = 0;
 
-		if (igButton("Button", (ImVec2) { 0.0f, 0.0f }))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		igSameLine(0.0f, -1.0f);
-		igText("counter = %d", counter);
+        igBegin("Hello, world!", 0, 0);                          // Create a window called "Hello, world!" and append into it.
 
-		igText("Application average %.3f ms/frame (%.1f FPS)",
-			1000.0f / igGetIO()->Framerate, igGetIO()->Framerate);
-		igEnd();
-		// 2. end
+        igText("This is some useful text.");               // Display some text (you can use a format strings too)
+        igCheckbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+        igCheckbox("Another Window", &show_another_window);
 
-		// 3. Show another simple window.
-		if (show_another_window)
-		{
-			igBegin("Another Window", &show_another_window, 0);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			igText("Hello from another window!");
-			if (igButton("Close Me", (ImVec2) { 0.0f, 0.0f }))
-				show_another_window = false;
-			igEnd();
-		}// 3. end
+        igSliderFloat("float", &f, 0.0f, 1.0f, "%.3f", 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+        igColorEdit3("clear color", (float*)&clear_color, 0); // Edit 3 floats representing a color
 
-		rlglDraw();
+        if (igButton("Button", (ImVec2) { 0.0f, 0.0f }))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+            counter++;
+        igSameLine(0.0f, -1.0f);
+        igText("counter = %d", counter);
 
-		igRender();
-		ImGui_ImplRaylibGL3_RenderDrawData(igGetDrawData());
+        igText("Application average %.3f ms/frame (%.1f FPS)",
+            1000.0f / igGetIO()->Framerate, igGetIO()->Framerate);
+        igEnd();
+        // 2. end
 
-		EndDrawing();
-	}
+        // 3. Show another simple window.
+        if (show_another_window)
+        {
+            igBegin("Another Window", &show_another_window, 0);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            igText("Hello from another window!");
+            if (igButton("Close Me", (ImVec2) { 0.0f, 0.0f }))
+                show_another_window = false;
+            igEnd();
+        }// 3. end
 
-	UnloadFont(fontRobotoMono);
-	UnloadFont(fontRobotoMonoSm);
-	UnloadFont(font);
+        rlglDraw();
 
-	UnloadTexture(santaTex);
+        igRender();
+        ImGui_ImplRaylibGL3_RenderDrawData(igGetDrawData());
 
-	ImGui_ImplRaylibGL3_Shutdown();
-	ImGui_ImplRaylib_Shutdown();
-	igDestroyContext(guiContext);
+        EndDrawing();
+    }
 
-	CloseWindow();
+    UnloadFont(fontRobotoMono);
+    UnloadFont(fontRobotoMonoSm);
+    UnloadFont(font);
 
-	return 0;
+    UnloadTexture(santaTex);
+
+    ImGui_ImplRaylibGL3_Shutdown();
+    ImGui_ImplRaylib_Shutdown();
+    igDestroyContext(guiContext);
+
+    CloseWindow();
+
+    return 0;
 }
