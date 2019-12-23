@@ -136,7 +136,7 @@ void ImGui_ImplRaylibGL3_SetupRenderState(ImDrawData* draw_data, int fb_width, i
     glBindSampler(0, 0); // We use combined texture/sampler state. Applications using GL 3.3 may set that otherwise.
 #endif
 
-    (void)vertex_array_object;
+    (void)vertex_array_object; //just to avoid a variable not used warning when using opengl es2
 #ifndef IMGUI_IMPL_OPENGL_ES2
     glBindVertexArray(vertex_array_object);
 #endif
@@ -160,8 +160,8 @@ void ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
     // Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
     int fb_width = (int)(draw_data->DisplaySize.x * draw_data->FramebufferScale.x);
     int fb_height = (int)(draw_data->DisplaySize.y * draw_data->FramebufferScale.y);
-    //if (fb_width <= 0 || fb_height <= 0)
-    //	return;
+    if (fb_width <= 0 || fb_height <= 0)
+    	return;
 
 //	// Backup GL state
     GLenum last_active_texture; 
@@ -206,11 +206,12 @@ void ImGui_ImplRaylibGL3_RenderDrawData(ImDrawData* draw_data)
     GLboolean last_enable_depth_test = glIsEnabled(GL_DEPTH_TEST);
     GLboolean last_enable_scissor_test = glIsEnabled(GL_SCISSOR_TEST);
     bool clip_origin_lower_left = true;
-//#if defined(GL_CLIP_ORIGIN) && !defined(__APPLE__)
-//	GLenum last_clip_origin = 0; glGetIntegerv(GL_CLIP_ORIGIN, (GLint*)&last_clip_origin); // Support for GL 4.5's glClipControl(GL_UPPER_LEFT)
-//	if (last_clip_origin == GL_UPPER_LEFT)
-//		clip_origin_lower_left = false;
-//#endif
+#if defined(GL_CLIP_ORIGIN) && !defined(__APPLE__)
+	GLenum last_clip_origin = 0; 
+    glGetIntegerv(GL_CLIP_ORIGIN, (GLint*)&last_clip_origin); // Support for GL 4.5's glClipControl(GL_UPPER_LEFT)
+	if (last_clip_origin == GL_UPPER_LEFT)
+		clip_origin_lower_left = false;
+#endif
 
     // Setup desired GL state
     // Recreate the VAO every time (this is to easily allow multiple GL contexts to be rendered to. VAO are not shared among GL contexts)
