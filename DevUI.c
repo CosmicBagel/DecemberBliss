@@ -18,15 +18,16 @@ void DevUIInit(DevUIState* devUIState, void* glfwWindow)
 	ImGui_ImplRaylibGL3_Init(glsl_version);
 }
 
-// Updates the DevUI state and prepares all of the draw calls for the DevUI
-void DevUIDraw(DevUIState* devUIState)
+void DevUINewFrame(DevUIState* devUIState)
 {
-	//igSetCurrentContext(devUIState->guiContext);
-
 	ImGui_ImplRaylibGL3_NewFrame();
 	ImGui_ImplRaylib_NewFrame();
 	igNewFrame();
+}
 
+// Updates the DevUI state and prepares all of the draw calls for the DevUI
+void DevUIDraw(DevUIState* devUIState)
+{
 	DrawResourceCounter(devUIState);
 	igShowDemoWindow(&devUIState->show_demo_window);
 }

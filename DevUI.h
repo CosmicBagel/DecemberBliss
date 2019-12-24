@@ -9,7 +9,24 @@ typedef struct DevUIState {
 	ImGuiIO* igIO;
 } DevUIState;
 
+typedef struct ResourceMetrics {
+	float lastFrameSimulationTime;
+	float lastFrameDrawPrepTime;
+	float lastFrameGPURenderTime;
+
+	float gameDrawPrepTime;
+	float gameGPURenderTime;
+	float devUIDrawPrepTime;
+	float devUIGPURenderTime;
+
+	unsigned int memoryUsage;
+	unsigned int gameMemoryUsage;
+	unsigned int devUIMemoryUsage;
+
+} ResourceMetrics;
+
 void DevUIInit(DevUIState* devUIState, void* glfwWindow);
+void DevUINewFrame(DevUIState* devUIState);
 void DevUIDraw(DevUIState* devUIState);
 void DevUIRender(void);
 void DevUIDestroy(DevUIState* devUIState);

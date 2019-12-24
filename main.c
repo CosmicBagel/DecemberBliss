@@ -39,7 +39,19 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         BeginDrawing();
+        DevUINewFrame(&devUIState);
         ClearBackground(WHITE);
+
+        if (!devUIState.igIO->WantCaptureMouse) {
+            //only take mouse input in the game if imgui isn't catching it
+            //clicks and input shouldn't go through a window
+        }
+		if (!devUIState.igIO->WantCaptureKeyboard) {
+			//check keyboard inputs
+		}
+        if (!devUIState.igIO->WantTextInput) {
+            //for on mobile & consoles
+        }
 
         DrawTexture(santaTex, 
             screenWidth / 2 - santaTex.width / 2, 
@@ -58,6 +70,15 @@ int main(void)
         
         rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
         DevUIDraw(&devUIState);
+        ImVec2 vec2Zero = { 0, 0 };
+        ImVec2 vec2One = { 1, 1 };
+        ImVec4 vec4Zero = { 0, 0, 0, 0 };
+        ImVec4 vec4One = { 1, 1, 1, 1 };
+        if (igBegin("santa img", 0, 0 | ImGuiWindowFlags_AlwaysAutoResize))
+            igImage(santaTex.id, (ImVec2) { santaTex.width / 4, santaTex.height / 4 },
+                vec2Zero, vec2One, vec4One, vec4Zero);
+        igEnd();
+
         DevUIRender();
         EndDrawing();
     }
