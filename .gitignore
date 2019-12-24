@@ -9,6 +9,7 @@
 /build
 /out
 /.vscode
+/ImGuiDemo
 /CMakeFiles
 CMakeCache.txt
 raylib.dll
