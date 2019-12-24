@@ -3,6 +3,7 @@
 
 typedef struct DevUIState {
 	bool show_demo_window;
+	bool isResourceCounterOpen;
 	ImGuiContext* guiContext;
 	ImGuiIO* igIO;
 } DevUIState;
@@ -11,5 +12,3 @@ void DevUIInit(DevUIState* devUIState, void* glfwWindow);
 void DevUIDraw(DevUIState* devUIState);
 void DevUIRender(void);
 void DevUIDestroy(DevUIState* devUIState);
-
-void DrawResourceCounter(ImGuiIO* igIO);

@@ -15,10 +15,8 @@ int main(void)
     unsigned int screenWidth = 800;
     unsigned int screenHeight = 600;
 
-    printf(BLISS_FULL_HEADER "\n");
+    printf("Starting " BLISS_FULL_HEADER "...\n");
     InitWindow(screenWidth, screenHeight, BLISS_FULL_HEADER);
-
-    void *window = GetGLFWwindowHandle();
 
     Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, 0, 255);
     Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, 0, 255);
@@ -27,7 +25,7 @@ int main(void)
     SetTargetFPS(60);
 
     DevUIState devUIState;
-    DevUIInit(&devUIState, window);
+    DevUIInit(&devUIState, GetGLFWwindowHandle());
 
     Color clear_color = { 115, 140, 153, 255 };
 
@@ -37,14 +35,18 @@ int main(void)
     while (!exitWindow)
     {
         exitWindow = WindowShouldClose();
+
         // Update
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(WHITE);
 
-        DrawTexture(santaTex, screenWidth / 2 - santaTex.width / 2, screenHeight / 2 - santaTex.height / 2, WHITE);
+        DrawTexture(santaTex, 
+            screenWidth / 2 - santaTex.width / 2, 
+            screenHeight / 2 - santaTex.height / 2, WHITE);
 
-        Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER, (float)fontRobotoMono.baseSize, 0);
+        Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER, 
+            (float)fontRobotoMono.baseSize, 0);
         Vector2 textPos;
         textPos.x = (800 - textDim.x) / 2.0f;
         textPos.y = (600 - textDim.y) / 2.0f;

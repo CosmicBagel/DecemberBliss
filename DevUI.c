@@ -3,6 +3,8 @@
 #include "imgui_impl_raylib.h"
 #include "imgui_impl_raylibgl3.h"
 
+void DrawResourceCounter(DevUIState* devUIState);
+
 void DevUIInit(DevUIState* devUIState, void* glfwWindow)
 {
 	devUIState->guiContext = igCreateContext(NULL);
@@ -24,7 +26,7 @@ void DevUIDraw(DevUIState* devUIState)
 	ImGui_ImplRaylib_NewFrame();
 	igNewFrame();
 
-	DrawResourceCounter(devUIState->igIO);
+	DrawResourceCounter(devUIState);
 	igShowDemoWindow(&devUIState->show_demo_window);
 }
 
@@ -42,24 +44,51 @@ void DevUIDestroy(DevUIState* devUIState)
 }
 
 //Draw the FPS counter window
-void DrawResourceCounter(ImGuiIO* igIO)
+void DrawResourceCounter(DevUIState* devUIState)
 {
-	ImGuiWindowFlags fpsTrackerWindowFlags = 0 |
-		ImGuiWindowFlags_NoInputs |
-		ImGuiWindowFlags_NoTitleBar;
 	// todo
 	// - add graphs as hideable children
 	// - make moveable with right click
 	// - add show/hide hotkey
 
-	//ImGuiStyle style = ;
+	ImGuiWindowFlags fpsTrackerWindowFlags = 0 |
+		//ImGuiWindowFlags_NoInputs |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoResize;
+		//ImGuiWindowFlags_NoTitleBar;
 
-	igSetNextWindowPos((ImVec2) { 10, 10 }, ImGuiCond_Once, (ImVec2) { 0, 0 });
-	igSetNextWindowSize((ImVec2) { 90, 28 }, ImGuiCond_Once);
+	if (devUIState->isResourceCounterOpen)
+	{
+		igSetNextWindowSize((ImVec2) { 256, 256 }, ImGuiCond_Always);
+	}
+	else
+	{
+		igSetNextWindowSize((ImVec2) { 120, 256 }, ImGuiCond_Always);
+	}
+
+	igSetNextWindowPos((ImVec2) { 10, 10 }, ImGuiCond_Appearing, (ImVec2) { 0, 0 });
 	igSetNextWindowBgAlpha(0.40f);
-	igBegin("Resource Counter", 0, fpsTrackerWindowFlags);
+
 	char fpsStr[50] = { '\0' };
-	sprintf_s(fpsStr, 50, "FPS: %.1f", igIO->Framerate);
-	igTextColored((ImVec4) { 0.0f, 5.0f, 0.0f, 1.0f }, fpsStr);
+	sprintf_s(fpsStr, 50, "FPS: %.1f###0", devUIState->igIO->Framerate);
+	static float frameTimes[120] = {0};
+	static unsigned int arrayOffset = 0;
+	frameTimes[arrayOffset] = 1 / devUIState->igIO->Framerate * 1000.0f;
+	arrayOffset = (arrayOffset + 1) % 120;
+
+	float max = 0.0f;
+	for (int i = 0; i < 120; i++)
+		if (max < frameTimes[i])
+			max = frameTimes[i];
+	
+	igBegin(fpsStr, 0, fpsTrackerWindowFlags);
+	devUIState->isResourceCounterOpen = !igIsWindowCollapsed();
+	igPlotHistogramFloatPtr("", frameTimes, 120, arrayOffset, 
+		NULL, 0.0f, max, (ImVec2) { 0, 40 }, 4);
+	igTextColored((ImVec4) { 0.0f, 5.0f, 0.0f, 1.0f }, "cool metrics");
+
+
+
+
 	igEnd();
 }
