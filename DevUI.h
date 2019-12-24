@@ -1,5 +1,6 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 #include "cimgui-master\cimgui.h"
+#include "rayIncludes.h"
 
 typedef struct DevUIState {
 	bool show_demo_window;

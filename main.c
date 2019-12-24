@@ -52,7 +52,7 @@ int main(void)
         textPos.y = (600 - textDim.y) / 2.0f;
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
-            (float)fontRobotoMono.baseSize, 0, DARKGRAY);
+            (float)fontRobotoMono.baseSize, 0, DARKGRAY);       
 
         //----------------------------------------------------------------------------------
         

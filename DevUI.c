@@ -52,28 +52,26 @@ void DrawResourceCounter(DevUIState* devUIState)
 	// - add show/hide hotkey
 
 	ImGuiWindowFlags fpsTrackerWindowFlags = 0 |
-		//ImGuiWindowFlags_NoInputs |
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoResize;
-		//ImGuiWindowFlags_NoTitleBar;
 
 	if (devUIState->isResourceCounterOpen)
 	{
-		igSetNextWindowSize((ImVec2) { 256, 256 }, ImGuiCond_Always);
+		igSetNextWindowSize((ImVec2) { 256, 100 }, ImGuiCond_Always);
 	}
 	else
 	{
-		igSetNextWindowSize((ImVec2) { 120, 256 }, ImGuiCond_Always);
+		igSetNextWindowSize((ImVec2) { 110, 100 }, ImGuiCond_Always);
 	}
 
 	igSetNextWindowPos((ImVec2) { 10, 10 }, ImGuiCond_Appearing, (ImVec2) { 0, 0 });
 	igSetNextWindowBgAlpha(0.40f);
 
 	char fpsStr[50] = { '\0' };
-	sprintf_s(fpsStr, 50, "FPS: %.1f###0", devUIState->igIO->Framerate);
+	sprintf_s(fpsStr, 50, "FPS: %.2f###0", devUIState->igIO->Framerate);
 	static float frameTimes[120] = {0};
 	static unsigned int arrayOffset = 0;
-	frameTimes[arrayOffset] = 1 / devUIState->igIO->Framerate * 1000.0f;
+	frameTimes[arrayOffset] = GetFrameTime() * 1000.0f;
 	arrayOffset = (arrayOffset + 1) % 120;
 
 	float max = 0.0f;
@@ -83,12 +81,8 @@ void DrawResourceCounter(DevUIState* devUIState)
 	
 	igBegin(fpsStr, 0, fpsTrackerWindowFlags);
 	devUIState->isResourceCounterOpen = !igIsWindowCollapsed();
-	igPlotHistogramFloatPtr("", frameTimes, 120, arrayOffset, 
-		NULL, 0.0f, max, (ImVec2) { 0, 40 }, 4);
-	igTextColored((ImVec4) { 0.0f, 5.0f, 0.0f, 1.0f }, "cool metrics");
-
-
-
-
+	igText("Frame times (last 120 frames)");
+	igPlotLines("", frameTimes, 120, arrayOffset, 
+		NULL, 0.0f, max, (ImVec2) { 240, 40 }, 4);
 	igEnd();
 }
