@@ -26,7 +26,7 @@ typedef struct ResourceMetrics {
 } ResourceMetrics;
 
 void DevUIInit(DevUIState* devUIState, void* glfwWindow);
-void DevUINewFrame(DevUIState* devUIState);
+void DevUINewFrame(void);
 void DevUIDraw(DevUIState* devUIState);
 void DevUIRender(void);
 void DevUIDestroy(DevUIState* devUIState);

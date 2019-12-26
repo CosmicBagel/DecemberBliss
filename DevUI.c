@@ -18,7 +18,7 @@ void DevUIInit(DevUIState* devUIState, void* glfwWindow)
 	ImGui_ImplRaylibGL3_Init(glsl_version);
 }
 
-void DevUINewFrame(DevUIState* devUIState)
+void DevUINewFrame()
 {
 	ImGui_ImplRaylibGL3_NewFrame();
 	ImGui_ImplRaylib_NewFrame();

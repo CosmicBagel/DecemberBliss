@@ -27,8 +27,6 @@ int main(void)
     DevUIState devUIState;
     DevUIInit(&devUIState, GetGLFWwindowHandle());
 
-    Color clear_color = { 115, 140, 153, 255 };
-
     Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
 
     bool exitWindow = false;
@@ -39,7 +37,7 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         BeginDrawing();
-        DevUINewFrame(&devUIState);
+        DevUINewFrame();
         ClearBackground(WHITE);
 
         if (!devUIState.igIO->WantCaptureMouse) {
@@ -60,23 +58,23 @@ int main(void)
         Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER, 
             (float)fontRobotoMono.baseSize, 0);
         Vector2 textPos;
-        textPos.x = (800 - textDim.x) / 2.0f;
-        textPos.y = (600 - textDim.y) / 2.0f;
+        textPos.x = (screenWidth - textDim.x) / 2.0f;
+        textPos.y = (screenHeight - textDim.y) / 2.0f;
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
-            (float)fontRobotoMono.baseSize, 0, DARKGRAY);       
+            (float)fontRobotoMono.baseSize, 0, DARKGRAY);
 
         //----------------------------------------------------------------------------------
         
         rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
         DevUIDraw(&devUIState);
-        ImVec2 vec2Zero = { 0, 0 };
-        ImVec2 vec2One = { 1, 1 };
-        ImVec4 vec4Zero = { 0, 0, 0, 0 };
-        ImVec4 vec4One = { 1, 1, 1, 1 };
+        ImVec2 vec2Zero = { 0.0f, 0.0f };
+        ImVec2 vec2One = { 1.0f, 1.0f };
+        ImVec4 vec4Zero = { 0.0f, 0.0f, 0.0f, 0.0f };
+        ImVec4 vec4One = { 1.0f, 1.0f, 1.0f, 1.0f };
+        ImVec2 size; size.x = santaTex.width / 4.0f; size.y = santaTex.height / 4.0f;
         if (igBegin("santa img", 0, 0 | ImGuiWindowFlags_AlwaysAutoResize))
-            igImage(santaTex.id, (ImVec2) { santaTex.width / 4, santaTex.height / 4 },
-                vec2Zero, vec2One, vec4One, vec4Zero);
+            igImage((ImTextureID)santaTex.id, size, vec2Zero, vec2One, vec4One, vec4Zero);
         igEnd();
 
         DevUIRender();
