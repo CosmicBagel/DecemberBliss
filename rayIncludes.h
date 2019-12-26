@@ -1,3 +1,5 @@
+#ifndef __RAY_INCLUDES__
+#define __RAY_INCLUDES__
 //only including three things here, but there are so many warnings to ignore
 //it gets its own header file now
 
@@ -30,3 +32,5 @@
 #elif defined(__clang__)
 #pragma clang diagnostic pop
 #endif
+
+#endif //__RAY_INCLUDES__

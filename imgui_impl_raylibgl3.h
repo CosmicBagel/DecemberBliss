@@ -1,3 +1,6 @@
+#ifndef __IMGUI_IMPL_RAYLIBGL3__
+#define __IMGUI_IMPL_RAYLIBGL3__
+
 #include <assert.h>
 #include <string.h>
 #include "raylib/src/external/glad.h"
@@ -29,3 +32,5 @@ bool ImGui_ImplRaylibGL3_CreateDeviceObjects();
 void ImGui_ImplRaylibGL3_DestroyDeviceObjects();
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
+
+#endif //__IMGUI_IMPL_RAYLIBGL3__
