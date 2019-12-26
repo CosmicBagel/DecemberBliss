@@ -40,39 +40,44 @@ int main(void)
         DevUINewFrame();
         ClearBackground(WHITE);
 
-        if (!devUIState.igIO->WantCaptureMouse) {
+        if (!devUIState.igIO->WantCaptureMouse)
+        {
             //only take mouse input in the game if imgui isn't catching it
             //clicks and input shouldn't go through a window
         }
-		if (!devUIState.igIO->WantCaptureKeyboard) {
-			//check keyboard inputs
-		}
-        if (!devUIState.igIO->WantTextInput) {
+        if (!devUIState.igIO->WantCaptureKeyboard)
+        {
+            //check keyboard inputs
+        }
+        if (!devUIState.igIO->WantTextInput)
+        {
             //for on mobile & consoles
         }
 
-        DrawTexture(santaTex, 
-            screenWidth / 2 - santaTex.width / 2, 
-            screenHeight / 2 - santaTex.height / 2, WHITE);
+        DrawTexture(santaTex,
+                    screenWidth / 2 - santaTex.width / 2,
+                    screenHeight / 2 - santaTex.height / 2, WHITE);
 
-        Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER, 
-            (float)fontRobotoMono.baseSize, 0);
+        Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER,
+                                        (float)fontRobotoMono.baseSize, 0);
         Vector2 textPos;
         textPos.x = (screenWidth - textDim.x) / 2.0f;
         textPos.y = (screenHeight - textDim.y) / 2.0f;
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
-            (float)fontRobotoMono.baseSize, 0, DARKGRAY);
+                   (float)fontRobotoMono.baseSize, 0, DARKGRAY);
 
         //----------------------------------------------------------------------------------
-        
+
         rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
         DevUIDraw(&devUIState);
-        ImVec2 vec2Zero = { 0.0f, 0.0f };
-        ImVec2 vec2One = { 1.0f, 1.0f };
-        ImVec4 vec4Zero = { 0.0f, 0.0f, 0.0f, 0.0f };
-        ImVec4 vec4One = { 1.0f, 1.0f, 1.0f, 1.0f };
-        ImVec2 size; size.x = santaTex.width / 4.0f; size.y = santaTex.height / 4.0f;
+        ImVec2 vec2Zero = {0.0f, 0.0f};
+        ImVec2 vec2One = {1.0f, 1.0f};
+        ImVec4 vec4Zero = {0.0f, 0.0f, 0.0f, 0.0f};
+        ImVec4 vec4One = {1.0f, 1.0f, 1.0f, 1.0f};
+        ImVec2 size;
+        size.x = santaTex.width / 4.0f;
+        size.y = santaTex.height / 4.0f;
         if (igBegin("santa img", 0, 0 | ImGuiWindowFlags_AlwaysAutoResize))
             igImage((ImTextureID)santaTex.id, size, vec2Zero, vec2One, vec4One, vec4Zero);
         igEnd();
