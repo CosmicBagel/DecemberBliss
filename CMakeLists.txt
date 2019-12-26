@@ -34,7 +34,7 @@ set(raylib_ROOT raylib/)
 find_package(raylib)
 
 ### Included dependencies' source code
-# add_subdirectory(raylib/)
+add_subdirectory(raylib/)
 add_subdirectory(entt-3.2.2/)
 add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/)
 add_subdirectory(cimgui-master/)
@@ -55,3 +55,5 @@ configure_file(buildInfo.h.in buildInfo.h)
 #the resulting buildInfo.h will be put into the build results, so we need to include that
 target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR}) 
 
+### Copy resouces folder to build destination
+file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR}/resources)
