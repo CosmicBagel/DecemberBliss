@@ -1,15 +1,17 @@
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui-master\cimgui.h"
+#include "cimgui/cimgui.h"
 #include "rayIncludes.h"
 
-typedef struct DevUIState {
+typedef struct DevUIState
+{
 	bool show_demo_window;
 	bool isResourceCounterOpen;
-	ImGuiContext* guiContext;
-	ImGuiIO* igIO;
+	ImGuiContext *guiContext;
+	ImGuiIO *igIO;
 } DevUIState;
 
-typedef struct ResourceMetrics {
+typedef struct ResourceMetrics
+{
 	float lastFrameSimulationTime;
 	float lastFrameDrawPrepTime;
 	float lastFrameGPURenderTime;
@@ -25,8 +27,8 @@ typedef struct ResourceMetrics {
 
 } ResourceMetrics;
 
-void DevUIInit(DevUIState* devUIState, void* glfwWindow);
+void DevUIInit(DevUIState *devUIState, void *glfwWindow);
 void DevUINewFrame(void);
-void DevUIDraw(DevUIState* devUIState);
+void DevUIDraw(DevUIState *devUIState);
 void DevUIRender(void);
-void DevUIDestroy(DevUIState* devUIState);
+void DevUIDestroy(DevUIState *devUIState);

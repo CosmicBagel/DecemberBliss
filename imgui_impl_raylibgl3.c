@@ -4,11 +4,8 @@
 #include <raylib.h>
 #include <rlgl.h>
 
-//#include <glfw/glfw3.h>
-//#include <GLFW/glfw3native.h>
-
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui-master/cimgui.h>
+#include <cimgui.h>
 
 #include "imgui_impl_raylibgl3.h"
 

@@ -1,20 +1,20 @@
 #include <stdio.h>
-#include <stdint.h>  
+#include <stdint.h>
 #include <float.h>
 #include <raylib.h>
 #include <rlgl.h>
-#include <raylib/src/external/glad.h>
+#include "raylib/src/external/glad.h"
 
 #include <glfw/glfw3.h>
 #include <GLFW/glfw3native.h>
 
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include <cimgui-master/cimgui.h>
+#include <cimgui.h>
 
 #include "imgui_impl_raylib.h"
 
 //ImGui_ImplRaylib_InitForOpenGL(window, true);
-const char* glsl_version = "#version 130";
+const char *glsl_version = "#version 130";
 //ImGui_ImplOpenGL3_Init(glsl_version);
 
 /*
@@ -25,12 +25,12 @@ const char* glsl_version = "#version 130";
 */
 
 // OpenGL Data
-static GLuint       g_GlVersion = 0;                // Extracted at runtime using GL_MAJOR_VERSION, GL_MINOR_VERSION queries.
-static char         g_GlslVersionString[32] = "";   // Specified by user or detected based on compile time GL settings.
-static GLuint       g_FontTexture = 0;
-static GLuint       g_ShaderHandle = 0, g_VertHandle = 0, g_FragHandle = 0;
-static int          g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;                                // Uniforms location
-static int          g_AttribLocationVtxPos = 0, g_AttribLocationVtxUV = 0, g_AttribLocationVtxColor = 0; // Vertex attributes location
+static GLuint g_GlVersion = 0;			  // Extracted at runtime using GL_MAJOR_VERSION, GL_MINOR_VERSION queries.
+static char g_GlslVersionString[32] = ""; // Specified by user or detected based on compile time GL settings.
+static GLuint g_FontTexture = 0;
+static GLuint g_ShaderHandle = 0, g_VertHandle = 0, g_FragHandle = 0;
+static int g_AttribLocationTex = 0, g_AttribLocationProjMtx = 0;								// Uniforms location
+static int g_AttribLocationVtxPos = 0, g_AttribLocationVtxUV = 0, g_AttribLocationVtxColor = 0; // Vertex attributes location
 static unsigned int g_VboHandle = 0, g_ElementsHandle = 0;
 
 // Data
@@ -40,11 +40,11 @@ typedef enum GlfwClientApi
 	GlfwClientApi_OpenGL,
 	GlfwClientApi_Vulkan
 } GlfwClientApi;
-static GLFWwindow* g_Window = NULL; // Main window
+static GLFWwindow *g_Window = NULL; // Main window
 static GlfwClientApi g_ClientApi = GlfwClientApi_Unknown;
 static double g_Time = 0.0;
-static bool g_MouseJustPressed[5] = { false, false, false, false, false };
-static GLFWcursor* g_MouseCursors[ImGuiMouseCursor_COUNT] = {0};
+static bool g_MouseJustPressed[5] = {false, false, false, false, false};
+static GLFWcursor *g_MouseCursors[ImGuiMouseCursor_COUNT] = {0};
 static bool g_InstalledCallbacks = false;
 
 // Chain GLFW callbacks: our callbacks will call the user's previously installed callbacks, if any.
@@ -56,23 +56,21 @@ static GLFWcharfun g_PrevUserCallbackChar = NULL;
 void ImGui_ImplRaylib_UpdateMousePosAndButtons();
 void ImGui_ImplRaylib_UpdateMouseCursor();
 
-const char* ImGui_ImplRaylib_GetClipboardText()
+const char *ImGui_ImplRaylib_GetClipboardText()
 {
-	
+
 	//return glfwGetClipboardString((GLFWwindow*)user_data);
 	return GetClipboardText();
-	
 }
 
-void ImGui_ImplRaylib_SetClipboardText(const char* text)
+void ImGui_ImplRaylib_SetClipboardText(const char *text)
 {
 	//glfwSetClipboardString((GLFWwindow*)user_data, text);
 	SetClipboardText(text);
 }
 
-void ImGui_ImplRaylib_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void ImGui_ImplRaylib_MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
 {
-
 
 	if (g_PrevUserCallbackMousebutton != NULL)
 		g_PrevUserCallbackMousebutton(window, button, action, mods);
@@ -81,22 +79,22 @@ void ImGui_ImplRaylib_MouseButtonCallback(GLFWwindow* window, int button, int ac
 		g_MouseJustPressed[button] = true;
 }
 
-void ImGui_ImplRaylib_ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void ImGui_ImplRaylib_ScrollCallback(GLFWwindow *window, double xoffset, double yoffset)
 {
 	if (g_PrevUserCallbackScroll != NULL)
 		g_PrevUserCallbackScroll(window, xoffset, yoffset);
 
-	ImGuiIO* io = igGetIO(); //ImGui::GetIO();
+	ImGuiIO *io = igGetIO(); //ImGui::GetIO();
 	io->MouseWheelH += (float)xoffset;
 	io->MouseWheel += (float)yoffset;
 }
 
-void ImGui_ImplRaylib_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void ImGui_ImplRaylib_KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
 	if (g_PrevUserCallbackKey != NULL)
 		g_PrevUserCallbackKey(window, key, scancode, action, mods);
 
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	if (action == GLFW_PRESS)
 		io->KeysDown[key] = true;
 	if (action == GLFW_RELEASE)
@@ -109,22 +107,22 @@ void ImGui_ImplRaylib_KeyCallback(GLFWwindow* window, int key, int scancode, int
 	io->KeySuper = io->KeysDown[GLFW_KEY_LEFT_SUPER] || io->KeysDown[GLFW_KEY_RIGHT_SUPER];
 }
 
-void ImGui_ImplRaylib_CharCallback(GLFWwindow* window, unsigned int c)
+void ImGui_ImplRaylib_CharCallback(GLFWwindow *window, unsigned int c)
 {
 	if (g_PrevUserCallbackChar != NULL)
 		g_PrevUserCallbackChar(window, c);
 
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	ImGuiIO_AddInputCharacter(io, c);
 }
 
-bool ImGui_ImplRaylib_Init(GLFWwindow* window, bool install_callbacks, GlfwClientApi client_api)
+bool ImGui_ImplRaylib_Init(GLFWwindow *window, bool install_callbacks, GlfwClientApi client_api)
 {
 	g_Window = window;
 	g_Time = 0.0;
 
 	// Setup back-end capabilities flags
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	io->BackendFlags |= ImGuiBackendFlags_HasMouseCursors; // We can honor GetMouseCursor() values (optional)
 	io->BackendFlags |= ImGuiBackendFlags_HasSetMousePos;  // We can honor io.WantSetMousePos requests (optional, rarely used)
 	io->BackendPlatformName = "imgui_impl_glfw";
@@ -157,7 +155,7 @@ bool ImGui_ImplRaylib_Init(GLFWwindow* window, bool install_callbacks, GlfwClien
 	io->GetClipboardTextFn = ImGui_ImplRaylib_GetClipboardText;
 	io->ClipboardUserData = g_Window;
 #if defined(_WIN32)
-	io->ImeWindowHandle = (void*)glfwGetWin32Window(g_Window);
+	io->ImeWindowHandle = (void *)glfwGetWin32Window(g_Window);
 #endif
 
 	g_MouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
@@ -187,7 +185,7 @@ bool ImGui_ImplRaylib_Init(GLFWwindow* window, bool install_callbacks, GlfwClien
 	return true;
 }
 
-bool ImGui_ImplRaylib_InitForOpenGL(GLFWwindow* window, bool install_callbacks)
+bool ImGui_ImplRaylib_InitForOpenGL(GLFWwindow *window, bool install_callbacks)
 {
 	return ImGui_ImplRaylib_Init(window, install_callbacks, GlfwClientApi_OpenGL);
 }
@@ -213,7 +211,7 @@ void ImGui_ImplRaylib_Shutdown()
 
 void ImGui_ImplRaylib_NewFrame()
 {
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	IM_ASSERT(ImFontAtlas_IsBuilt(io->Fonts) && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
 	// Setup display size (every frame to accommodate for window resizing)
@@ -221,8 +219,8 @@ void ImGui_ImplRaylib_NewFrame()
 	int display_w, display_h;
 	glfwGetWindowSize(g_Window, &w, &h);
 	glfwGetFramebufferSize(g_Window, &display_w, &display_h);
-	struct ImVec2 dispSize = { (float)w, (float)h };
-	struct ImVec2 buffSize = { (float)display_w / w, (float)display_h / h };
+	struct ImVec2 dispSize = {(float)w, (float)h};
+	struct ImVec2 buffSize = {(float)display_w / w, (float)display_h / h};
 	io->DisplaySize = dispSize;
 	if (w > 0 && h > 0)
 		io->DisplayFramebufferScale = buffSize;
@@ -242,7 +240,7 @@ void ImGui_ImplRaylib_NewFrame()
 void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 {
 	// Update buttons
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	for (int i = 0; i < IM_ARRAYSIZE(io->MouseDown); i++)
 	{
 		// If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
@@ -252,7 +250,7 @@ void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 
 	// Update mouse position
 	const ImVec2 mouse_pos_backup = io->MousePos;
-	struct ImVec2 mousePos = { -FLT_MAX, -FLT_MAX };
+	struct ImVec2 mousePos = {-FLT_MAX, -FLT_MAX};
 	io->MousePos = mousePos;
 #ifdef __EMSCRIPTEN__
 	const bool focused = true; // Emscripten
@@ -269,7 +267,8 @@ void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 		{
 			double mouse_x, mouse_y;
 			glfwGetCursorPos(g_Window, &mouse_x, &mouse_y);
-			mousePos.x = (float)mouse_x; mousePos.y = (float)mouse_y;
+			mousePos.x = (float)mouse_x;
+			mousePos.y = (float)mouse_y;
 			io->MousePos = mousePos;
 		}
 	}
@@ -277,7 +276,7 @@ void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 
 void ImGui_ImplRaylib_UpdateMouseCursor()
 {
-	ImGuiIO* io = igGetIO();
+	ImGuiIO *io = igGetIO();
 	if ((io->ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || glfwGetInputMode(g_Window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
 		return;
 
