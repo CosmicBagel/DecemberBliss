@@ -30,15 +30,21 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
 endif()
 
+set(raylib_ROOT raylib/) 
+find_package(raylib)
+
 ### Included dependencies' source code
-add_subdirectory(raylib/)
+# add_subdirectory(raylib/)
 add_subdirectory(entt-3.2.2/)
 add_subdirectory(Chipmunk2D-Chipmunk-7.0.3/)
 add_subdirectory(cimgui-master/)
+# add_subdirectory(MetricsGui-master/)
+
+
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE 
-    raylib EnTT chipmunk_static cimgui)
+    raylib EnTT chipmunk_static cimgui)# MetricsGui)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
