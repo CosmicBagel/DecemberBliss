@@ -37,7 +37,7 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         BeginDrawing();
-        DevUINewFrame();
+
         ClearBackground(WHITE);
 
         if (!devUIState.igIO->WantCaptureMouse)
@@ -69,7 +69,9 @@ int main(void)
 
         //----------------------------------------------------------------------------------
 
-        rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
+        //rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
+
+        DevUINewFrame();
         DevUIDraw(&devUIState);
         ImVec2 vec2Zero = {0.0f, 0.0f};
         ImVec2 vec2One = {1.0f, 1.0f};
@@ -80,9 +82,9 @@ int main(void)
         size.y = santaTex.height / 4.0f;
         if (igBegin("santa img", 0, 0 | ImGuiWindowFlags_AlwaysAutoResize))
             igImage((ImTextureID)santaTex.id, size, vec2Zero, vec2One, vec4One, vec4Zero);
-        igEnd();
 
         DevUIRender();
+        
         EndDrawing();
     }
 
