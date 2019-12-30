@@ -1,10 +1,11 @@
 #include "DevUI.h"
+#include "stdio.h"
 
 #include "imgui_integration.h"
 
 void DrawResourceCounter(DevUIState *devUIState);
 
-void DevUIInit(DevUIState *devUIState, void *glfwWindow)
+void DevUIInit(DevUIState *devUIState)
 {
 	devUIState->guiContext = igCreateContext(NULL);
 	devUIState->igIO = igGetIO();
@@ -28,12 +29,12 @@ void DevUIDraw(DevUIState *devUIState)
 
 void DevUIRender(void)
 {
-	void EndImGui();
+	EndImGui();
 }
 
 void DevUIDestroy(DevUIState *devUIState)
 {
-	void DestroyImGui();
+	DestroyImGui();
 	igDestroyContext(devUIState->guiContext);
 }
 

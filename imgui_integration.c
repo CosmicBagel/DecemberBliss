@@ -81,20 +81,15 @@ void SetupState(int fb_width, int fb_height)
 
 Mesh buildMesh(Vector3 *vertices, Vector2 *texCoords, Color *colors, unsigned int vertexCount)
 {
-    Mesh mesh;
-    mesh.vboId = (unsigned int *)RL_CALLOC(20, sizeof(unsigned int));
+    Mesh mesh = {0};
+    //there are 7 buffers raylib uses per mesh
+    mesh.vboId = (unsigned int *)RL_CALLOC(7, sizeof(unsigned int));
 
     mesh.vertexCount = vertexCount;
-    mesh.vertices = (float *)RL_MALLOC(mesh.vertexCount * sizeof(Vector3));
-    memcpy(mesh.vertices, vertices, vertexCount * sizeof(Vector3));
+    mesh.vertices = (float *)vertices;
+    mesh.texcoords = (float*)texCoords;
+    mesh.colors = (unsigned char*)colors;
 
-    mesh.texcoords = (float *)RL_MALLOC(mesh.vertexCount * sizeof(Vector2));
-    memcpy(mesh.texcoords, texCoords, vertexCount * sizeof(Vector2));
-
-    mesh.colors = (unsigned char *)RL_MALLOC(mesh.vertexCount * sizeof(Color));
-    memcpy(mesh.colors, colors, vertexCount * sizeof(Color));
-
-    rlLoadMesh(&mesh, false);
     return mesh;
 }
 
@@ -129,8 +124,9 @@ void Draw(ImDrawData *draw_data)
 
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
         {
-            unsigned int elemCount = cmd_list->CmdBuffer.Data->ElemCount;
-            const ImDrawCmd *pcmd = &cmd_list->CmdBuffer.Data[cmd_i];
+            const unsigned int elemCount = cmd_list->CmdBuffer.Data[cmd_i].ElemCount;
+            const ImDrawCmd* pcmd = &cmd_list->CmdBuffer.Data[cmd_i];
+
             Vector3 *vertices = malloc(elemCount * sizeof(Vector3));
             Vector2 *texCoords = malloc(elemCount * sizeof(Vector2));
             Color *colors = malloc(elemCount * sizeof(Color));
@@ -160,8 +156,6 @@ void Draw(ImDrawData *draw_data)
                     // Apply scissor/clipping rectangle
                     rlScissor((int)clip_rect.x, (int)(fb_height - clip_rect.w), (int)(clip_rect.z - clip_rect.x), (int)(clip_rect.w - clip_rect.y));
 
-                    //MeshBuilder builder;
-
                     for (int i = 0; i < (int)pcmd->ElemCount; ++i)
                     {
                         ImDrawVert vert = vtx_buffer[idx_buffer[i]];
@@ -174,16 +168,28 @@ void Draw(ImDrawData *draw_data)
                             (vert.col >> 24) & 0xFF};
                     }
                     Mesh mesh = buildMesh(vertices, texCoords, colors, elemCount);
+                    rlLoadMesh(&mesh, false);
 
                     Material mat = LoadMaterialDefault();
-                    SetMaterialTexture(&mat, MAP_DIFFUSE, *(Texture2D *)pcmd->TextureId);
+                    Texture2D matTex = { 0 };
+                    matTex = *(Texture2D*)pcmd->TextureId;
+                    SetMaterialTexture(&mat, MAP_DIFFUSE, matTex);
                     rlDrawMesh(mesh, mat, MatrixIdentity());
                     SetMaterialTexture(&mat, MAP_DIFFUSE, GetTextureDefault());
                     UnloadMaterial(mat);
 
                     rlUnloadMesh(mesh);
+
+                    //This isn't free'd by rlUnloadMesh for some reason
+					free(mesh.vboId);
                 }
+
+                
             }
+
+			/*free(vertices);
+			free(texCoords);
+			free(colors);*/
             idx_buffer += pcmd->ElemCount;
         }
     }
@@ -194,7 +200,7 @@ void Draw(ImDrawData *draw_data)
 }
 
 // After raylib initialization
-void ImGuiInitialize()
+void ImGuiInitialize(void)
 {
     ImGuiIO *io = igGetIO();
     io->BackendRendererName = "raylib";
@@ -241,16 +247,17 @@ void ImGuiInitialize()
                                                     // instead to save on GPU memory.
 
     Image image = LoadImagePro(pixels, width, height, UNCOMPRESSED_R8G8B8A8);
-    Texture2D theTexture = LoadTextureFromImage(image);
-    SetTextureFilter(theTexture, FILTER_BILINEAR);
-    SetTextureWrap(theTexture, WRAP_CLAMP);
+    Texture2D fontTexture = LoadTextureFromImage(image);
+    UnloadImage(image);
+    SetTextureFilter(fontTexture, FILTER_BILINEAR);
+    SetTextureWrap(fontTexture, WRAP_CLAMP);
 
-    Texture2D *fontTex = malloc(sizeof(Texture2D));
-    (*fontTex) = theTexture;
-    io->Fonts->TexID = fontTex;
+    Texture2D *fontTexHeap = malloc(sizeof(Texture2D));
+    (*fontTexHeap) = fontTexture;
+    io->Fonts->TexID = fontTexHeap;
 }
 
-void BeginImGui()
+void BeginImGui(void)
 {
     ImGuiIO *io = igGetIO();
     IM_ASSERT(ImFontAtlas_IsBuilt(io->Fonts) &&
@@ -295,15 +302,16 @@ void BeginImGui()
     igNewFrame();
 }
 
-void EndImGui()
+void EndImGui(void)
 {
     igRender();
     Draw(igGetDrawData());
     igEndFrame();
 }
 
-void DestroyImGui()
+void DestroyImGui(void)
 {
     ImGuiIO *io = igGetIO();
+    UnloadTexture(*(Texture2D*)io->Fonts->TexID);
     free(io->Fonts->TexID);
 }

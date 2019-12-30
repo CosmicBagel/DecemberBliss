@@ -25,7 +25,7 @@ int main(void)
     SetTargetFPS(60);
 
     DevUIState devUIState;
-    DevUIInit(&devUIState, GetGLFWwindowHandle());
+    DevUIInit(&devUIState);
 
     Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
 
@@ -81,10 +81,11 @@ int main(void)
         size.x = santaTex.width / 4.0f;
         size.y = santaTex.height / 4.0f;
         if (igBegin("santa img", 0, 0 | ImGuiWindowFlags_AlwaysAutoResize))
-            igImage((ImTextureID)santaTex.id, size, vec2Zero, vec2One, vec4One, vec4Zero);
-
-        DevUIRender();
+            igImage((ImTextureID)&santaTex, size, vec2Zero, vec2One, vec4One, vec4Zero);
+        igEnd();
         
+        DevUIRender();
+
         EndDrawing();
     }
 
@@ -97,6 +98,5 @@ int main(void)
     DevUIDestroy(&devUIState);
 
     CloseWindow();
-
     return 0;
 }

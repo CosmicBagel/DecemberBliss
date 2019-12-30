@@ -26,7 +26,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # this will give us a soft enforcement of the c11 standard, project won't error out, but 
     # because of our warning flags, we will still be told when we're using non-standard c    
     # mixing c / c++ standard can cause weird ABI issues when linking
-    target_compile_features(DecemberBliss PRIVATE c_std_11)
+    target_compile_features(DecemberBliss PRIVATE c_std_11 cxx_std_20)
 
 endif()
 
@@ -44,7 +44,7 @@ target_link_libraries(DecemberBliss PRIVATE
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    main.c DevUI.c enttTest.cpp imgui_impl_raylib.c imgui_impl_raylibgl3.c imgui_integration.c)
+    main.c DevUI.c enttTest.cpp imgui_integration.c)
 
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)
