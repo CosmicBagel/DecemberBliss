@@ -37,7 +37,6 @@ int main(void)
         // Update
         //----------------------------------------------------------------------------------
         BeginDrawing();
-
         ClearBackground(WHITE);
 
         if (!devUIState.igIO->WantCaptureMouse)
@@ -68,8 +67,6 @@ int main(void)
                    (float)fontRobotoMono.baseSize, 0, DARKGRAY);
 
         //----------------------------------------------------------------------------------
-
-        //rlglDraw(); //will render the raylib draw calls first, so the DevUI is always on top
 
         DevUINewFrame();
         DevUIDraw(&devUIState);

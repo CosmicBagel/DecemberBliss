@@ -13,7 +13,7 @@
 
 #include "rlgl.h"
 
-#include "imgui_integration.h"
+#include "ImGuiIntegration.h"
 
 /*
 notes

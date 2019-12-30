@@ -1,7 +1,7 @@
 #include "DevUI.h"
 #include "stdio.h"
 
-#include "imgui_integration.h"
+#include "ImGuiIntegration.h"
 
 void DrawResourceCounter(DevUIState *devUIState);
 
