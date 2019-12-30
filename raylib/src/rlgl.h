@@ -1423,11 +1423,11 @@ void rlDeleteShader(unsigned int id)
 void rlDeleteVertexArrays(unsigned int id)
 {
 #if defined(GRAPHICS_API_OPENGL_33) || defined(GRAPHICS_API_OPENGL_ES2)
-    if (vaoSupported)
-    {
-        if (id != 0) glDeleteVertexArrays(1, &id);
-        TraceLog(LOG_INFO, "[VAO ID %i] Unloaded model data from VRAM (GPU)", id);
-    }
+	if (vaoSupported)
+	{
+		if (id != 0) glDeleteVertexArrays(1, &id);
+		/*TraceLog(LOG_INFO, "[VAO ID %i] Unloaded model data from VRAM (GPU)", id);*/
+	}
 #endif
 }
 
@@ -2477,15 +2477,15 @@ void rlLoadMesh(Mesh *mesh, bool dynamic)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short)*mesh->triangleCount*3, mesh->indices, drawHint);
     }
 
-    if (vaoSupported)
-    {
-        if (mesh->vaoId > 0) TraceLog(LOG_INFO, "[VAO ID %i] Mesh uploaded successfully to VRAM (GPU)", mesh->vaoId);
-        else TraceLog(LOG_WARNING, "Mesh could not be uploaded to VRAM (GPU)");
-    }
-    else
-    {
-        TraceLog(LOG_INFO, "[VBOs] Mesh uploaded successfully to VRAM (GPU)");
-    }
+    //if (vaoSupported)
+    //{
+    //    if (mesh->vaoId > 0) TraceLog(LOG_INFO, "[VAO ID %i] Mesh uploaded successfully to VRAM (GPU)", mesh->vaoId);
+    //    else TraceLog(LOG_WARNING, "Mesh could not be uploaded to VRAM (GPU)");
+    //}
+    //else
+    //{
+    //    TraceLog(LOG_INFO, "[VBOs] Mesh uploaded successfully to VRAM (GPU)");
+    //}
 #endif
 }
 
