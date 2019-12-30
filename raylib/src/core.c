@@ -2808,7 +2808,7 @@ static bool InitGraphicsDevice(int width, int height)
 #else
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_FALSE); // Fordward Compatibility Hint: Only 3.3 and above!
 #endif
-        //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE); // Request OpenGL DEBUG context
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE); // Request OpenGL DEBUG context
     }
     else if (rlGetVersion() == OPENGL_ES_20) // Request OpenGL ES 2.0 context
     {
