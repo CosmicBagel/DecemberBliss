@@ -127,9 +127,9 @@ void Draw(ImDrawData *draw_data)
             const unsigned int elemCount = cmd_list->CmdBuffer.Data[cmd_i].ElemCount;
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer.Data[cmd_i];
 
-            Vector3 *vertices = malloc(elemCount * sizeof(Vector3));
-            Vector2 *texCoords = malloc(elemCount * sizeof(Vector2));
-            Color *colors = malloc(elemCount * sizeof(Color));
+            Vector3 *vertices = (Vector3*)malloc(elemCount * sizeof(Vector3));
+            Vector2 *texCoords = (Vector2*)malloc(elemCount * sizeof(Vector2));
+            Color *colors = (Color*)malloc(elemCount * sizeof(Color));
 
             if (pcmd->UserCallback)
             {
@@ -159,9 +159,9 @@ void Draw(ImDrawData *draw_data)
                     for (int i = 0; i < (int)pcmd->ElemCount; ++i)
                     {
                         ImDrawVert vert = vtx_buffer[idx_buffer[i]];
-                        vertices[i] = (Vector3){vert.pos.x, vert.pos.y, 0.0f};
-                        texCoords[i] = (Vector2){vert.uv.x, vert.uv.y};
-                        colors[i] = (Color){
+                        vertices[i] = {vert.pos.x, vert.pos.y, 0.0f};
+                        texCoords[i] = {vert.uv.x, vert.uv.y};
+                        colors[i] = {
                             (vert.col >> 0) & 0xFF,
                             (vert.col >> 8) & 0xFF,
                             (vert.col >> 16) & 0xFF,
@@ -252,7 +252,7 @@ void ImGuiInitialize(void)
     SetTextureFilter(fontTexture, FILTER_BILINEAR);
     SetTextureWrap(fontTexture, WRAP_CLAMP);
 
-    Texture2D *fontTexHeap = malloc(sizeof(Texture2D));
+    Texture2D *fontTexHeap = (Texture2D *)malloc(sizeof(Texture2D));
     (*fontTexHeap) = fontTexture;
     io->Fonts->TexID = fontTexHeap;
 }
@@ -264,14 +264,14 @@ void BeginImGui(void)
               "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
     // Setup display size (every frame to accommodate for window resizing)
-    io->DisplaySize = (ImVec2){(float)GetScreenWidth(), (float)GetScreenHeight()};
-    io->DisplayFramebufferScale = (ImVec2){1, 1};
+    io->DisplaySize = {(float)GetScreenWidth(), (float)GetScreenHeight()};
+    io->DisplayFramebufferScale = {1, 1};
 
     // Setup time step
     // io->DeltaTime = g_Time > 0.0 ? (float)(current_time - g_Time) : (float)(1.0f / 60.0f);
     float frameTime = GetFrameTime();
     io->DeltaTime = frameTime;
-    io->MousePos = (ImVec2){(float)GetMouseX(), (float)GetMouseY()};
+    io->MousePos = {(float)GetMouseX(), (float)GetMouseY()};
 
     io->MouseDown[0] = IsMouseButtonDown(MOUSE_LEFT_BUTTON);
     io->MouseDown[1] = IsMouseButtonDown(MOUSE_RIGHT_BUTTON);

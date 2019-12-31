@@ -1,6 +1,6 @@
 #include "DevUI.h"
-#include "stdio.h"
 
+#include "stdio.h"
 #include "ImGuiIntegration.h"
 
 void DrawResourceCounter(DevUIState *devUIState);
@@ -56,7 +56,7 @@ void DrawResourceCounter(DevUIState *devUIState)
 								   //ImGuiWindowFlags_Modal |
 								   ImGuiWindowFlags_NoResize;
 
-	igSetNextWindowPos((ImVec2){10, 10}, ImGuiCond_Appearing, (ImVec2){0, 0});
+	igSetNextWindowPos({ 10, 10 }, ImGuiCond_Appearing, { 0, 0 });
 	igSetNextWindowBgAlpha(0.40f);
 	//igSetNextWindowFocus();
 
@@ -75,13 +75,13 @@ void DrawResourceCounter(DevUIState *devUIState)
 	igBegin("Resource Counter", 0, windowFlags);
 	devUIState->isResourceCounterOpen =
 		devUIState->isResourceCounterOpen ^ (igIsWindowHovered(0) & igIsMouseClicked(0, 0));
-	igTextColored((ImVec4){0.0f, 1.0f, 0.0f, 1.0f}, fpsStr);
+	igTextColored({0.0f, 1.0f, 0.0f, 1.0f}, fpsStr);
 	if (devUIState->isResourceCounterOpen)
 	{
 		igSeparator();
 		igText("Frame times (last 120 frames)");
 		igPlotLines("##", frameTimes, 120, arrayOffset,
-					NULL, 0.0f, max, (ImVec2){240, 40}, 4);
+					NULL, 0.0f, max, {240, 40}, 4);
 	}
 	igEnd();
 }
