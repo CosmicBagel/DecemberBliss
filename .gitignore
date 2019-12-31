@@ -9,6 +9,7 @@
 /build
 /out
 /.vscode
+/.idea
 /ImGuiDemo
 /CMakeFiles
 CMakeCache.txt
