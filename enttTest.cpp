@@ -3,11 +3,8 @@
 
 #include "enttTest.h"
 
-extern "C"
+void tryEntt()
 {
-    void tryEntt()
-    {
-        entt::registry registry;
-        return;
-    }
+    entt::registry registry;
+    return;
 }
