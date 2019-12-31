@@ -1,14 +1,12 @@
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui/cimgui.h"
-#include "rayIncludes.h"
+#include <imgui.h>
 
-typedef struct DevUIState
+struct DevUIState
 {
 	bool show_demo_window;
 	bool isResourceCounterOpen;
 	ImGuiContext *guiContext;
 	ImGuiIO *igIO;
-} DevUIState;
+};
 
 typedef struct ResourceMetrics
 {

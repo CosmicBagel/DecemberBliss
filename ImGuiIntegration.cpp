@@ -1,16 +1,10 @@
 //originally from, converted to C with mild modifications
 //https://github.com/Ushio/raylibImGui/blob/master/src/imguiintegration.hpp
 
-#include "string.h"
-#include "stdlib.h"
-#include "assert.h"
+#include <cstdlib>
+#include <cassert>
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui.h"
-//not in cimgui, but needed
-#define ImDrawCallback_ResetRenderState (ImDrawCallback)(-1)
-#define IM_ASSERT(_EXPR) assert(_EXPR)
-
+#include "imgui.h"
 #include "rlgl.h"
 
 #include "ImGuiIntegration.h"
@@ -162,10 +156,10 @@ void Draw(ImDrawData *draw_data)
                         vertices[i] = {vert.pos.x, vert.pos.y, 0.0f};
                         texCoords[i] = {vert.uv.x, vert.uv.y};
                         colors[i] = {
-                            (vert.col >> 0) & 0xFF,
-                            (vert.col >> 8) & 0xFF,
-                            (vert.col >> 16) & 0xFF,
-                            (vert.col >> 24) & 0xFF};
+                                (unsigned char)((vert.col >> 0) & 0xFF),
+                                (unsigned char)((vert.col >> 8) & 0xFF),
+                                (unsigned char)((vert.col >> 16) & 0xFF),
+                                (unsigned char)((vert.col >> 24) & 0xFF)};
                     }
                     Mesh mesh = buildMesh(vertices, texCoords, colors, elemCount);
                     rlLoadMesh(&mesh, false);
@@ -200,9 +194,9 @@ void Draw(ImDrawData *draw_data)
 }
 
 // After raylib initialization
-void ImGuiInitialize(void)
+void ImGuiInitialize()
 {
-    ImGuiIO *io = igGetIO();
+    ImGuiIO *io = &ImGui::GetIO();
     io->BackendRendererName = "raylib";
 
     io->KeyMap[ImGuiKey_Tab] = KEY_TAB;
@@ -231,20 +225,19 @@ void ImGuiInitialize(void)
     io->SetClipboardTextFn = SetClipboardTextForImGui;
     io->GetClipboardTextFn = GetClipboardTextForImGui;
 
-    igStyleColorsDark(igGetStyle());
+    ImGui::StyleColorsDark(&ImGui::GetStyle());
 
     // Build texture atlas
     unsigned char *pixels;
     int width, height;
     int bytesPerPixel;
-    ImFontAtlas_GetTexDataAsRGBA32(io->Fonts,
-                                   &pixels, &width, &height,
-                                   &bytesPerPixel); // Load as RGBA 32-bits (75% of the memory is wasted, but
-                                                    // default font is so small) because it is more likely to be
-                                                    // compatible with user's existing shaders. If your
-                                                    // ImTextureId represent a higher-level concept than just a
-                                                    // GL texture id, consider calling GetTexDataAsAlpha8()
-                                                    // instead to save on GPU memory.
+    io->Fonts->GetTexDataAsRGBA32(&pixels, &width, &height,
+                                  &bytesPerPixel); // Load as RGBA 32-bits (75% of the memory is wasted, but
+                                                   // default font is so small) because it is more likely to be
+                                                   // compatible with user's existing shaders. If your
+                                                   // ImTextureId represent a higher-level concept than just a
+                                                   // GL texture id, consider calling GetTexDataAsAlpha8()
+                                                   // instead to save on GPU memory.
 
     Image image = LoadImagePro(pixels, width, height, UNCOMPRESSED_R8G8B8A8);
     Texture2D fontTexture = LoadTextureFromImage(image);
@@ -257,10 +250,10 @@ void ImGuiInitialize(void)
     io->Fonts->TexID = fontTexHeap;
 }
 
-void BeginImGui(void)
+void BeginImGui()
 {
-    ImGuiIO *io = igGetIO();
-    IM_ASSERT(ImFontAtlas_IsBuilt(io->Fonts) &&
+    ImGuiIO *io = &ImGui::GetIO();
+    IM_ASSERT(io->Fonts->IsBuilt()  &&
               "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
     // Setup display size (every frame to accommodate for window resizing)
@@ -297,21 +290,21 @@ void BeginImGui(void)
     io->KeyAlt = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
     io->KeySuper = IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
 
-    ImGuiIO_AddInputCharacter(io, GetKeyPressed());
+    io->AddInputCharacter(GetKeyPressed());
 
-    igNewFrame();
+    ImGui::NewFrame();
 }
 
 void EndImGui(void)
 {
-    igRender();
-    Draw(igGetDrawData());
-    igEndFrame();
+    ImGui::Render();
+    Draw(ImGui::GetDrawData());
+    ImGui::EndFrame();
 }
 
 void DestroyImGui(void)
 {
-    ImGuiIO *io = igGetIO();
+    ImGuiIO *io = &ImGui::GetIO();
     UnloadTexture(*(Texture2D*)io->Fonts->TexID);
     free(io->Fonts->TexID);
 }

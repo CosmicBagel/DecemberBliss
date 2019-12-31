@@ -35,12 +35,11 @@ add_subdirectory(raylib/)
 add_subdirectory(entt/)
 add_subdirectory(Chipmunk2D/)
 add_subdirectory(imgui/)
-add_subdirectory(cimgui/)
 add_subdirectory(MetricsGui/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE 
-    raylib EnTT chipmunk_static cimgui MetricsGui)
+    raylib EnTT chipmunk_static imgui MetricsGui)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
@@ -51,5 +50,5 @@ configure_file(buildInfo.h.in buildInfo.h)
 #the resulting buildInfo.h will be put into the build results, so we need to include that
 target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR}) 
 
-### Copy resouces folder to build destination
+### Copy resources folder to build destination
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
