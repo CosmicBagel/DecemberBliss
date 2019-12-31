@@ -24,7 +24,6 @@ void DevUINewFrame()
 void DevUIDraw(DevUIState *devUIState)
 {
 	DrawResourceCounter(devUIState);
-	igShowDemoWindow(&devUIState->show_demo_window);
 }
 
 void DevUIRender(void)

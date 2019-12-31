@@ -9,19 +9,19 @@
 
 #include "main.h"
 
-int main(void)
+int main()
 {
     tryEntt();
 
-    unsigned int screenWidth = 800;
-    unsigned int screenHeight = 600;
+   int screenWidth = 800;
+   int screenHeight = 600;
 
     printf("Starting " BLISS_FULL_HEADER "...\n");
     InitWindow(screenWidth, screenHeight, BLISS_FULL_HEADER);
 
-    Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, 0, 255);
-    Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, 0, 255);
-    Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, 0, 255);
+    Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, nullptr, 255);
+    Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
+    Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
 
     SetTargetFPS(60);
 
@@ -91,8 +91,8 @@ int main(void)
         Vector2 textDim = MeasureTextEx(fontRobotoMono, BLISS_FULL_HEADER,
                                         (float)fontRobotoMono.baseSize, 0);
         Vector2 textPos;
-        textPos.x = (screenWidth - textDim.x) / 2.0f;
-        textPos.y = (screenHeight - textDim.y) / 2.0f;
+        textPos.x = ((float)screenWidth - textDim.x) / 2.0f;
+        textPos.y = ((float)screenHeight - textDim.y) / 2.0f;
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
                    (float)fontRobotoMono.baseSize, 0, DARKGRAY);
@@ -103,14 +103,15 @@ int main(void)
 
         DevUINewFrame();
         DevUIDraw(&devUIState);
+        igShowDemoWindow(&devUIState.show_demo_window);
         ImVec2 vec2Zero = {0.0f, 0.0f};
         ImVec2 vec2One = {1.0f, 1.0f};
         ImVec4 vec4Zero = {0.0f, 0.0f, 0.0f, 0.0f};
         ImVec4 vec4One = {1.0f, 1.0f, 1.0f, 1.0f};
         ImVec2 size;
-        size.x = santaTex.width / 4.0f;
-        size.y = santaTex.height / 4.0f;
-        if (igBegin("santa img", 0u, 0u | ImGuiWindowFlags_AlwaysAutoResize)) {
+        size.x = (float)santaTex.width / 4.0f;
+        size.y = (float)santaTex.height / 4.0f;
+        if (igBegin("santa img", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
             igImage((ImTextureID) &santaTex, size, vec2Zero, vec2One, vec4One, vec4Zero);
             plot.DrawHistory();
             plot.DrawList();
