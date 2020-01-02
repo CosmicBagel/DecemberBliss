@@ -69,6 +69,11 @@ void DrawResourceCounter(DevUIState *devUIState)
     if (devUIState->isResourceCounterOpen)
     {
         ImGui::SetNextWindowSize({400, 215});
+        ImGui::SetNextWindowBgAlpha(1.0f);
+    }
+    else {
+        //sizing is switched to auto resize above
+        ImGui::SetNextWindowBgAlpha(0.40f);
     }
 
 	ImGui::Begin("Resource Counter", nullptr, windowFlags);
