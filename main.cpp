@@ -31,6 +31,7 @@ int main()
     printf("Starting " BLISS_FULL_HEADER "...\n");
     InitWindow(screenWidth, screenHeight, BLISS_FULL_HEADER);
 
+    TraceLog(LOG_INFO, "Loading fonts");
     Font fontRobotoMono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, nullptr, 255);
     Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
     Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
@@ -40,10 +41,12 @@ int main()
     DevUIState devUIState;
     DevUIInit(&devUIState);
 
+    TraceLog(LOG_INFO, "Loading textures");
     Texture2D santaTex = LoadTexture("resources/santa/Idle (1).png");
 
     bool exitWindow = false;
 
+    TraceLog(LOG_INFO, "Initializing metric trackers");
     MetricsGuiMetric frameTimeMetric = MetricsGuiMetric();
     frameTimeMetric.mDescription = "Frame time";
     frameTimeMetric.mUnits = "us";
@@ -93,6 +96,7 @@ int main()
 
     devUIState.plot = &plot;
 
+    TraceLog(LOG_INFO, "Starting simulation");
     while (!exitWindow)
     {
         //Input
@@ -151,7 +155,7 @@ int main()
 
         DevUINewFrame();
         DevUIDraw(&devUIState);
-        ImGui::ShowDemoWindow(&devUIState.show_demo_window);
+//        ImGui::ShowDemoWindow(&devUIState.show_demo_window);
 
         ImVec2 vec2Zero = {0.0f, 0.0f};
         ImVec2 vec2One = {1.0f, 1.0f};
@@ -185,12 +189,15 @@ int main()
         plot.UpdateAxes();
     }
 
+    TraceLog(LOG_INFO, "Unloading fonts...");
     UnloadFont(fontRobotoMono);
     UnloadFont(fontRobotoMonoSm);
     UnloadFont(font);
 
+    TraceLog(LOG_INFO, "Unloading textures...");
     UnloadTexture(santaTex);
 
+    TraceLog(LOG_INFO, "Unloading devUi...");
     DevUIDestroy(&devUIState);
 
     CloseWindow();
