@@ -1318,6 +1318,10 @@ void EndDrawing(void)
         //SetWindowTitle(FormatText("Update: %f, Draw: %f, Req.Wait: %f, Real.Wait: %f, Total: %f, Target: %f\n",
         //               (float)updateTime, (float)drawTime, (float)(targetTime - (updateTime + drawTime)),
         //               (float)waitTime, (float)frameTime, (float)targetTime));
+    } else
+    {
+        //always wait, this lets the os & cpu manage power consumption better
+        Wait(0);
     }
 }
 
