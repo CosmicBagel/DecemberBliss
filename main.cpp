@@ -17,11 +17,11 @@ using namespace std::chrono;
 static LogGui logGui;
 
 //called by raylib as a callback, all logging functions are from raylib
-void Log(int logType, const char *text, va_list args);
+void LogCallbackFunc(int logType, const char *text, va_list args);
 
 int main()
 {
-    SetTraceLogCallback(Log);
+    SetTraceLogCallback(LogCallbackFunc);
     SetTraceLogLevel(LOG_INFO);
 
     tryEntt();
@@ -199,7 +199,7 @@ int main()
 
 #define LOG_LINE_BUFFER_SIZE 1024
 char logLineBuffer[LOG_LINE_BUFFER_SIZE] = {};
-void Log(int logType, const char *text, va_list args)
+void LogCallbackFunc(int logType, const char *text, va_list args)
 {
     char logTypeStr[10] = {};
     switch (logType)
@@ -215,9 +215,7 @@ void Log(int logType, const char *text, va_list args)
     logGui.AddLog(logTypeStr);
     printf(logTypeStr);
 
-//    va_start(args, text);
     vsprintf_s(logLineBuffer, LOG_LINE_BUFFER_SIZE, text, args);
-//    va_end(args);
 
     logGui.AddLog(logLineBuffer);
     logGui.AddLog("\n");
