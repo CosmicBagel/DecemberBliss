@@ -1,5 +1,6 @@
 #include "enttTest.h"
 #include <imgui.h>
+#include "LogGui.h"
 #include "rayIncludes.h"
 #include "MetricsGui/include/metrics_gui/metrics_gui.h"
 #include <chrono>
@@ -13,12 +14,19 @@
 
 using namespace std::chrono;
 
+static LogGui logGui;
+
+//called by raylib as a callback, all logging functions are from raylib
+void Log(int logType, const char *text, va_list args);
+
 int main()
 {
-    tryEntt();
+    SetTraceLogCallback(Log);
+    SetTraceLogLevel(LOG_INFO);
 
-   int screenWidth = 800;
-   int screenHeight = 600;
+    tryEntt();
+    int screenWidth = 800;
+    int screenHeight = 600;
 
     printf("Starting " BLISS_FULL_HEADER "...\n");
     InitWindow(screenWidth, screenHeight, BLISS_FULL_HEADER);
@@ -157,9 +165,12 @@ int main()
 
         }
         ImGui::End();
+
+        logGui.Draw("Log");
+
         DevUIRender();
         devUiElapsed = duration_cast<microseconds>(high_resolution_clock::now() - devUiStart);
-        
+
         //render timing is split so as to not include devui times
         renderStart = high_resolution_clock::now();
         EndDrawing();
@@ -184,4 +195,32 @@ int main()
 
     CloseWindow();
     return 0;
+}
+
+#define LOG_LINE_BUFFER_SIZE 1024
+char logLineBuffer[LOG_LINE_BUFFER_SIZE] = {};
+void Log(int logType, const char *text, va_list args)
+{
+    char logTypeStr[10] = {};
+    switch (logType)
+    {
+        case LOG_TRACE: strcpy_s(logTypeStr,10, "TRACE: "); break;
+        case LOG_DEBUG: strcpy_s(logTypeStr,10, "DEBUG: "); break;
+        case LOG_INFO: strcpy_s(logTypeStr, 10,"INFO: "); break;
+        case LOG_WARNING: strcpy_s(logTypeStr, 10, "WARNING: "); break;
+        case LOG_ERROR: strcpy_s(logTypeStr, 10, "ERROR: "); break;
+        case LOG_FATAL: strcpy_s(logTypeStr, 10, "FATAL: "); break;
+        default: break;
+    }
+    logGui.AddLog(logTypeStr);
+    printf(logTypeStr);
+
+//    va_start(args, text);
+    vsprintf_s(logLineBuffer, LOG_LINE_BUFFER_SIZE, text, args);
+//    va_end(args);
+
+    logGui.AddLog(logLineBuffer);
+    logGui.AddLog("\n");
+    printf(logLineBuffer);
+    printf("\n");
 }

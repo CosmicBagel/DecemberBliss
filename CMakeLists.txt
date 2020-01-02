@@ -43,7 +43,7 @@ target_link_libraries(DecemberBliss PRIVATE
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    main.cpp DevUI.cpp enttTest.cpp ImGuiIntegration.cpp)
+    main.cpp DevUI.cpp enttTest.cpp ImGuiIntegration.cpp LogGui.cpp LogGui.h)
 
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)
