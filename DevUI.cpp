@@ -45,12 +45,7 @@ void DrawResourceCounter(DevUIState *devUIState)
 	// - make moveable with right click
 	// - add show/hide hotkey
 
-	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration |
-								   ImGuiWindowFlags_NoMove |
-								   ImGuiWindowFlags_NoNav |
-								   ImGuiWindowFlags_AlwaysAutoResize |
-								   ImGuiWindowFlags_NoSavedSettings |
-								   ImGuiWindowFlags_NoResize;
+
 
 	ImGui::SetNextWindowPos({ 10, 10 }, ImGuiCond_Appearing, { 0, 0 });
 	ImGui::SetNextWindowBgAlpha(0.40f);
@@ -65,6 +60,17 @@ void DrawResourceCounter(DevUIState *devUIState)
 		if (max < frameTimes[i])
 			max = frameTimes[i];
 
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration |
+                                   ImGuiWindowFlags_NoMove |
+                                   ImGuiWindowFlags_NoNav |
+                                   (devUIState->isResourceCounterOpen ? 0 : ImGuiWindowFlags_AlwaysAutoResize) |
+                                   ImGuiWindowFlags_NoSavedSettings |
+                                   ImGuiWindowFlags_NoResize;
+    if (devUIState->isResourceCounterOpen)
+    {
+        ImGui::SetNextWindowSize({400, 215});
+    }
+
 	ImGui::Begin("Resource Counter", nullptr, windowFlags);
 	devUIState->isResourceCounterOpen =
 		devUIState->isResourceCounterOpen ^ (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false));
@@ -72,9 +78,11 @@ void DrawResourceCounter(DevUIState *devUIState)
 	if (devUIState->isResourceCounterOpen)
 	{
 		ImGui::Separator();
-		ImGui::Text("Frame times (last 120 frames)");
-		ImGui::PlotLines("##", frameTimes, 120, arrayOffset,
-					nullptr, 0.0f, max, {240, 40}, 4);
+//		ImGui::Text("Frame times (last 120 frames)");
+//		ImGui::PlotLines("##", frameTimes, 120, arrayOffset,
+//					nullptr, 0.0f, max, {240, 40}, 4);
+        devUIState->plot->DrawHistory();
+        devUIState->plot->DrawList();
 	}
     ImGui::End();
 }

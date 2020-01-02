@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include "MetricsGui/include/metrics_gui/metrics_gui.h"
 
 struct DevUIState
 {
@@ -6,6 +7,7 @@ struct DevUIState
 	bool isResourceCounterOpen;
 	ImGuiContext *guiContext;
 	ImGuiIO *igIO;
+	MetricsGuiPlot *plot;
 };
 
 typedef struct ResourceMetrics
