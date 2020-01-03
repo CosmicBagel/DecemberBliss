@@ -36,7 +36,7 @@ int main()
     Font fontRobotoMonoSm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
     Font font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
 
-    SetTargetFPS(60);
+//    SetTargetFPS(60);
 
     DevUIState devUIState;
     DevUIInit(&devUIState);
@@ -97,6 +97,7 @@ int main()
 //    plot.m
 
     devUIState.plot = &plot;
+    float frameTimeSum = 0.0f;
 
     TraceLog(LOG_INFO, "Starting simulation");
     while (!exitWindow)
@@ -186,16 +187,20 @@ int main()
         microseconds endDrawingElapsed = duration_cast<microseconds>(high_resolution_clock::now() - endDrawingStart);
 
 
-        //update metrics
-        inputTimeMetric.AddNewValue((float)inputElapsed.count());
-        simulationTimeMetric.AddNewValue((float)simulationElapsed.count());
-        drawPrepTimeMetric.AddNewValue((float)drawPrepElapsed.count());
-        renderTimeMetric.AddNewValue((float)renderElapsed.count());
-        endDrawingMetric.AddNewValue((float)endDrawingElapsed.count());
-        devUiTimeMetric.AddNewValue((float)devUiElapsed.count());
-        devUiRenderTimeMetric.AddNewValue((float)devUiRenderElapsed.count());
+        frameTimeSum += GetFrameTime();
+        if (frameTimeSum > (1.0f/60.0f)) {
+            frameTimeSum = 0.0f;
+            //update metrics
+            inputTimeMetric.AddNewValue((float) inputElapsed.count());
+            simulationTimeMetric.AddNewValue((float) simulationElapsed.count());
+            drawPrepTimeMetric.AddNewValue((float) drawPrepElapsed.count());
+            renderTimeMetric.AddNewValue((float) renderElapsed.count());
+            endDrawingMetric.AddNewValue((float) endDrawingElapsed.count());
+            devUiTimeMetric.AddNewValue((float) devUiElapsed.count());
+            devUiRenderTimeMetric.AddNewValue((float) devUiRenderElapsed.count());
 //        frameTimeMetric.AddNewValue(GetFrameTime() * 1000000);
-        plot.UpdateAxes();
+            plot.UpdateAxes();
+        }
     }
 
     TraceLog(LOG_INFO, "Unloading fonts...");
