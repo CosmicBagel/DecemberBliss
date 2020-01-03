@@ -44,11 +44,13 @@
 // - Arrows are being sent to the InputText() about to disappear which for LeftArrow makes the text cursor appear at position 1 for one frame.
 // - Using InputText() is awkward and maybe overkill here, consider implementing something custom.
 
+
 #pragma once
 #include <stdio.h>      // sprintf, scanf
 #include <stdint.h>     // uint8_t, etc.
 
 #ifdef _MSC_VER
+#pragma warning( disable: 4996 )
 #define _PRISizeT   "I"
 #define ImSnprintf  _snprintf
 #else
