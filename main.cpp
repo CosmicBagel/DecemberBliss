@@ -75,6 +75,7 @@ int main()
     plot.AddMetric(&devUiTimeMetric);
     plot.AddMetric(&devUiRenderTimeMetric);
     plot.mMinPlotHeight      = 250.0f;
+    plot.mMinPlotWidth       = 535.0f;
     plot.mBarRounding        = 0.f;    // amount of rounding on bars
     plot.mRangeDampening     = 0.95f;  // weight of historic range on axis range [0,1]
     plot.mInlinePlotRowCount = 2;      // height of DrawList() inline plots, in text rows

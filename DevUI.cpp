@@ -64,13 +64,13 @@ void DrawResourceCounter(DevUIState *devUIState)
                                    ImGuiWindowFlags_NoTitleBar |
                                    ImGuiWindowFlags_NoMove |
                                    ImGuiWindowFlags_NoNav |
-                                   (devUIState->isResourceCounterOpen ? 0 : ImGuiWindowFlags_AlwaysAutoResize) |
+                                   ImGuiWindowFlags_AlwaysAutoResize |
                                    ImGuiWindowFlags_NoSavedSettings |
                                    ImGuiWindowFlags_NoResize;
 
     if (devUIState->isResourceCounterOpen)
     {
-        ImGui::SetNextWindowSize({780, 290});
+//        ImGui::SetNextWindowSize({780, 290});
         ImGui::SetNextWindowBgAlpha(1.0f);
     }
     else {
