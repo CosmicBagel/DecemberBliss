@@ -45,20 +45,8 @@ void DrawResourceCounter(DevUIState *devUIState)
 	// - make moveable with right click
 	// - add show/hide hotkey
 
-
-
 	ImGui::SetNextWindowPos({ 10, 10 }, ImGuiCond_Appearing, { 0, 0 });
 	ImGui::SetNextWindowBgAlpha(0.40f);
-
-	static float frameTimes[120] = {0};
-	static int arrayOffset = 0;
-	frameTimes[arrayOffset] = GetFrameTime() * 1000.0f;
-	arrayOffset = (arrayOffset + 1) % 120;
-
-	float max = 0.0f;
-	for (int i = 0; i < 120; i++)
-		if (max < frameTimes[i])
-			max = frameTimes[i];
 
     ImGuiWindowFlags windowFlags = //ImGuiWindowFlags_NoDecoration |
                                    ImGuiWindowFlags_NoTitleBar |
