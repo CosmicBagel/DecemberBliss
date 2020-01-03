@@ -58,7 +58,7 @@ void SetClipboardTextForImGui(void *user_data, const char *text)
 
 void SetupState(int fb_width, int fb_height)
 {
-    rlglDraw();
+//    rlglDraw();
 
     // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers, polygon fill.
     BeginBlendMode(BLEND_ALPHA);

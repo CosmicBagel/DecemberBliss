@@ -49,52 +49,53 @@ int main()
     bool exitWindow = false;
 
     TraceLog(LOG_INFO, "Initializing metric trackers");
-    MetricsGuiMetric frameTimeMetric = MetricsGuiMetric();
-    frameTimeMetric.mDescription = "Frame time";
-    frameTimeMetric.mUnits = "us";
-    frameTimeMetric.mFlags = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
-    MetricsGuiMetric inputTimeMetric = MetricsGuiMetric();
-    inputTimeMetric.mDescription = "Input time";
-    inputTimeMetric.mUnits = "us";
-    inputTimeMetric.mFlags = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
-    MetricsGuiMetric simulationTimeMetric = MetricsGuiMetric();
-    simulationTimeMetric.mDescription = "Simulation time";
-    simulationTimeMetric.mUnits = "us";
-    simulationTimeMetric.mFlags = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
-    MetricsGuiMetric renderTimeMetric = MetricsGuiMetric();
-    renderTimeMetric.mDescription = "Render time";
-    renderTimeMetric.mUnits = "us";
-    renderTimeMetric.mFlags = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
-    MetricsGuiMetric devUiTimeMetric = MetricsGuiMetric();
-    devUiTimeMetric.mDescription = "DevUI time";
-    devUiTimeMetric.mUnits = "us";
-    devUiTimeMetric.mFlags = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
+    MetricsGuiMetric frameTimeMetric = MetricsGuiMetric(
+            "Frame time", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric inputTimeMetric = MetricsGuiMetric(
+            "Input time", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric simulationTimeMetric = MetricsGuiMetric(
+            "Simulation", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric drawPrepTimeMetric = MetricsGuiMetric(
+            "Draw Prep", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric renderTimeMetric = MetricsGuiMetric(
+            "Main Render", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric endDrawingMetric = MetricsGuiMetric(
+            "End Drawing (frame wait)", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric devUiTimeMetric = MetricsGuiMetric(
+            "DevUI Draw Prep", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
+    MetricsGuiMetric devUiRenderTimeMetric = MetricsGuiMetric(
+            "DevUI Render", "us", MetricsGuiMetric::USE_SI_UNIT_PREFIX);
 
     MetricsGuiPlot plot;
-    plot.AddMetric(&frameTimeMetric);
+//    plot.AddMetric(&frameTimeMetric);
     plot.AddMetric(&inputTimeMetric);
     plot.AddMetric(&simulationTimeMetric);
+    plot.AddMetric(&drawPrepTimeMetric);
     plot.AddMetric(&renderTimeMetric);
+    plot.AddMetric(&endDrawingMetric);
     plot.AddMetric(&devUiTimeMetric);
+    plot.AddMetric(&devUiRenderTimeMetric);
+    plot.mMinPlotHeight      = 250.0f;
     plot.mBarRounding        = 0.f;    // amount of rounding on bars
     plot.mRangeDampening     = 0.95f;  // weight of historic range on axis range [0,1]
     plot.mInlinePlotRowCount = 2;      // height of DrawList() inline plots, in text rows
     plot.mPlotRowCount       = 5;      // height of DrawHistory() plots, in text rows
-    plot.mVBarMinWidth       = 6;      // min width of bar graph bar in pixels
-    plot.mVBarGapWidth       = 1;      // width of bar graph inter-bar gap in pixels
-    plot.mShowAverage        = true;  // draw horizontal line at series average
-    plot.mShowInlineGraphs   = false;  // show history plot in DrawList()
+    plot.mVBarMinWidth       = 1;      // min width of bar graph bar in pixels
+    plot.mVBarGapWidth       = 0;      // width of bar graph inter-bar gap in pixels
+    plot.mShowAverage        = false;  // draw horizontal line at series average
+    plot.mShowInlineGraphs   = true;  // show history plot in DrawList()
     plot.mShowOnlyIfSelected = false;  // draw show selected metrics
     plot.mShowLegendDesc     = true;   // show series description in legend
     plot.mShowLegendColor    = true;   // use series color in legend
     plot.mShowLegendUnits    = true;   // show units in legend values
-    plot.mShowLegendAverage  = false;  // show series average in legend
+    plot.mShowLegendAverage  = true;  // show series average in legend
     plot.mShowLegendMin      = true;   // show plot y-axis minimum in legend
     plot.mShowLegendMax      = true;   // show plot y-axis maximum in legend
-    plot.mBarGraph           = false;  // use bars to draw history
-    plot.mStacked            = false;  // stack series when drawing history
+    plot.mBarGraph           = true;  // use bars to draw history
+    plot.mStacked            = true;  // stack series when drawing history
     plot.mSharedAxis         = false;  // use first series' axis range
     plot.mFilterHistory      = true;   // allow single plot point to represent more than on history value
+//    plot.m
 
     devUIState.plot = &plot;
 
@@ -128,10 +129,9 @@ int main()
         microseconds simulationElapsed;
         simulationElapsed = duration_cast<microseconds>(high_resolution_clock::now() - simulationStart);
 
-        // Render
+        // Draw prep
         //----------------------------------------------------------------------------------
-        time_point<steady_clock> renderStart = high_resolution_clock::now();
-        microseconds renderElapsed;
+        time_point<steady_clock> drawPrepStart = high_resolution_clock::now();
         BeginDrawing();
         ClearBackground(WHITE);
 
@@ -147,7 +147,7 @@ int main()
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
                    (float)fontRobotoMono.baseSize, 0, DARKGRAY);
-        renderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - renderStart);
+        microseconds drawPrepElapsed = duration_cast<microseconds>(high_resolution_clock::now() - drawPrepStart);
 
         //----------------------------------------------------------------------------------
         //Dev UI
@@ -157,7 +157,6 @@ int main()
 
         DevUINewFrame();
         DevUIDraw(&devUIState);
-//        ImGui::ShowDemoWindow(&devUIState.show_demo_window);
 
         ImVec2 vec2Zero = {0.0f, 0.0f};
         ImVec2 vec2One = {1.0f, 1.0f};
@@ -173,20 +172,29 @@ int main()
         ImGui::End();
 
         logGui.Draw("Log");
-
-        DevUIRender();
         devUiElapsed = duration_cast<microseconds>(high_resolution_clock::now() - devUiStart);
 
-        //render timing is split so as to not include devui times
-        renderStart = high_resolution_clock::now();
-        EndDrawing();
-        time_point<steady_clock> renderStop = high_resolution_clock::now();
-        renderElapsed += duration_cast<microseconds>(renderStop - renderStart);
+        time_point<steady_clock> renderStart = high_resolution_clock::now();
+        rlglDraw();
+        microseconds renderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - renderStart);
+        time_point<steady_clock> devUiRenderStart = high_resolution_clock::now();
+        DevUIRender();
+        microseconds devUiRenderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - devUiRenderStart);
 
+
+        time_point<steady_clock> endDrawingStart = high_resolution_clock::now();
+        EndDrawing();
+        microseconds endDrawingElapsed = duration_cast<microseconds>(high_resolution_clock::now() - endDrawingStart);
+
+
+        //update metrics
         inputTimeMetric.AddNewValue(inputElapsed.count());
         simulationTimeMetric.AddNewValue(simulationElapsed.count());
+        drawPrepTimeMetric.AddNewValue(drawPrepElapsed.count());
         renderTimeMetric.AddNewValue(renderElapsed.count());
+        endDrawingMetric.AddNewValue(endDrawingElapsed.count());
         devUiTimeMetric.AddNewValue(devUiElapsed.count());
+        devUiRenderTimeMetric.AddNewValue(devUiRenderElapsed.count());
         frameTimeMetric.AddNewValue(GetFrameTime() * 1000000);
         plot.UpdateAxes();
     }

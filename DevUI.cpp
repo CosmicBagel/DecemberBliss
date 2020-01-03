@@ -60,15 +60,17 @@ void DrawResourceCounter(DevUIState *devUIState)
 		if (max < frameTimes[i])
 			max = frameTimes[i];
 
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDecoration |
+    ImGuiWindowFlags windowFlags = //ImGuiWindowFlags_NoDecoration |
+                                   ImGuiWindowFlags_NoTitleBar |
                                    ImGuiWindowFlags_NoMove |
                                    ImGuiWindowFlags_NoNav |
                                    (devUIState->isResourceCounterOpen ? 0 : ImGuiWindowFlags_AlwaysAutoResize) |
                                    ImGuiWindowFlags_NoSavedSettings |
                                    ImGuiWindowFlags_NoResize;
+
     if (devUIState->isResourceCounterOpen)
     {
-        ImGui::SetNextWindowSize({400, 215});
+        ImGui::SetNextWindowSize({780, 290});
         ImGui::SetNextWindowBgAlpha(1.0f);
     }
     else {
@@ -76,10 +78,11 @@ void DrawResourceCounter(DevUIState *devUIState)
         ImGui::SetNextWindowBgAlpha(0.40f);
     }
 
-	ImGui::Begin("Resource Counter", nullptr, windowFlags);
-	devUIState->isResourceCounterOpen =
-		devUIState->isResourceCounterOpen ^ (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false));
+	ImGui::Begin("Metrics", nullptr, windowFlags);
+
     ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "FPS: %.2f", devUIState->igIO->Framerate);
+    devUIState->isResourceCounterOpen =
+            devUIState->isResourceCounterOpen ^ (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false) & ImGui::IsItemClicked(0));
 	if (devUIState->isResourceCounterOpen)
 	{
 		ImGui::Separator();
@@ -87,7 +90,7 @@ void DrawResourceCounter(DevUIState *devUIState)
 //		ImGui::PlotLines("##", frameTimes, 120, arrayOffset,
 //					nullptr, 0.0f, max, {240, 40}, 4);
         devUIState->plot->DrawHistory();
-        devUIState->plot->DrawList();
+//        devUIState->plot->DrawList();
 	}
     ImGui::End();
 }

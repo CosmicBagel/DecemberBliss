@@ -80,6 +80,8 @@ struct MetricsGuiPlot {
     bool mRangeInitialized;
 
     // Draw/update options:
+    float mMinPlotHeight;
+    float mMinPlotWidth;
     float mBarRounding;             // amount of rounding on bars
     float mRangeDampening;          // weight of historic range on axis range [0,1]
     uint32_t mInlinePlotRowCount;   // height of DrawList() inline plots, in text rows

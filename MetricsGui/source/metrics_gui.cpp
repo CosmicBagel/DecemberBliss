@@ -453,12 +453,12 @@ void DrawMetrics(
 
     auto textHeight = ImGui::GetTextLineHeight();
 
-    auto plotWidth = std::max(0.f,
+    auto plotWidth = std::max(plot->mMinPlotWidth,
                               ImGui::GetContentRegionAvailWidth() -
                                   window->WindowPadding.x -
                                   plot->mWidthInfo->mLegendWidth -
                                   PLOT_LEGEND_PADDING);
-    auto plotHeight = std::max(0.f, (textHeight + LEGEND_TEXT_VERTICAL_SPACING) * plotRowCount);
+    auto plotHeight = std::max(plot->mMinPlotHeight, (textHeight + LEGEND_TEXT_VERTICAL_SPACING) * plotRowCount);
 
     ImRect frame_bb(
         window->DC.CursorPos,
