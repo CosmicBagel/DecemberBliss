@@ -187,14 +187,14 @@ int main()
 
 
         //update metrics
-        inputTimeMetric.AddNewValue(inputElapsed.count());
-        simulationTimeMetric.AddNewValue(simulationElapsed.count());
-        drawPrepTimeMetric.AddNewValue(drawPrepElapsed.count());
-        renderTimeMetric.AddNewValue(renderElapsed.count());
-        endDrawingMetric.AddNewValue(endDrawingElapsed.count());
-        devUiTimeMetric.AddNewValue(devUiElapsed.count());
-        devUiRenderTimeMetric.AddNewValue(devUiRenderElapsed.count());
-        frameTimeMetric.AddNewValue(GetFrameTime() * 1000000);
+        inputTimeMetric.AddNewValue((float)inputElapsed.count());
+        simulationTimeMetric.AddNewValue((float)simulationElapsed.count());
+        drawPrepTimeMetric.AddNewValue((float)drawPrepElapsed.count());
+        renderTimeMetric.AddNewValue((float)renderElapsed.count());
+        endDrawingMetric.AddNewValue((float)endDrawingElapsed.count());
+        devUiTimeMetric.AddNewValue((float)devUiElapsed.count());
+        devUiRenderTimeMetric.AddNewValue((float)devUiRenderElapsed.count());
+//        frameTimeMetric.AddNewValue(GetFrameTime() * 1000000);
         plot.UpdateAxes();
     }
 
