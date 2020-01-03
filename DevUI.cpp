@@ -39,12 +39,6 @@ void DevUIDestroy(DevUIState *devUIState)
 //Draw the FPS counter window
 void DrawResourceCounter(DevUIState *devUIState)
 {
-	// todo
-	// - use PushID popID to customize style of this window
-	// - add graphs as hideable children
-	// - make moveable with right click
-	// - add show/hide hotkey
-
 	ImGui::SetNextWindowPos({ 10, 10 }, ImGuiCond_Appearing, { 0, 0 });
 	ImGui::SetNextWindowBgAlpha(0.40f);
 
