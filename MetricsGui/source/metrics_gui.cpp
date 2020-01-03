@@ -173,9 +173,10 @@ void DrawQuantityLabel(
 
 } // namespace
 
+#define HUE_SHIFT_FACTOR 0.15f
 MetricsGuiMetric::MetricsGuiMetric()
 {
-    auto c = ImColor::HSV(0.2f * gConstructedMetricIndex++, 0.8f, 0.8f);
+    auto c = ImColor::HSV(HUE_SHIFT_FACTOR * gConstructedMetricIndex++, 0.8f, 0.8f);
     mColor[0] = c.Value.x;
     mColor[1] = c.Value.y;
     mColor[2] = c.Value.z;
@@ -189,7 +190,7 @@ MetricsGuiMetric::MetricsGuiMetric(
     char const *units,
     uint32_t flags)
 {
-    auto c = ImColor::HSV(0.2f * gConstructedMetricIndex++, 0.8f, 0.8f);
+    auto c = ImColor::HSV(HUE_SHIFT_FACTOR * gConstructedMetricIndex++, 0.8f, 0.8f);
     mColor[0] = c.Value.x;
     mColor[1] = c.Value.y;
     mColor[2] = c.Value.z;
