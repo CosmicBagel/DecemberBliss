@@ -15,10 +15,9 @@
 
 using namespace std::chrono;
 
-static LogGui logGui;
-
 //called by raylib as a callback, all logging functions are from raylib
 void LogCallbackFunc(int logType, const char *text, va_list args);
+static LogGui logGui;
 
 int main()
 {
@@ -229,13 +228,13 @@ void LogCallbackFunc(int logType, const char *text, va_list args)
         case LOG_FATAL: strcpy_s(logTypeStr, 10, "FATAL: "); break;
         default: break;
     }
-    logGui.AddLog(logTypeStr);
-    printf(logTypeStr);
+    logGui.AddLog("%s", logTypeStr);
+    printf("%s", logTypeStr);
 
     vsprintf_s(logLineBuffer, LOG_LINE_BUFFER_SIZE, text, args);
 
-    logGui.AddLog(logLineBuffer);
+    logGui.AddLog("%s", logLineBuffer);
     logGui.AddLog("\n");
-    printf(logLineBuffer);
+    printf("%s", logLineBuffer);
     printf("\n");
 }
