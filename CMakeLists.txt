@@ -45,10 +45,27 @@ target_link_libraries(DecemberBliss PRIVATE
 target_sources(DecemberBliss PRIVATE 
     main.cpp DevUI.cpp enttTest.cpp ImGuiIntegration.cpp LogGui.cpp LogGui.h)
 
+### Get Git info for buildInfo.h
+# Get the current working branch
+execute_process(
+        COMMAND git rev-parse --abbrev-ref HEAD
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_BRANCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# Get the latest abbreviated commit hash of the working branch
+execute_process(
+        COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 ### Pass name and version to code via defines (as opposed to having it in multiple places)
 configure_file(buildInfo.h.in buildInfo.h)
 #the resulting buildInfo.h will be put into the build results, so we need to include that
-target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR}) 
+target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 ### Copy resources folder to build destination
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
