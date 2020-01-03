@@ -161,11 +161,7 @@
     typedef enum { false, true } bool;
 #endif
 
-// Vector2 type
-typedef struct Vector2 {
-    float x;
-    float y;
-} Vector2;
+#include "raylibVec2.h"
 
 // Vector3 type
 typedef struct Vector3 {

@@ -229,7 +229,7 @@ if(SHARED)
       )
   endif()
   set_target_properties(raylib PROPERTIES
-      PUBLIC_HEADER "raylib.h"
+      PUBLIC_HEADER "raylib.h" "raylibVec2.h"
   )
 
   if (WIN32)
@@ -269,6 +269,7 @@ populate_config_variables_locally(raylib)
 
 # Copy the header files to the build directory
 file(COPY "raylib.h" DESTINATION ".")
+file(COPY "raylibVec2.h" DESTINATION ".")
 file(COPY "rlgl.h" DESTINATION ".")
 file(COPY "physac.h" DESTINATION ".")
 file(COPY "raymath.h" DESTINATION ".")

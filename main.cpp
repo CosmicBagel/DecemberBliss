@@ -181,11 +181,9 @@ int main()
         DevUIRender();
         microseconds devUiRenderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - devUiRenderStart);
 
-
         time_point<steady_clock> endDrawingStart = high_resolution_clock::now();
         EndDrawing();
         microseconds endDrawingElapsed = duration_cast<microseconds>(high_resolution_clock::now() - endDrawingStart);
-
 
         frameTimeSum += GetFrameTime();
         if (frameTimeSum > (1.0f/60.0f)) {

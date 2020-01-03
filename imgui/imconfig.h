@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include "raylibVec2.h"
+
 //---- Define assertion handler. Defaults to calling assert().
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
 //#define IM_ASSERT(_EXPR)  ((void)(_EXPR))     // Disable asserts
@@ -64,6 +66,10 @@
         ImVec4(const MyVec4& f) { x = f.x; y = f.y; z = f.z; w = f.w; }     \
         operator MyVec4() const { return MyVec4(x,y,z,w); }
 */
+#define IM_VEC2_CLASS_EXTRA                                                 \
+        ImVec2(const Vector2& f) { x = f.x; y = f.y; }                      \
+        operator Vector2() const { return {x, y}; }
+
 
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
 // Your renderer back-end will need to support it (most example renderer back-ends support both 16/32-bit indices).
