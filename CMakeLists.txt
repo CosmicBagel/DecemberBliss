@@ -75,3 +75,6 @@ target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 ### Copy resources folder to build destination
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
+
+### Copy python runtime dependencies to build destination
+file(COPY ${CMAKE_SOURCE_DIR}/python-embeded/${BLISS_ARCH}/ DESTINATION ${CMAKE_BINARY_DIR})
