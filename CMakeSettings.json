@@ -23,7 +23,13 @@
       "buildCommandArgs": "/v:Normal",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x86" ],
-      "variables": [],
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug",
+          "type": "STRING"
+        }
+      ],
       "intelliSenseMode": "windows-msvc-x86"
     },
     {
