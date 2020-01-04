@@ -30,6 +30,10 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
 endif()
 
+### Python 3.8
+find_package(Python3 REQUIRED COMPONENTS Development)
+#find_library(python 3.8.1)
+
 ### Included dependencies' source code
 add_subdirectory(raylib/)
 add_subdirectory(entt/)
@@ -38,8 +42,8 @@ add_subdirectory(imgui/)
 add_subdirectory(MetricsGui/)
 
 ### Declare dependencies
-target_link_libraries(DecemberBliss PRIVATE 
-    raylib EnTT chipmunk_static imgui MetricsGui)
+target_link_libraries(DecemberBliss PRIVATE
+    raylib EnTT chipmunk_static imgui MetricsGui Python3::Python)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
