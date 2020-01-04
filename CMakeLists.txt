@@ -30,9 +30,9 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
 endif()
 
-### Python 3.8
-find_package(Python3 REQUIRED COMPONENTS Development)
-#find_library(python 3.8.1)
+### Python is an external dependency, and must be installed before hand
+#   x86 and x64 for the respective build target
+find_package(Python3 3.8 REQUIRED COMPONENTS Development)
 
 ### Included dependencies' source code
 add_subdirectory(raylib/)
