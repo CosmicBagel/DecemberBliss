@@ -32,6 +32,7 @@ endif()
 
 ### Python is an external dependency, and must be installed before hand
 #   x86 and x64 for the respective build target
+set(Python3_USE_STATIC_LIBS TRUE)
 find_package(Python3 3.8 REQUIRED COMPONENTS Development)
 
 ### Included dependencies' source code
@@ -43,7 +44,8 @@ add_subdirectory(MetricsGui/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE
-    raylib EnTT chipmunk_static imgui MetricsGui Python3::Python)
+    raylib EnTT chipmunk_static imgui MetricsGui
+    Python3::Python Python3::Module)
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
