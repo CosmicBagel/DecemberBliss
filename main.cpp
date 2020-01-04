@@ -18,6 +18,9 @@ using namespace std::chrono;
 
 //called by raylib as a callback, all logging functions are from raylib
 void LogCallbackFunc(int logType, const char *text, va_list args);
+
+void DoThePythonThing();
+
 static LogGui logGui;
 
 int main()
@@ -99,6 +102,9 @@ int main()
 
     devUIState.plot = &plot;
     float frameTimeSum = 0.0f;
+
+    TraceLog(LOG_INFO, "Doing the python things");
+    DoThePythonThing();
 
     TraceLog(LOG_INFO, "Starting simulation");
     while (!exitWindow)
@@ -241,4 +247,16 @@ void LogCallbackFunc(int logType, const char *text, va_list args)
     logGui.AddLog("\n");
     printf("%s", logLineBuffer);
     printf("\n");
+}
+
+void DoThePythonThing()
+{
+    Py_Initialize(); //the zero
+    if (Py_IsInitialized() == 0) { //non-zero when successful
+        TraceLog(LOG_FATAL, "Python failed to initialize correctly");
+        exit(1);
+    }
+    PyRun_SimpleString("print('hihihihih')");
+    if (Py_FinalizeEx() != 0)
+        TraceLog(LOG_ERROR, "Python failed to shutdown correctly");
 }
