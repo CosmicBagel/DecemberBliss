@@ -15,7 +15,9 @@ The end goal is to have a fairly barebones 2d game engine functioning, complete 
 Building requries
 - A c/c++ compiler, complete with requried std libs for the platform you're building on
 - Python (3.8 or newer) installation matching the target architecture (x86 or x64)
+    - Be sure to select "Download debug binaries" if you want to build a debug build
 - CMake
+    - You must pass in the variable BLISS_ARCH as x86 or x64
 
 I tried to include as many dependencies as possible so as to simplify the build process
 
@@ -23,3 +25,6 @@ State of the project as of Jan 13th, 2020
 - Python is in, but there is no scritping functionality or in-game console to leverage it with yet
     - Working on a solution to ensure print output is channeled to the in-game log/console (currently the log & console are not separated)
 - Some basic metrics are tracked, visble when you click the FPS coutner in the top left
+
+Screenshot
+![screenshot](https://i.imgur.com/JXfpEXL.png)
