@@ -9,6 +9,7 @@ project(DecemberBliss VERSION 0.1.0 LANGUAGES C CXX)
 include(BlissBuildHelpers.cmake)
 
 add_executable(DecemberBliss)
+add_executable(LearningSpike-ReroutingStdIO)
 
 #ie if this is the top most level script
 #   these options should only be set if not being used by another project
@@ -27,7 +28,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # because of our warning flags, we will still be told when we're using non-standard c    
     # mixing c / c++ standard can cause weird ABI issues when linking
     target_compile_features(DecemberBliss PRIVATE c_std_11 cxx_std_20)
-
 endif()
 
 ### Python is an external dependency, and must be installed before hand
@@ -50,6 +50,8 @@ target_link_libraries(DecemberBliss PRIVATE
 ### Project source
 target_sources(DecemberBliss PRIVATE 
     main.cpp DevUI.cpp enttTest.cpp ImGuiIntegration.cpp LogGui.cpp LogGui.h)
+
+target_sources(LearningSpike-ReroutingStdIO PRIVATE learningSpikes/ReroutingStdIO.cpp)
 
 ### Get Git info for buildInfo.h
 # Get the current working branch
