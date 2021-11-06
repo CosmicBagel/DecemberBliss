@@ -19,8 +19,19 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # as you can't mix ABI standards, everything must compile under one standard
     if(MSVC)
         target_compile_options(DecemberBliss PRIVATE /W4)
+        
+        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            target_compile_options(DecemberBliss PRIVATE /fsanitize=address)
+        else()
+            # todo: add optimization flags or w/e
+        endif()
     else()
-        target_compile_options(DecemberBliss PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+        target_compile_options(DecemberBliss PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion )
+        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            target_compile_options(DecemberBliss PRIVATE -fsanitize=address)
+        else()
+            # todo: add optimization flags or w/e
+        endif()
     endif()
 
     # this will give us a soft enforcement of the c11 standard, project won't error out, but 
