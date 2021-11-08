@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "../../imgui/imgui.h"
+#include "../../imgui-1.85/imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "../../imgui/imgui_internal.h"
+#include "../../imgui-1.85/imgui_internal.h"
 #include "../include/metrics_gui/metrics_gui.h"
 #include "../portable/countof.h"
 #include "../portable/snprintf.h"
@@ -742,7 +742,7 @@ void MetricsGuiPlot::DrawList()
         // Draw description and value
         auto x = window->DC.CursorPos.x;
         auto y = window->DC.CursorPos.y;
-        ImGui::Selectable(metric->mDescription.c_str(), &metric->mSelected, ImGuiSelectableFlags_DrawFillAvailWidth);
+        ImGui::Selectable(metric->mDescription.c_str(), &metric->mSelected);
         if (valueX >= barStartX)
         {
             auto useSiUnitPrefix = 0 != (metric->mFlags & MetricsGuiMetric::USE_SI_UNIT_PREFIX);

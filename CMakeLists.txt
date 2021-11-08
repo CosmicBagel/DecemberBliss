@@ -21,14 +21,14 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
         target_compile_options(DecemberBliss PRIVATE /W4)
         
         if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-            target_compile_options(DecemberBliss PRIVATE /fsanitize=address)
+            # target_compile_options(DecemberBliss PRIVATE /fsanitize=address)
         else()
             # todo: add optimization flags or w/e
         endif()
     else()
         target_compile_options(DecemberBliss PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion )
         if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-            target_compile_options(DecemberBliss PRIVATE -fsanitize=address)
+            # target_compile_options(DecemberBliss PRIVATE -fsanitize=address)
         else()
             # todo: add optimization flags or w/e
         endif()
@@ -43,24 +43,23 @@ endif()
 
 ### Python is an external dependency, and must be installed before hand
 #   x86 and x64 for the respective build target
-set(Python3_USE_STATIC_LIBS TRUE)
-find_package(Python3 3.8 REQUIRED COMPONENTS Development)
+#set(Python3_USE_STATIC_LIBS TRUE)
+#find_package(Python3 3.8 REQUIRED COMPONENTS Development)
 
 ### Included dependencies' source code
-add_subdirectory(raylib/)
-add_subdirectory(entt/)
-add_subdirectory(Chipmunk2D/)
-add_subdirectory(imgui/)
+add_subdirectory(raylib-4.0.0/)
+add_subdirectory(imgui-1.85/)
 add_subdirectory(MetricsGui/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE
-    raylib EnTT chipmunk_static imgui MetricsGui
-    Python3::Python Python3::Module)
+    raylib imgui-1.85 MetricsGui
+    )
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    main.cpp DevUI.cpp enttTest.cpp ImGuiIntegration.cpp LogGui.cpp LogGui.h)
+    src/main.cpp src/LogGui.cpp src/DevUI.cpp)
+# target_include_directories(DecemberBliss PRIVATE raygui-3.0/src)
 
 ### Get Git info for buildInfo.h
 # Get the current working branch
@@ -88,4 +87,4 @@ target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 
 ### Copy python runtime dependencies to build destination
-file(COPY ${CMAKE_SOURCE_DIR}/python-embeded/${BLISS_ARCH}/ DESTINATION ${CMAKE_BINARY_DIR})
+#file(COPY ${CMAKE_SOURCE_DIR}/python-embeded/${BLISS_ARCH}/ DESTINATION ${CMAKE_BINARY_DIR})

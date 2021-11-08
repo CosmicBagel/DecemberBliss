@@ -10,4 +10,4 @@ target_sources(MetricsGui PRIVATE
     source/metrics_gui.cpp 
     source/ProggyTiny.cpp)
 
-target_link_libraries(MetricsGui imgui)
+target_link_libraries(MetricsGui imgui-1.85)
