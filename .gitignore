@@ -357,3 +357,4 @@ MigrationBackup/
 # DecemberBliss specific stuff
 /DecemberBliss.zip
 imgui.ini
+clang_rt.asan_dbg_dynamic-x86_64.dll
