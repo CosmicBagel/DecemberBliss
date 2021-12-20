@@ -1,5 +1,6 @@
+// todo bring back the batched dev ui rendering, the new one is too slow
+
 #include "rayIncludes.h"
-// #include "imgui_impl_raylib.h"
 #include <chrono>
 #include "DevUI.h"
 #include "LogGui.h"
@@ -209,7 +210,6 @@ int main()
 
     TraceLog(LOG_INFO, "Unloading textures...");
     UnloadTexture(santaTex);
-    // UnloadTexture(fontAtlasTex);
 
     TraceLog(LOG_INFO, "Unloading devUi...");
 

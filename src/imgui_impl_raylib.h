@@ -11,22 +11,47 @@
 #include <raylib.h>
 #include <rlgl.h>
 
-static double g_Time = 0.0;
+static double last_new_frame_time = 0.0;
 
-static const char* ImGui_ImplRaylib_GetClipboardText(void* _)
+static const int imkeys[] = {
+    KEY_TAB,
+    KEY_LEFT,
+    KEY_RIGHT,
+    KEY_UP,
+    KEY_DOWN,
+    KEY_PAGE_UP,
+    KEY_PAGE_DOWN,
+    KEY_HOME,
+    KEY_END,
+    KEY_INSERT,
+    KEY_DELETE,
+    KEY_BACKSPACE,
+    KEY_SPACE,
+    KEY_ENTER,
+    KEY_ESCAPE,
+    KEY_KP_ENTER,
+    KEY_A,
+    KEY_C,
+    KEY_V,
+    KEY_X,
+    KEY_Y,
+    KEY_Z,
+};
+
+static const char *ImGui_ImplRaylib_GetClipboardText(void *_)
 {
     return GetClipboardText();
 }
 
-static void ImGui_ImplRaylib_SetClipboardText(void* _, const char* text)
+static void ImGui_ImplRaylib_SetClipboardText(void *_, const char *text)
 {
     SetClipboardText(text);
 }
 
 bool ImGui_ImplRaylib_Init()
 {
-    rlEnableScissorTest(); 
-    ImGuiIO& io = ImGui::GetIO();
+    rlEnableScissorTest();
+    ImGuiIO &io = ImGui::GetIO();
 
     io.BackendPlatformName = "imgui_impl_raylib";
 
@@ -63,12 +88,12 @@ bool ImGui_ImplRaylib_Init()
 
 void ImGui_ImplRaylib_Shutdown()
 {
-    g_Time = 0.0;
+    last_new_frame_time = 0.0;
 }
 
 static void ImGui_ImplRaylib_UpdateMouseCursor()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
         return;
 
@@ -87,11 +112,11 @@ static void ImGui_ImplRaylib_UpdateMouseCursor()
 
 static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
     // Set OS mouse position if requested (rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
     if (io.WantSetMousePos)
-        SetMousePosition(io.MousePos.x, io.MousePos.y);
+        SetMousePosition((int)io.MousePos.x, (int)io.MousePos.y);
     else
         io.MousePos = {-FLT_MAX, -FLT_MAX};
 
@@ -99,20 +124,22 @@ static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
     io.MouseDown[1] = IsMouseButtonDown(MOUSE_RIGHT_BUTTON);
     io.MouseDown[2] = IsMouseButtonDown(MOUSE_MIDDLE_BUTTON);
 
-    if (!IsWindowMinimized()){
+    if (!IsWindowMinimized())
+    {
         io.MousePos = {(float)GetTouchX(), (float)GetTouchY()};
     }
 }
 
 void ImGui_ImplRaylib_NewFrame()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
 
-    io.DisplaySize = {(float) GetScreenWidth(), (float) GetScreenHeight()};
+    io.DisplaySize = {(float)GetScreenWidth(), (float)GetScreenHeight()};
 
     double current_time = GetTime();
-    io.DeltaTime = g_Time > 0.0 ? (float)(current_time - g_Time) : (float)(1.0f/60.0f);
-    g_Time = current_time;
+    io.DeltaTime = last_new_frame_time > 0.0 ? 
+        (float)(current_time - last_new_frame_time) : (float)(1.0f / 60.0f);
+    last_new_frame_time = current_time;
 
     io.KeyCtrl = IsKeyDown(KEY_RIGHT_CONTROL) || IsKeyDown(KEY_LEFT_CONTROL);
     io.KeyShift = IsKeyDown(KEY_RIGHT_SHIFT) || IsKeyDown(KEY_LEFT_SHIFT);
@@ -126,131 +153,29 @@ void ImGui_ImplRaylib_NewFrame()
         io.MouseWheel += 1;
     else if (GetMouseWheelMove() < 0)
         io.MouseWheel -= 1;
-}
 
-#define FOR_ALL_KEYS(X) \
-    X(KEY_APOSTROPHE); \
-    X(KEY_COMMA); \
-    X(KEY_MINUS); \
-    X(KEY_PERIOD); \
-    X(KEY_SLASH); \
-    X(KEY_ZERO); \
-    X(KEY_ONE); \
-    X(KEY_TWO); \
-    X(KEY_THREE); \
-    X(KEY_FOUR); \
-    X(KEY_FIVE); \
-    X(KEY_SIX); \
-    X(KEY_SEVEN); \
-    X(KEY_EIGHT); \
-    X(KEY_NINE); \
-    X(KEY_SEMICOLON); \
-    X(KEY_EQUAL); \
-    X(KEY_A); \
-    X(KEY_B); \
-    X(KEY_C); \
-    X(KEY_D); \
-    X(KEY_E); \
-    X(KEY_F); \
-    X(KEY_G); \
-    X(KEY_H); \
-    X(KEY_I); \
-    X(KEY_J); \
-    X(KEY_K); \
-    X(KEY_L); \
-    X(KEY_M); \
-    X(KEY_N); \
-    X(KEY_O); \
-    X(KEY_P); \
-    X(KEY_Q); \
-    X(KEY_R); \
-    X(KEY_S); \
-    X(KEY_T); \
-    X(KEY_U); \
-    X(KEY_V); \
-    X(KEY_W); \
-    X(KEY_X); \
-    X(KEY_Y); \
-    X(KEY_Z); \
-    X(KEY_SPACE); \
-    X(KEY_ESCAPE); \
-    X(KEY_ENTER); \
-    X(KEY_TAB); \
-    X(KEY_BACKSPACE); \
-    X(KEY_INSERT); \
-    X(KEY_DELETE); \
-    X(KEY_RIGHT); \
-    X(KEY_LEFT); \
-    X(KEY_DOWN); \
-    X(KEY_UP); \
-    X(KEY_PAGE_UP); \
-    X(KEY_PAGE_DOWN); \
-    X(KEY_HOME); \
-    X(KEY_END); \
-    X(KEY_CAPS_LOCK); \
-    X(KEY_SCROLL_LOCK); \
-    X(KEY_NUM_LOCK); \
-    X(KEY_PRINT_SCREEN); \
-    X(KEY_PAUSE); \
-    X(KEY_F1); \
-    X(KEY_F2); \
-    X(KEY_F3); \
-    X(KEY_F4); \
-    X(KEY_F5); \
-    X(KEY_F6); \
-    X(KEY_F7); \
-    X(KEY_F8); \
-    X(KEY_F9); \
-    X(KEY_F10); \
-    X(KEY_F11); \
-    X(KEY_F12); \
-    X(KEY_LEFT_SHIFT); \
-    X(KEY_LEFT_CONTROL); \
-    X(KEY_LEFT_ALT); \
-    X(KEY_LEFT_SUPER); \
-    X(KEY_RIGHT_SHIFT); \
-    X(KEY_RIGHT_CONTROL); \
-    X(KEY_RIGHT_ALT); \
-    X(KEY_RIGHT_SUPER); \
-    X(KEY_KB_MENU); \
-    X(KEY_LEFT_BRACKET); \
-    X(KEY_BACKSLASH); \
-    X(KEY_RIGHT_BRACKET); \
-    X(KEY_GRAVE); \
-    X(KEY_KP_0); \
-    X(KEY_KP_1); \
-    X(KEY_KP_2); \
-    X(KEY_KP_3); \
-    X(KEY_KP_4); \
-    X(KEY_KP_5); \
-    X(KEY_KP_6); \
-    X(KEY_KP_7); \
-    X(KEY_KP_8); \
-    X(KEY_KP_9); \
-    X(KEY_KP_DECIMAL); \
-    X(KEY_KP_DIVIDE); \
-    X(KEY_KP_MULTIPLY); \
-    X(KEY_KP_SUBTRACT); \
-    X(KEY_KP_ADD); \
-    X(KEY_KP_ENTER); \
-    X(KEY_KP_EQUAL);
-
-#define SET_KEY_DOWN(KEY) io.KeysDown[KEY] = IsKeyDown(KEY)
-
-bool ImGui_ImplRaylib_ProcessEvent()
-{
-    ImGuiIO& io = ImGui::GetIO();
-
-    FOR_ALL_KEYS(SET_KEY_DOWN);
-
-    int keyPressed = GetKeyPressed();
-    if (keyPressed > 0)
+    for (int key : imkeys)
     {
-        io.AddInputCharacter(keyPressed);
+        if (IsKeyPressed(key))
+        {
+            io.KeysDown[key] = true;
+        }
+        if (IsKeyUp(key))
+        {
+            io.KeysDown[key] = false;
+        }
     }
- 
 
-    return true;
+    io.KeyCtrl = IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
+    io.KeyShift = IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT);
+    io.KeyAlt = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
+    io.KeySuper = false;
+    io.KeySuper = IsKeyDown(KEY_LEFT_SUPER) || IsKeyDown(KEY_RIGHT_SUPER);
+
+    unsigned int pressed = GetCharPressed();
+    io.AddInputCharacter(pressed);
+
+    ImGui::NewFrame();
 }
 
 void draw_triangle_vertex(ImDrawVert idx_vert)
@@ -274,7 +199,6 @@ void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx *idx_buffe
         ImDrawIdx index;
         ImDrawVert vertex;
 
-
         index = idx_buffer[i];
         vertex = idx_vert[index];
         draw_triangle_vertex(vertex);
@@ -291,7 +215,7 @@ void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx *idx_buffe
         rlPopMatrix();
     }
 }
-unsigned int counter = 0;
+
 void raylib_render_imgui(ImDrawData *draw_data)
 {
     rlDisableBackfaceCulling();
@@ -316,7 +240,7 @@ void raylib_render_imgui(ImDrawData *draw_data)
                 int rectH = (int)(pcmd->ClipRect.w - rectY);
                 BeginScissorMode(rectX, rectY, rectW, rectH);
                 {
-                    unsigned int *ti = (unsigned int*)pcmd->TextureId;
+                    unsigned int *ti = (unsigned int *)pcmd->TextureId;
                     raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, *ti);
                 }
             }
@@ -326,6 +250,5 @@ void raylib_render_imgui(ImDrawData *draw_data)
     EndScissorMode();
     rlEnableBackfaceCulling();
 }
-
 
 #endif
