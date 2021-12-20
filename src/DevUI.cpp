@@ -14,7 +14,6 @@ void DevUIInit(DevUIState *devUIState)
     // Initialize imgui
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    ImDrawData *draw_data;
 
     // ImGui: Initialize keyboard and mouse events
     ImGui_ImplRaylib_Init();
@@ -44,8 +43,6 @@ void DevUIInit(DevUIState *devUIState)
 void DevUINewFrame()
 {
     ImGui_ImplRaylib_NewFrame();
-    ImGui_ImplRaylib_ProcessEvent();
-    ImGui::NewFrame();
 }
 
 // Updates the DevUI state and prepares all of the draw calls for the DevUI
