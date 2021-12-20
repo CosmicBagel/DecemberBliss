@@ -1,6 +1,6 @@
 #include "LogGui.h"
 //
-// Created by samue on 1/2/2020.
+// Created by Samuel on 1/2/2020.
 //
 
 #include "LogGui.h"
