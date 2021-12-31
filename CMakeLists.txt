@@ -15,7 +15,7 @@ add_executable(DecemberBliss)
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
     # Add warnings as global options, and ONLY at the root level of the project
-    # Also set the c standrd desired, this should also only be done at a global level
+    # Also set the c standard desired, this should also only be done at a global level
     # as you can't mix ABI standards, everything must compile under one standard
     if(MSVC)
         target_compile_options(DecemberBliss PRIVATE /W4)
