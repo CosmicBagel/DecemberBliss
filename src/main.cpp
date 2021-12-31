@@ -16,7 +16,6 @@ using namespace std::chrono;
 //called by raylib as a callback, all logging functions are from raylib
 void LogCallbackFunc(int logType, const char *text, va_list args);
 
-
 static LogGui logGui;
 
 int main()
@@ -127,7 +126,8 @@ int main()
         //----------------------------------------------------------------------------------
         time_point<steady_clock> simulationStart = high_resolution_clock::now();
         microseconds simulationElapsed;
-        simulationElapsed = duration_cast<microseconds>(high_resolution_clock::now() - simulationStart);
+        simulationElapsed = duration_cast<microseconds>(
+            high_resolution_clock::now() - simulationStart);
 
         // Draw prep
         //----------------------------------------------------------------------------------
@@ -148,7 +148,8 @@ int main()
 
         DrawTextEx(fontRobotoMono, BLISS_FULL_HEADER, textPos,
                    (float)fontRobotoMono.baseSize, 0, DARKGRAY);
-        microseconds drawPrepElapsed = duration_cast<microseconds>(high_resolution_clock::now() - drawPrepStart);
+        microseconds drawPrepElapsed = duration_cast<microseconds>(
+            high_resolution_clock::now() - drawPrepStart);
 
         //----------------------------------------------------------------------------------
         //Dev UI
@@ -177,14 +178,17 @@ int main()
 
         time_point<steady_clock> renderStart = high_resolution_clock::now();
         // rlDrawRenderBatchActive();
-        microseconds renderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - renderStart);
+        microseconds renderElapsed = duration_cast<microseconds>(
+            high_resolution_clock::now() - renderStart);
         time_point<steady_clock> devUiRenderStart = high_resolution_clock::now();
         DevUIRender();
-        microseconds devUiRenderElapsed = duration_cast<microseconds>(high_resolution_clock::now() - devUiRenderStart);
+        microseconds devUiRenderElapsed = duration_cast<microseconds>(
+            high_resolution_clock::now() - devUiRenderStart);
 
         time_point<steady_clock> endDrawingStart = high_resolution_clock::now();
         EndDrawing();
-        microseconds endDrawingElapsed = duration_cast<microseconds>(high_resolution_clock::now() - endDrawingStart);
+        microseconds endDrawingElapsed = duration_cast<microseconds>(
+            high_resolution_clock::now() - endDrawingStart);
 
         frameTimeSum += GetFrameTime();
         if (frameTimeSum > (1.0f / 60.0f))
