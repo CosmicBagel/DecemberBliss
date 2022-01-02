@@ -58,8 +58,8 @@ target_link_libraries(DecemberBliss PRIVATE
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    src/main.cpp src/LogGui.cpp src/DevUI.cpp)
-# target_include_directories(DecemberBliss PRIVATE raygui-3.0/src)
+    src/main.cpp src/LogGui.cpp src/DevUI.cpp src/bliss_app.cpp src/log_router.cpp)
+target_include_directories(DecemberBliss PRIVATE src)
 
 ### Get Git info for buildInfo.h
 # Get the current working branch
