@@ -3,8 +3,6 @@
 // Created by Samuel on 1/2/2020.
 //
 
-#include "LogGui.h"
-
 // Usage:
 //  static ExampleAppLog my_log;
 //  my_log.AddLog("Hello %d world\n", 123);
