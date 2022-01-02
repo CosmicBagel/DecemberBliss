@@ -8,8 +8,7 @@
 #include <imconfig.h>
 #include <imgui.h>
 #include <float.h>
-#include <raylib.h>
-#include <rlgl.h>
+#include "rayIncludes.h"
 
 static double last_new_frame_time = 0.0;
 
@@ -251,4 +250,4 @@ void raylib_render_imgui(ImDrawData *draw_data)
     rlEnableBackfaceCulling();
 }
 
-#endif
+#endif // IMGUI_RAYLIB_H
