@@ -1,3 +1,5 @@
+#pragma once
+
 #include <imgui.h>
 #include "../MetricsGui/include/metrics_gui/metrics_gui.h"
 #include "rayIncludes.h"
