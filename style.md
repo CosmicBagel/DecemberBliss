@@ -11,6 +11,8 @@ similar to Rust style guide
 https://doc.rust-lang.org/1.0.0/style/style/naming/README.html
 except Snake_Title_Case where TitleCase is used
 
+K&R style braces (e.g. opening curly brace is on line below if statement)
+
 ## Guidelines
 
 - Avoid using polymorphism, clarity of simple direct function calls
