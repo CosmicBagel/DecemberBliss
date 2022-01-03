@@ -2,12 +2,14 @@
 #include "imgui_impl_raylib.h"
 #include "ray_includes.h"
 
-Dev_UI::Dev_UI()
+Dev_UI::Dev_UI() {}
+
+//need to wait for raylib window to init, which can happen after we construct
+//Dev_UI, hence init
+void Dev_UI::init()
 {
-    guiContext = ImGui::CreateContext(nullptr);
-    igIO = &ImGui::GetIO();
-    show_demo_window = true;
-    isResourceCounterOpen = false;
+    gui_context = ImGui::CreateContext(nullptr);
+    ig_io = &ImGui::GetIO();
 
     // Initialize imgui
     ImGui::CreateContext();
@@ -19,24 +21,21 @@ Dev_UI::Dev_UI()
     // ImGui: Init font
     // ImFont* font = io.Fonts->AddFontDefault();
     unsigned char* pixels = NULL;
-    int atlasWidth, atlasHeight;
+    int atlas_width, atlas_height;
     io.Fonts->Build();
-    io.Fonts->GetTexDataAsRGBA32(&pixels, &atlasWidth, &atlasHeight, NULL);
-    // io.Fonts->GetTexDataAsAlpha8(&pixels, &atlasWidth, &atlasHeight, NULL);
-    // At this point you've got the texture data and you need to upload that to your graphic system:
-    // After we have created the texture, store its pointer/identifier (_in whichever format your engine uses_) in 'io.Fonts->TexID'.
-    // This will be passed back to your via the renderer. Basically ImTextureID == void*. Read FAQ for details about ImTextureID.
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &atlas_width, &atlas_height, NULL);
+    // At this point you've got the texture data and you need to upload that to 
+    // your graphic system: After we have created the texture, store its 
+    // pointer/identifier // (_in whichever format your engine uses_) in 
+    // 'io.Fonts->TexID'.  This will be passed back to your via the renderer. 
+    // Basically ImTextureID == void*. Read FAQ for details about ImTextureID.
 
     Image fontAtlasImage = load_image_from_pixels(
-        pixels, atlasWidth, atlasHeight,
+        pixels, atlas_width, atlas_height,
         rlPixelFormat::RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
 
-    // Image fontAtlasImage = LoadImageFromPixels(pixels, atlasWidth, atlasHeight,
-    //     rlPixelFormat::RL_PIXELFORMAT_UNCOMPRESSED_GRAYSCALE);
-    fontAtlasTex = LoadTextureFromImage(fontAtlasImage);
-    // SetTextureFilter(fontAtlasTex, RL_TEXTURE_FILTER_BILINEAR);
-    // SetTextureWrap(fontAtlasTex, TEXTURE_WRAP_CLAMP);
-    io.Fonts->TexID = (ImTextureID)&fontAtlasTex.id;
+    font_atlas_tex = LoadTextureFromImage(fontAtlasImage);
+    io.Fonts->TexID = (ImTextureID)&font_atlas_tex.id;
 
     init_metrics_gui_plot();
     init_metrics_gui_metrics();
@@ -61,8 +60,9 @@ void Dev_UI::render()
 
 Dev_UI::~Dev_UI()
 {
-    ImGui::DestroyContext(guiContext);
-    UnloadTexture(fontAtlasTex);
+    TraceLog(LOG_INFO, "Unloading Dev_UI...");
+    ImGui::DestroyContext(gui_context);
+    UnloadTexture(font_atlas_tex);
 }
 
 //Draw the FPS counter window
@@ -79,7 +79,7 @@ void Dev_UI::draw_resource_counter()
         ImGuiWindowFlags_NoSavedSettings |
         ImGuiWindowFlags_NoResize;
 
-    if (isResourceCounterOpen)
+    if (is_resource_counter_open)
     {
         //        ImGui::SetNextWindowSize({780, 290});
         ImGui::SetNextWindowBgAlpha(1.0f);
@@ -91,10 +91,10 @@ void Dev_UI::draw_resource_counter()
 
     ImGui::Begin("Metrics", nullptr, windowFlags);
 
-    ImGui::TextColored({ 0.0f, 1.0f, 0.0f, 1.0f }, "FPS: %.2f", igIO->Framerate);
-    isResourceCounterOpen =
-        isResourceCounterOpen ^ (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false) & ImGui::IsItemClicked(0));
-    if (isResourceCounterOpen)
+    ImGui::TextColored({ 0.0f, 1.0f, 0.0f, 1.0f }, "FPS: %.2f", ig_io->Framerate);
+    is_resource_counter_open =
+        is_resource_counter_open ^ (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false) & ImGui::IsItemClicked(0));
+    if (is_resource_counter_open)
     {
         ImGui::Separator();
         //		ImGui::Text("Frame times (last 120 frames)");
