@@ -13,6 +13,19 @@ except Snake_Title_Case where TitleCase is used
 
 K&R style braces (e.g. opening curly brace is on line below if statement)
 
+Try to format member declarations "spreadsheet" style e.g.:
+```
+Metrics        metrics;
+ImGuiIO*	   ig_io;
+MetricsGuiPlot plot;
+```
+The types and names are in nice columns, hence spreadsheet style
+Unfortunately auto-format often ruins this :(
+
+Place * and & with the type, and not the variable
+Good: `ImGuiIO* ig_io;`
+Bad:  `ImGuiIO *ig_io;`
+
 ## Guidelines
 
 - Avoid using polymorphism, clarity of simple direct function calls
