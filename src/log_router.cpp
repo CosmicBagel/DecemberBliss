@@ -1,8 +1,8 @@
 #include "log_router.h"
-#include "rayIncludes.h"
+#include "ray_includes.h"
 #include <stdio.h>
 
-LogGui log_gui;
+Log_Gui log_gui;
 
 // called by raylib, using raylib for log functionality
 void log_callback_func(int logType, const char* text, va_list args);
@@ -44,13 +44,13 @@ void log_callback_func(int logType, const char *text, va_list args)
     default:
         break;
     }
-    log_gui.AddLog("%s", logTypeStr);
+    log_gui.add_log("%s", logTypeStr);
     printf("%s", logTypeStr);
 
     vsprintf_s(logLineBuffer, LOG_LINE_BUFFER_SIZE, text, args);
 
-    log_gui.AddLog("%s", logLineBuffer);
-    log_gui.AddLog("\n");
+    log_gui.add_log("%s", logLineBuffer);
+    log_gui.add_log("\n");
     printf("%s", logLineBuffer);
     printf("\n");
 }

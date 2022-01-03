@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LogGui.h"
+#include "log_gui.h"
 
-extern LogGui log_gui;
+extern Log_Gui log_gui;
 void log_router_enable();
 void log_router_disable();
 

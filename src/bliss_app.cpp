@@ -8,7 +8,7 @@
 
 Bliss_App::Bliss_App() {}
 
-void Bliss_App::app_run()
+void Bliss_App::run()
 {
     log_router_enable();
 
@@ -112,7 +112,7 @@ void Bliss_App::app_run()
             }
             ImGui::End();
 
-            log_gui.Draw("Log");
+            log_gui.draw("Log");
         }
         //----------------------------------------------------------------------------------
         //Render

@@ -4,7 +4,7 @@ class Bliss_App
 {
 public:
 	Bliss_App();
-	void app_run();
+	void run();
 private:
 
 };

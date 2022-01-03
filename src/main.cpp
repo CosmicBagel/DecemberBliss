@@ -16,5 +16,5 @@ TODO: Memory usage tracking
 int main()
 {
     Bliss_App app;
-    app.app_run();
+    app.run();
 }

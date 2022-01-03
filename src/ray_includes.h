@@ -1,9 +1,7 @@
 //------------
 //The point of wrapping the includes here is to silence external errors
 //------------
-
-#ifndef __RAY_INCLUDES__
-#define __RAY_INCLUDES__
+#pragma once
 //only including three things here, but there are so many warnings to ignore
 //it gets its own header file now
 
@@ -42,5 +40,3 @@
 #if defined(__clang__)
 #pragma clang diagnostic pop
 #endif
-
-#endif //__RAY_INCLUDES__

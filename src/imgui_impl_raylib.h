@@ -8,7 +8,7 @@
 #include <imconfig.h>
 #include <imgui.h>
 #include <float.h>
-#include "rayIncludes.h"
+#include "ray_includes.h"
 
 static double last_new_frame_time = 0.0;
 
