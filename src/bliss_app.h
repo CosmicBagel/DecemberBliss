@@ -9,6 +9,12 @@ public:
 	Bliss_App();
     ~Bliss_App();
 	void run();
+    void render_dev_ui();
+    void render_scene();
+    void draw_dev_ui();
+    void draw_scene();
+    void simulation_step();
+    void handle_input();
 private:
     bool exit_window = false;
     int screen_width = 800;
