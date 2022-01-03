@@ -2,7 +2,6 @@
 TODO: Bring back the batched dev ui rendering, the new one is too slow
 TODO: Implement instrumented profiling (see visual code profiling notes)
 TODO: Implement ECS with memory pooling and nice cache locality properties
-TODO: Clean up main.cpp (semantic compression)
 TODO: Setup precompiled headers as imgui, raylib, and metrics gui are never \
 going to change
 TODO: Switch to consistent naming convention everywhere (Title_Case for types \
