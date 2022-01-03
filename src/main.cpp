@@ -8,6 +8,7 @@ going to change
 TODO: Switch to consistent naming convention everywhere (Title_Case for types \
 snake_case for vars and funcs, SCREAMING_SNAKE_CASE for constants) Title_Case \
 for files
+TODO: Memory usage tracking
 */
 
 #include "bliss_app.h"
