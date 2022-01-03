@@ -18,6 +18,10 @@ Try to format member declarations "spreadsheet" style e.g.:
 Metrics        metrics;
 ImGuiIO*	   ig_io;
 MetricsGuiPlot plot;
+
+font_roboto_mono =    LoadFontEx("resources/fonts/RobotoMono-Regular.ttf",   28, nullptr, 255);
+font_roboto_mono_sm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf",   12, nullptr, 255);
+font =                LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
 ```
 The types and names are in nice columns, hence spreadsheet style
 Unfortunately auto-format often ruins this :(

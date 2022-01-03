@@ -35,8 +35,9 @@ private:
     void init_metrics_gui_metrics();
     Image load_image_from_pixels(unsigned char* pixels, int width, int height, int format);
 
-    bool show_demo_window = true;
+    bool show_demo_window         = true;
     bool is_resource_counter_open = false;
-    Texture2D font_atlas_tex;
+
+    Texture2D     font_atlas_tex;
     ImGuiContext* gui_context;
 };
