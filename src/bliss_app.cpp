@@ -3,8 +3,12 @@
 #include "bliss_app.h"
 #include "log_router.h"
 #include "perf_timer.h"
+#include "entity_manager.h"
+#include "entity_memory_pool.h"
+#include "entity.h"
+#include "components.h"
 
-Bliss_App::Bliss_App()
+Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance())
 {
     log_router_enable();
 }
@@ -25,7 +29,31 @@ void Bliss_App::run()
     // raylib set fps
     SetTargetFPS(144);
 
-    TraceLog(LOG_INFO, "Starting simulation");
+    TraceLog(LOG_INFO, "Initializing sim");
+    Entity_Manager& man = Entity_Manager::instance();
+    //BUG: Adding and removing this entity causes one test santa to move twice as fast
+    //Entity e = man.add_entity("Player");
+    //C_Position& p_pos = e.add_component<C_Position>();
+    //e.remove_component<C_Position>();
+    //auto has = e.has_component<C_Position>();
+    //TraceLog(LOG_INFO, has ? "true" : "false");
+
+    //C_Position& pos = e.add_component<C_Position>();
+    //pos.x = 400;
+    //pos.y = 400;
+
+    //man.remove_entity(e);
+    //man.update_manager();
+
+    for (size_t i = 0; i < MAX_ENTITIES; i++)
+    {
+        Entity e = man.add_entity("Hur_dur");
+        C_Position& pos = e.add_component<C_Position>();
+        pos.x = 400;
+        pos.y = 400;
+    }
+
+    TraceLog(LOG_INFO, "Starting sim loop");
     while (!exit_window)
     {
         handle_input();
@@ -35,6 +63,8 @@ void Bliss_App::run()
 
         render_dev_ui();
         render_scene();
+
+        man.update_manager();
 
         //Update metrics plot
         dev_ui.plot.UpdateAxes();
@@ -87,17 +117,28 @@ void Bliss_App::draw_scene()
     Perf_Timer t(dev_ui.metrics.draw_prep_time);
     BeginDrawing();
 
+    Entity_Manager& man = Entity_Manager::instance();
+
     ClearBackground(WHITE);
 
     DrawTexture(santa_tex,
         screen_width  / 2 - santa_tex.width  / 2,
         screen_height / 2 - santa_tex.height / 2, WHITE);
 
+    for (Entity e : man.get_entities())
+    {
+        C_Position& pos = e.get_component<C_Position>();
+        DrawTexture(santa_sm_tex, (int)pos.x, (int)pos.y, WHITE);
+    }
+
     Vector2 text_dim = MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
         (float)font_roboto_mono.baseSize, 0);
-    Vector2 text_pos;
-    text_pos.x = ((float)screen_width  - text_dim.x) / 2.0f;
-    text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
+    Vector2 text_pos{
+       .x = ((float)screen_width  - text_dim.x) / 2.0f,
+       .y = ((float)screen_height - text_dim.y) / 2.0f
+    };
+    //text_pos.x = ((float)screen_width  - text_dim.x) / 2.0f;
+    //text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
 
     DrawTextEx(font_roboto_mono, BLISS_FULL_HEADER, text_pos,
         (float)font_roboto_mono.baseSize, 0, DARKGRAY);
@@ -119,7 +160,29 @@ void Bliss_App::handle_input()
     //      waiting is finished! so effectively its as good as doing right
     //      before this point)
     Perf_Timer t(dev_ui.metrics.input_time);
+    Entity_Manager& man = Entity_Manager::instance();
     exit_window = WindowShouldClose();
+
+    for (Entity e : man.get_entities())
+    {
+        C_Position& pos = e.get_component<C_Position>();
+        if (IsKeyDown(KEY_A))
+        {
+            pos.x -= 10;
+        }
+        if (IsKeyDown(KEY_D))
+        {
+            pos.x += 10;
+        }
+        if (IsKeyDown(KEY_W))
+        {
+            pos.y -= 10;
+        }
+        if (IsKeyDown(KEY_S))
+        {
+            pos.y += 10;
+        }
+    }
 
     if (IsKeyPressed(KEY_E)) {
         TraceLog(LOG_INFO, "hi");
@@ -148,6 +211,8 @@ void Bliss_App::load_fonts() {
 
 void Bliss_App::load_textures() {
     santa_tex = LoadTexture("resources/santa/Idle (1).png");
+    santa_sm_tex = LoadTexture("resources/santa/Idle (1) - Cropped - Small.png");
+    santa_cropped_tex = LoadTexture("resources/santa/Idle (1) - Cropped.png");
 }
 
 Bliss_App::~Bliss_App()

@@ -13,13 +13,13 @@ struct Metrics
     MetricsGuiMetric drawing_time;
     MetricsGuiMetric dev_ui_time;
     MetricsGuiMetric dev_ui_render_time;
+    MetricsGuiMetric ecs_bookkeeping_time;
 };
 
 class Dev_UI
 {
 public:
-    Dev_UI();
-    ~Dev_UI();
+    static Dev_UI& instance();
     void init();
     void render();
     void draw();
@@ -30,6 +30,8 @@ public:
     MetricsGuiPlot plot;
 
 private:
+    Dev_UI();
+    ~Dev_UI();
     void draw_resource_counter();
     void init_metrics_gui_plot();
     void init_metrics_gui_metrics();

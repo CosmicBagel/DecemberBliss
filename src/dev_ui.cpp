@@ -2,6 +2,12 @@
 #include "imgui_impl_raylib.h"
 #include "ray_includes.h"
 
+Dev_UI& Dev_UI::instance()
+{
+    static Dev_UI inst{};
+    return inst;
+}
+
 Dev_UI::Dev_UI() {}
 
 //need to wait for raylib window to init, which can happen after we construct
@@ -166,6 +172,10 @@ void Dev_UI::init_metrics_gui_metrics()
     metrics.dev_ui_render_time.mUnits = UNITS;
     metrics.dev_ui_render_time.mFlags = FLAG;
 
+    metrics.ecs_bookkeeping_time.mDescription = "ECS Bookkeeping";
+    metrics.ecs_bookkeeping_time.mUnits = UNITS;
+    metrics.ecs_bookkeeping_time.mFlags = FLAG;
+
     //plot.AddMetric(&metrics.frame_time);
     plot.AddMetric(&metrics.input_time);
     plot.AddMetric(&metrics.simulation_time);
@@ -173,6 +183,7 @@ void Dev_UI::init_metrics_gui_metrics()
     plot.AddMetric(&metrics.drawing_time);
     plot.AddMetric(&metrics.dev_ui_time);
     plot.AddMetric(&metrics.dev_ui_render_time);
+    plot.AddMetric(&metrics.ecs_bookkeeping_time);
 }
 
 // Load raw pixel data into an image

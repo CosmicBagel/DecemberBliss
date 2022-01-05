@@ -58,8 +58,9 @@ target_link_libraries(DecemberBliss PRIVATE
 
 ### Project source
 target_sources(DecemberBliss PRIVATE 
-    src/main.cpp "src/log_gui.cpp" src/dev_ui.cpp src/bliss_app.cpp 
-    src/log_router.cpp src/perf_timer.cpp)
+    src/main.cpp src/log_gui.cpp src/dev_ui.cpp src/bliss_app.cpp 
+    src/log_router.cpp src/perf_timer.cpp src/entity.cpp
+    src/entity_memory_pool.cpp src/entity_manager.cpp )
 target_include_directories(DecemberBliss PRIVATE src)
 
 ### Get Git info for buildInfo.h

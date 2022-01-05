@@ -21,7 +21,7 @@ private:
     int screen_width  = 800;
     int screen_height = 600;
 
-    Dev_UI dev_ui;
+    Dev_UI& dev_ui;
 
     void load_fonts();
     Font font_roboto_mono;
@@ -30,6 +30,8 @@ private:
 
     void load_textures();
     Texture2D santa_tex;
+    Texture2D santa_cropped_tex;
+    Texture2D santa_sm_tex;
 
 };
 
