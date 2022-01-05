@@ -35,6 +35,9 @@ Bad:  `ImGuiIO *ig_io;`
 - Avoid using polymorphism, clarity of simple direct function calls
   is preferred. (This makes following code's control flow and data flow MUCH
   simpler).
+	Note: pure data inheritance is not polymorphism (there are no virtual 
+	functions) as the data is just combined at compile time. So pure data
+	base classes are okay as there is no indirection.
 - Break long functions into short ones
 - Small classes (with small interfaces) are preferred over large ones
   (Note: by interface I mean the public members of a class; i.e. a simple
