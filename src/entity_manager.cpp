@@ -60,18 +60,23 @@ void Entity_Manager::update_manager()
 
     //ONLY IMPL IF CURRENT LOOP ACTUALLY PROFILES SLOWLY
 
-    for (size_t i = entities.size(); i > 0; i--)
-    {
-        if (!entities[i - 1].is_active())
-        {
-            entities.erase(entities.begin() + i - 1);
-        }
-    }
 
     // add new entities
     while (!entities_to_add.empty())
     {
         entities.push_back(entities_to_add.back());
         entities_to_add.pop_back();
+    }
+
+    //bug fix: removal happens after adding so that if an entity is created
+    //and then removed in the same frame, it will be properly removed
+    //before with the remove check before the add, entities would be attempted 
+    //to be removed BEFORE they were added (during update)
+    for (size_t i = entities.size(); i > 0; i--)
+    {
+        if (!entities[i - 1].is_active())
+        {
+            entities.erase(entities.begin() + i - 1);
+        }
     }
 }
