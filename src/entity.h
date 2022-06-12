@@ -21,6 +21,8 @@ private:
     Entity(size_t id) : id(id) {};
     Entity();
 public:
+    size_t get_id();
+
     template <typename T>
     T& get_component()
     {

@@ -15,3 +15,7 @@ bool Entity::is_active()
 // public funcs
 
 
+size_t Entity::get_id()
+{
+	return this->id;
+}
