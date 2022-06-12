@@ -15,6 +15,15 @@ private:
     bool active;
 };
 
+struct C_Enemy : public I_Component
+{};
+
+struct C_Player : public I_Component
+{};
+
+struct C_PlayerBullet : public I_Component
+{};
+
 struct C_Position : public I_Component
 {
     //9 bytes
