@@ -112,12 +112,20 @@ void Bliss_App::draw_scene()
 
     DrawTexture(santa_tex,
         screen_width  / 2 - santa_tex.width  / 2,
-        screen_height / 2 - santa_tex.height / 2, WHITE);
+        screen_height / 2 - santa_tex.height / 2, WHITE);                      
 
-    for (Entity e : man.get_entities())
+    // draw
+    for (Entity e : man.get_entities()) 
     {
-        C_Position& pos = e.get_component<C_Position>();
-        DrawTexture(santa_sm_tex, (int)pos.x, (int)pos.y, WHITE);
+        if (e.has_component<C_Texture>() && e.has_component<C_Position>())  
+        {
+            C_Position& pos = e.get_component<C_Position>();
+            C_Texture& tex = e.get_component<C_Texture>();
+            DrawTexture(tex.texture, (int)pos.x, (int)pos.y, WHITE);
+            //note in case I want to let something rotate or scale (I suspect the above function
+            //is faster tho)
+            //DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);  
+        }
     }
 
     Vector2 text_dim = MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
