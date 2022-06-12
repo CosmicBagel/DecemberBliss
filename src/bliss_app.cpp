@@ -208,8 +208,8 @@ void Bliss_App::load_fonts() {
 }
 
 void Bliss_App::load_textures() {
-    santa_tex = LoadTexture("resources/santa/Idle (1).png");
-    santa_sm_tex = LoadTexture("resources/santa/Idle (1) - Cropped - Small.png");
+    santa_tex =         LoadTexture("resources/santa/Idle (1).png");
+    santa_sm_tex =      LoadTexture("resources/santa/Idle (1) - Cropped - Small.png");
     santa_cropped_tex = LoadTexture("resources/santa/Idle (1) - Cropped.png");
 }
 
