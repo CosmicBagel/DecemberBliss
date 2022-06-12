@@ -31,19 +31,8 @@ void Bliss_App::run()
 
     TraceLog(LOG_INFO, "Initializing sim");
     Entity_Manager& man = Entity_Manager::instance();
-    //BUG: Adding and removing this entity causes one test santa to move twice as fast
-    //Entity e = man.add_entity("Player");
-    //C_Position& p_pos = e.add_component<C_Position>();
-    //e.remove_component<C_Position>();
-    //auto has = e.has_component<C_Position>();
-    //TraceLog(LOG_INFO, has ? "true" : "false");
 
-    //C_Position& pos = e.add_component<C_Position>();
-    //pos.x = 400;
-    //pos.y = 400;
 
-    //man.remove_entity(e);
-    //man.update_manager();
 
     for (size_t i = 0; i < MAX_ENTITIES; i++)
     {
@@ -157,8 +146,9 @@ void Bliss_App::handle_input()
     //Input handling
     //----------------------------------------------------------------------------------
     //Note: Input is actually polled inside raylib's EndDrawing (after frame
-    //      waiting is finished! so effectively its as good as doing right
-    //      before this point)
+    //      waiting is finished!) so effectively processing input here (at the 
+    //      start of the frame) is as good as processing right after polling
+    //      for input.
     Perf_Timer t(dev_ui.metrics.input_time);
     Entity_Manager& man = Entity_Manager::instance();
     exit_window = WindowShouldClose();
