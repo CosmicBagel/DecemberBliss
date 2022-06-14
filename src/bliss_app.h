@@ -2,6 +2,7 @@
 
 #include "ray_includes.h"
 #include "dev_ui.h"
+#include "input_state.h"
 
 class Bliss_App
 {
@@ -16,8 +17,6 @@ public:
     void simulation_step();
     void handle_input();
 private:
-    bool exit_window = false;
-
     int screen_width  = 800;
     int screen_height = 600;
 
@@ -32,6 +31,8 @@ private:
     Texture2D santa_tex;
     Texture2D santa_cropped_tex;
     Texture2D santa_sm_tex;
+
+    Input_State input_state;
 
 };
 
