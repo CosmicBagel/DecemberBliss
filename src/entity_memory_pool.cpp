@@ -22,7 +22,6 @@ Entity_Memory_Pool::Entity_Memory_Pool(size_t max_entities)
     active = std::vector<bool>(max_entities);
 };
 
-//TODO get_next_entity_index();
 size_t Entity_Memory_Pool::get_next_entity_index()
 {
     size_t ind = 0;
