@@ -9,6 +9,8 @@ class Entity_Manager; //forward declare workaround for awkward header inclusion
 //#include "entity_memory_pool.h"
 class Entity_Memory_Pool;
 
+#include <string>
+
 class Entity
 {
     friend class Entity_Manager;
@@ -21,7 +23,8 @@ private:
     Entity(size_t id) : id(id) {};
     Entity();
 public:
-    size_t get_id();
+    const size_t get_id();
+    const std::string& get_tag();
 
     template <typename T>
     T& get_component()

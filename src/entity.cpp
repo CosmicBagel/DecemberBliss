@@ -15,7 +15,12 @@ bool Entity::is_active()
 // public funcs
 
 
-size_t Entity::get_id()
+const size_t Entity::get_id()
 {
 	return this->id;
+}
+
+const std::string& Entity::get_tag()
+{
+    return Entity_Memory_Pool::instance().get_tag(id);
 }
