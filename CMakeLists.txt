@@ -20,15 +20,18 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     if(MSVC)
         target_compile_options(DecemberBliss PRIVATE /W4)
         
-        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-            target_compile_options(DecemberBliss PRIVATE /fsanitize=address)
+        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            # debug flags and things
+			#target_compile_options(DecemberBliss PRIVATE /DEBUG:FULL /Zi /EHsc)
+			target_compile_options(DecemberBliss PRIVATE /fsanitize=address /DEBUG:FULL /Zi /EHsc)
         else()
             # todo: add optimization flags or w/e
+            target_compile_options(DecemberBliss PRIVATE /O2)
         endif()
     else()
         target_compile_options(DecemberBliss PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion )
-        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-            target_compile_options(DecemberBliss PRIVATE -fsanitize=address)
+        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            # debug flags and things
         else()
             # todo: add optimization flags or w/e
         endif()
