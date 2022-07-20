@@ -47,13 +47,14 @@ endif()
 #find_package(Python3 3.8 REQUIRED COMPONENTS Development)
 
 ### Included dependencies' source code
-add_subdirectory(raylib-4.0.0/)
 add_subdirectory(imgui-1.85/)
 add_subdirectory(MetricsGui/)
+add_subdirectory(raylib-4.0.0/)
+add_subdirectory(bgfx/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE
-    raylib imgui-1.85 MetricsGui
+    raylib imgui-1.85 MetricsGui bgfx
     )
 
 ### Project source
