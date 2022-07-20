@@ -22,8 +22,9 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
         
         if(CMAKE_BUILD_TYPE STREQUAL "Debug")
             # debug flags and things
-			#target_compile_options(DecemberBliss PRIVATE /DEBUG:FULL /Zi /EHsc)
-			target_compile_options(DecemberBliss PRIVATE /fsanitize=address /DEBUG:FULL /Zi /EHsc)
+			#target_compile_options(DecemberBliss PRIVATE /Zi /EHsc)
+			target_compile_options(DecemberBliss PRIVATE /fsanitize=address /Zi /EHsc)
+            target_link_options(DecemberBliss PRIVATE /DEBUG:FULL)
         else()
             # todo: add optimization flags or w/e
             target_compile_options(DecemberBliss PRIVATE /O2)

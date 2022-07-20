@@ -8,7 +8,8 @@ if(MSVC)
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		# debug flags and things
 		#target_compile_options(MetricsGui PRIVATE /DEBUG:FULL /Zi /EHsc)
-		target_compile_options(MetricsGui PRIVATE /fsanitize=address /DEBUG:FULL /Zi /EHsc)
+		target_compile_options(MetricsGui PRIVATE /fsanitize=address /Zi /EHsc)
+		target_link_options(MetricsGui PRIVATE /DEBUG:FULL)
 	else()
 		# todo: add optimization flags or w/e
 		target_compile_options(MetricsGui PRIVATE /O2)
