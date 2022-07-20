@@ -14,12 +14,9 @@ Dev_UI::Dev_UI() {}
 //Dev_UI, hence init
 void Dev_UI::init()
 {
-    gui_context = ImGui::CreateContext(nullptr);
-    ig_io = &ImGui::GetIO();
-
     // Initialize imgui
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
+    gui_context = ImGui::CreateContext();
+    ig_io = &ImGui::GetIO();
 
     // ImGui: Initialize keyboard and mouse events
     ImGui_ImplRaylib_Init();
@@ -28,8 +25,8 @@ void Dev_UI::init()
     // ImFont* font = io.Fonts->AddFontDefault();
     unsigned char* pixels = NULL;
     int atlas_width, atlas_height;
-    io.Fonts->Build();
-    io.Fonts->GetTexDataAsRGBA32(&pixels, &atlas_width, &atlas_height, NULL);
+    ig_io->Fonts->Build();
+    ig_io->Fonts->GetTexDataAsRGBA32(&pixels, &atlas_width, &atlas_height, NULL);
     // At this point you've got the texture data and you need to upload that to 
     // your graphic system: After we have created the texture, store its 
     // pointer/identifier // (_in whichever format your engine uses_) in 
@@ -41,7 +38,7 @@ void Dev_UI::init()
         rlPixelFormat::RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
 
     font_atlas_tex = LoadTextureFromImage(fontAtlasImage);
-    io.Fonts->TexID = (ImTextureID)&font_atlas_tex.id;
+    ig_io->Fonts->TexID = (ImTextureID)&font_atlas_tex.id;
 
     init_metrics_gui_plot();
     init_metrics_gui_metrics();
