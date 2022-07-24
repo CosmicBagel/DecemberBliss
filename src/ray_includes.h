@@ -5,7 +5,7 @@
 //only including three things here, but there are so many warnings to ignore
 //it gets its own header file now
 
-//don't give warnings for external stuff that can't be controlled
+// don't give warnings for external stuff that can't be controlled
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
@@ -27,8 +27,8 @@
 #pragma warning(disable : 4244)
 #endif
 
-#include "raylib.h"
-#include "rlgl.h"
+#include <raylib.h>
+#include <rlgl.h>
 
 #ifdef _MSC_VER
 #pragma warning(default : 4244)

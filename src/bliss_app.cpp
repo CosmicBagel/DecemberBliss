@@ -307,15 +307,15 @@ void Bliss_App::render_scene()
 }
 
 void Bliss_App::load_fonts() {
-	font_roboto_mono = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 28, nullptr, 255);
-	font_roboto_mono_sm = LoadFontEx("resources/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
-	font = LoadFontEx("resources/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
+	font_roboto_mono = LoadFontEx("data/fonts/RobotoMono-Regular.ttf", 28, nullptr, 255);
+	font_roboto_mono_sm = LoadFontEx("data/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
+	font = LoadFontEx("data/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
 }
 
 void Bliss_App::load_textures() {
-	santa_tex = LoadTexture("resources/santa/Idle (1).png");
-	santa_sm_tex = LoadTexture("resources/santa/Idle (1) - Cropped - Small.png");
-	santa_cropped_tex = LoadTexture("resources/santa/Idle (1) - Cropped.png");
+	santa_tex = LoadTexture("data/santa/Idle (1).png");
+	santa_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small.png");
+	santa_cropped_tex = LoadTexture("data/santa/Idle (1) - Cropped.png");
 }
 
 Bliss_App::~Bliss_App()

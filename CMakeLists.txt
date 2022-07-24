@@ -18,12 +18,20 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     # Also set the c standard desired, this should also only be done at a global level
     # as you can't mix ABI standards, everything must compile under one standard
     if(MSVC)
-        target_compile_options(DecemberBliss PRIVATE /W4)
+        target_compile_options(DecemberBliss PRIVATE /W4 /experimental:external /external:anglebrackets /external:W0 /external:I"external" /EHsc )
         
-        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-            # debug flags and things
-			#target_compile_options(DecemberBliss PRIVATE /Zi /EHsc)
+        if (CMAKE_BUILD_TYPE STREQUAL "Sanitize")
+            # /Zi produces a separate PDB file (for debugging)
+            # /EHsc enables (s) stack unwinding and (c) "extern" C functions never throw exceptions
+            # /fsanitize=address enables the address sanitizer
 			target_compile_options(DecemberBliss PRIVATE /fsanitize=address /Zi /EHsc)
+            # give us the full debug output
+            target_link_options(DecemberBliss PRIVATE /DEBUG:FULL)
+        elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            # debug flags and things
+            # /Zi produces a separate PDB file (for debugging)
+            # /EHsc enables (s) stack unwinding and (c) "extern" C functions never throw exceptions
+			target_compile_options(DecemberBliss PRIVATE /Zi /EHsc)
             target_link_options(DecemberBliss PRIVATE /DEBUG:FULL)
         else()
             # todo: add optimization flags or w/e
@@ -45,20 +53,12 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
 endif()
 
-### Python is an external dependency, and must be installed before hand
-#   x86 and x64 for the respective build target
-#set(Python3_USE_STATIC_LIBS TRUE)
-#find_package(Python3 3.8 REQUIRED COMPONENTS Development)
-
 ### Included dependencies' source code
-add_subdirectory(imgui-1.85/)
-add_subdirectory(MetricsGui/)
-add_subdirectory(raylib-4.0.0/)
-add_subdirectory(bgfx/)
+add_subdirectory(external/)
 
 ### Declare dependencies
 target_link_libraries(DecemberBliss PRIVATE
-    raylib imgui-1.85 MetricsGui bgfx
+    raylib imgui-1.85 MetricsGui
     )
 
 ### Project source
@@ -91,7 +91,4 @@ configure_file(build_info.h.in build_info.h)
 target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 ### Copy resources folder to build destination
-file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
-
-### Copy python runtime dependencies to build destination
-#file(COPY ${CMAKE_SOURCE_DIR}/python-embeded/${BLISS_ARCH}/ DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/data DESTINATION ${CMAKE_BINARY_DIR})
