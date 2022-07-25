@@ -64,10 +64,10 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
         endif()
     endif()
 
-    # this will give us a soft enforcement of the c11 standard, project won't error out, but
-    # because of our warning flags, we will still be told when we're using non-standard c
+    # this will give us a soft enforcement of the c11 standard and cpp17, project won't error out, 
+    # but because of our warning flags, we will still be told when we're using non-standard c
     # mixing c / c++ standard can cause weird ABI issues when linking
-    target_compile_features(DecemberBliss PRIVATE c_std_11 cxx_std_20)
+    target_compile_features(DecemberBliss PRIVATE c_std_11 cxx_std_17)
 endif()
 
 # ## Included dependencies' source code
