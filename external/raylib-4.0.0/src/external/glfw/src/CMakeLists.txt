@@ -132,12 +132,12 @@ endif()
 # Enable a reasonable set of warnings
 # NOTE: The order matters here, Clang-CL matches both MSVC and Clang
 if (MSVC)
-    target_compile_options(glfw PRIVATE "/W3")
+    # target_compile_options(glfw PRIVATE "/W3")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
         CMAKE_C_COMPILER_ID STREQUAL "Clang" OR
         CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
 
-    target_compile_options(glfw PRIVATE "-Wall")
+    # target_compile_options(glfw PRIVATE "-Wall")
 endif()
 
 if (_GLFW_WIN32)
