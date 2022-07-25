@@ -237,10 +237,10 @@ void Bliss_App::draw_scene()
 
 	Vector2 text_dim = MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
 		(float)font_roboto_mono.baseSize, 0);
-	Vector2 text_pos{
-	   .x = ((float)screen_width - text_dim.x) / 2.0f,
-	   .y = ((float)screen_height - text_dim.y) / 2.0f
-	};
+	Vector2 text_pos;
+	text_pos.x = ((float)screen_width - text_dim.x) / 2.0f;
+	text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
+	
 	//text_pos.x = ((float)screen_width  - text_dim.x) / 2.0f;
 	//text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
 
