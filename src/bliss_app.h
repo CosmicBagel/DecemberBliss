@@ -35,6 +35,9 @@ private:
 
     Input_State input_state;
 
+    void create_player();
+    void create_enemy(int count = 3);
+    void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y);
 };
 
 

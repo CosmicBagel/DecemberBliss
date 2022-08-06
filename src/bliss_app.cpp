@@ -10,8 +10,9 @@
 
 #include <sstream>
 
-void create_player(Entity_Manager &man, const Texture2D &texture)
+void Bliss_App::create_player()
 {
+	auto& man = Entity_Manager::instance();
 	auto e = man.add_entity("player");
 
 	e.add_component<C_Player>();
@@ -28,11 +29,12 @@ void create_player(Entity_Manager &man, const Texture2D &texture)
 	bounding_circle.radius = 50;
 
 	auto& player_tex = e.add_component<C_Texture>();
-	player_tex.texture = texture;
+	player_tex.texture = santa_sm_tex;
 }
 
-void create_poppers(Entity_Manager &man, const Texture2D &texture, int count = 3)
+void Bliss_App::create_enemy(int count)
 {
+	auto& man = Entity_Manager::instance();
 	for (int i = 0; i < count; i++) {
 		// std::ostringstream s;
 		// s << "popper_" << i;
@@ -57,9 +59,30 @@ void create_poppers(Entity_Manager &man, const Texture2D &texture, int count = 3
 		bounding_circle.radius = 50;
 
 		auto& tex = e.add_component<C_Texture>();
-		tex.texture = texture;
-
+		tex.texture = popper_sm_tex;
 	}
+}
+
+void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y)
+{
+	auto& man = Entity_Manager::instance();
+	auto e = man.add_entity("bullet");
+
+	e.add_component<C_PlayerBullet>();
+
+	auto& pos = e.add_component<C_Position>();
+	pos.x = (float)pos_x;
+	pos.y = (float)pos_y;
+
+	auto& vel = e.add_component<C_Velocity>();
+	vel.x = vel_x;
+	vel.y = vel_y;
+
+	auto& bounding_circle = e.add_component<C_Bounding_Circle>();
+	bounding_circle.radius = 5;
+
+	auto& tex = e.add_component<C_Texture>();
+	tex.texture = popper_sm_tex;
 }
 
 Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance())
@@ -86,8 +109,8 @@ void Bliss_App::run()
 	TraceLog(LOG_INFO, "Initializing sim");
 	Entity_Manager& man = Entity_Manager::instance();
 	
-	create_player(man, santa_sm_tex);
-	create_poppers(man, popper_sm_tex);
+	create_player();
+	create_enemy();
 	man.update_manager();
 
 	TraceLog(LOG_INFO, "Starting sim loop");
@@ -204,6 +227,24 @@ void Bliss_App::simulation_step()
 
 		v.y *= 4;
 		v.x *= 4;
+
+		if (input_state.fire) {
+			auto& pos = p.get_component<C_Position>();
+
+			float distance_x = input_state.target_pos.x - pos.x;
+			float distance_y = input_state.target_pos.y - pos.y;
+
+			float squared_magnitude = distance_x * distance_x + distance_y * distance_y;
+			float magnitude = sqrtf(squared_magnitude);
+
+			float vector_x = distance_x / magnitude;
+			float vector_y = distance_y / magnitude;
+
+			float vel_x = 12 * vector_x;
+			float vel_y = 12 * vector_y;
+
+			create_bullet(pos.x, pos.y, vel_x, vel_y);
+		}
 	}
 
 	// for systems
@@ -237,6 +278,14 @@ void Bliss_App::simulation_step()
 			if (check_for_overlap(e, b)) {
 				// enemy dies
 			}
+		}
+	}
+
+	for (Entity e : e_bullets) {
+		// clean up out of bounds bullets
+		auto& pos = e.get_component<C_Position>();
+		if (pos.x < -1000 || pos.x > 1000 || pos.y < -1000 || pos.y > 1000) {
+			e_man.remove_entity(e);
 		}
 	}
 }
