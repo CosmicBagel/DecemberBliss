@@ -31,6 +31,7 @@ private:
     Texture2D santa_tex;
     Texture2D santa_cropped_tex;
     Texture2D santa_sm_tex;
+    Texture2D popper_sm_tex;
 
     Input_State input_state;
 

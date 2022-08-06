@@ -8,6 +8,8 @@
 #include "entity.h"
 #include "components.h"
 
+#include <sstream>
+
 void create_player(Entity_Manager &man, const Texture2D &texture)
 {
 	auto e = man.add_entity("player");
@@ -23,10 +25,41 @@ void create_player(Entity_Manager &man, const Texture2D &texture)
 	inital_vel.y = 0;
 
 	auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-	bounding_circle.radius = 2;
+	bounding_circle.radius = 50;
 
 	auto& player_tex = e.add_component<C_Texture>();
 	player_tex.texture = texture;
+}
+
+void create_poppers(Entity_Manager &man, const Texture2D &texture, int count = 3)
+{
+	for (int i = 0; i < count; i++) {
+		// std::ostringstream s;
+		// s << "popper_" << i;
+		auto e = man.add_entity("enemy");
+
+		e.add_component<C_Enemy>();
+
+		// random pos within screen size
+		int x = GetRandomValue(0, GetScreenWidth());
+		int y = GetRandomValue(0, GetScreenHeight());
+		TraceLog(LOG_INFO, "popper %d, created at %d, %d", i, x, y);
+
+		auto& pos = e.add_component<C_Position>();
+		pos.x = (float)x;
+		pos.y = (float)y;
+
+		auto& vel = e.add_component<C_Velocity>();
+		vel.x = 0;
+		vel.y = 0;
+
+		auto& bounding_circle = e.add_component<C_Bounding_Circle>();
+		bounding_circle.radius = 50;
+
+		auto& tex = e.add_component<C_Texture>();
+		tex.texture = texture;
+
+	}
 }
 
 Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance())
@@ -54,6 +87,7 @@ void Bliss_App::run()
 	Entity_Manager& man = Entity_Manager::instance();
 	
 	create_player(man, santa_sm_tex);
+	create_poppers(man, popper_sm_tex);
 	man.update_manager();
 
 	TraceLog(LOG_INFO, "Starting sim loop");
@@ -85,7 +119,7 @@ void Bliss_App::handle_input()
 	//      start of the frame) is as good as processing right after polling
 	//      for input.
 	Perf_Timer t(dev_ui.metrics.input_time);
-	Entity_Manager& man = Entity_Manager::instance();
+	// Entity_Manager& man = Entity_Manager::instance();
 
 	input_state.exit_window = WindowShouldClose();
 
@@ -142,8 +176,8 @@ void Bliss_App::simulation_step()
 
 	// for logic on specific "kinds" of entities
 	auto& e_player = e_man.get_entities("player");
-	auto& e_enemies = e_man.get_entities("enemies");
-	auto& e_bullets = e_man.get_entities("bullets");
+	auto& e_enemies = e_man.get_entities("enemy");
+	auto& e_bullets = e_man.get_entities("bullet");
 
 	// update player velocity based on input
 	for (Entity p : e_player) {
@@ -193,6 +227,7 @@ void Bliss_App::simulation_step()
 		for (Entity e : e_enemies) {
 			if (check_for_overlap(p, e)) {
 				// player dies
+				TraceLog(LOG_INFO, "Player overlap with enemy");
 			}
 		}
 	}
@@ -224,14 +259,33 @@ void Bliss_App::draw_scene()
 	// draw
 	for (Entity e : man.get_entities())
 	{
-		if (e.has_component<C_Texture>() && e.has_component<C_Position>())
+		bool hasPos = e.has_component<C_Position>();
+		if (hasPos && e.has_component<C_Texture>())
 		{
 			C_Position& pos = e.get_component<C_Position>();
 			C_Texture& tex = e.get_component<C_Texture>();
-			DrawTexture(tex.texture, (int)pos.x, (int)pos.y, WHITE);
+			DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, WHITE);
+			DrawCircle((int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, 1, BLUE);
 			//note in case I want to let something rotate or scale (I suspect the above function
 			//is faster tho)
 			//DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);  
+		}
+
+		// bounding circle debug
+		if (hasPos && e.has_component<C_Bounding_Circle>())
+		{
+			C_Position& pos = e.get_component<C_Position>();
+			C_Bounding_Circle& bounds = e.get_component<C_Bounding_Circle>();
+			Color translucentRed = RED;
+			translucentRed.a = 128;
+			DrawCircleLines((int)pos.x, (int)pos.y, bounds.radius, RED);
+			DrawCircle((int)pos.x, (int)pos.y, bounds.radius, translucentRed);
+		}
+
+		if (hasPos)
+		{
+			C_Position& pos = e.get_component<C_Position>();
+			DrawCircle((int)pos.x, (int)pos.y, 1, BLACK);
 		}
 	}
 
@@ -289,7 +343,7 @@ void Bliss_App::draw_dev_ui()
 	}
 	ImGui::End();
 
-	ImGui::ShowDemoWindow();
+	// ImGui::ShowDemoWindow();
 
 	log_gui.draw("Log");
 }
@@ -315,6 +369,7 @@ void Bliss_App::load_fonts() {
 void Bliss_App::load_textures() {
 	santa_tex = LoadTexture("data/santa/Idle (1).png");
 	santa_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small.png");
+	popper_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small - Inverted.png");
 	santa_cropped_tex = LoadTexture("data/santa/Idle (1) - Cropped.png");
 }
 
@@ -327,4 +382,7 @@ Bliss_App::~Bliss_App()
 
 	TraceLog(LOG_INFO, "Unloading textures...");
 	UnloadTexture(santa_tex);
+	UnloadTexture(santa_sm_tex);
+	UnloadTexture(popper_sm_tex);
+	UnloadTexture(santa_cropped_tex);
 }
