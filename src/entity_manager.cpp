@@ -81,9 +81,9 @@ void Entity_Manager::update_manager()
             std::string tag = Entity_Memory_Pool::instance().get_tag(e_ind);
             std::vector<Entity>& e_tag_vec = entity_map[tag];
 
-            size_t tag_ind;
+            size_t tag_ind = 0;
             bool e_found = false;
-            for (size_t tag_i = e_tag_vec.size(); tag_i - 1 >= 0; tag_i --)
+            for (long long int tag_i = e_tag_vec.size(); tag_i - 1 >= 0; tag_i --)
             {
                 if (e_tag_vec[tag_i-1].id == e_ind) 
                 {
