@@ -11,10 +11,8 @@ add_executable(DecemberBliss)
 
 # ie if this is the top most level script
 # these options should only be set if not being used by another project
+# don't mess with compiler flags unless we're the top level script
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-    # Add warnings as global options, and ONLY at the root level of the project
-    # Also set the c standard desired, this should also only be done at a global level
-    # as you can't mix ABI standards, everything must compile under one standard
     if(MSVC)
         # the defaults
         # CMAKE_CXX_FLAGS:STRING=/DWIN32 /D_WINDOWS /W3 /GR /EHsc
@@ -45,7 +43,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
         set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/DEBUG:FULL /INCREMENTAL" CACHE STRING "" FORCE)
         set(CMAKE_EXE_LINKER_FLAGS_SANITIZE "/DEBUG:FULL /INCREMENTAL" CACHE STRING "" FORCE)
 
-        target_compile_options(DecemberBliss PRIVATE /W4)
+        target_compile_options(DecemberBliss PRIVATE /W4 /analyze)
 
         if(CMAKE_BUILD_TYPE STREQUAL "Sanitize")
             target_compile_options(DecemberBliss PRIVATE /RTC1)
