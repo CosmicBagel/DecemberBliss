@@ -14,5 +14,6 @@ public:
 
 	Vector2 target_pos;
 	bool fire;
+	bool alt_fire;
 	bool bomb;
 };

@@ -156,6 +156,7 @@ void Bliss_App::handle_input()
 
 	input_state.target_pos = GetMousePosition();
 	input_state.fire = IsMouseButtonDown(0);
+	input_state.alt_fire = IsMouseButtonPressed(1);
 
 	if (IsKeyPressed(KEY_E)) {
 		TraceLog(LOG_INFO, "hi");
