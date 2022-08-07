@@ -228,10 +228,10 @@ void Bliss_App::simulation_step()
 			v.x += 1.0;
 		}
 
-		v.y *= 4;
-		v.x *= 4;
+		v.y *= 400;
+		v.x *= 400;
 
-		if (input_state.fire) {
+		if (input_state.fire || input_state.alt_fire) {
 			auto& pos = p.get_component<C_Position>();
 
 			float distance_x = input_state.target_pos.x - pos.x;
@@ -243,8 +243,8 @@ void Bliss_App::simulation_step()
 			float vector_x = distance_x / magnitude;
 			float vector_y = distance_y / magnitude;
 
-			float vel_x = 12 * vector_x;
-			float vel_y = 12 * vector_y;
+			float vel_x = 200 * vector_x;
+			float vel_y = 200 * vector_y;
 
 			create_bullet(pos.x, pos.y, vel_x, vel_y);
 			// create_bullet(pos.x, pos.y, 12, 0);
@@ -263,8 +263,8 @@ void Bliss_App::simulation_step()
 		{
 			auto& pos = e.get_component<C_Position>();
 			auto& vel = e.get_component<C_Velocity>();
-			pos.x += vel.x;
-			pos.y += vel.y;
+			pos.x += vel.x * GetFrameTime();
+			pos.y += vel.y * GetFrameTime();
 		}
 	}
 
