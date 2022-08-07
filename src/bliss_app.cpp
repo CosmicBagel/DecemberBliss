@@ -82,7 +82,7 @@ void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y
 	bounding_circle.radius = 5;
 
 	auto& tex = e.add_component<C_Texture>();
-	tex.texture = popper_sm_tex;
+	tex.texture = snowball_tex;
 }
 
 Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance())
@@ -334,7 +334,7 @@ void Bliss_App::draw_scene()
 		if (hasPos)
 		{
 			C_Position& pos = e.get_component<C_Position>();
-			DrawCircle((int)pos.x, (int)pos.y, 1, BLACK);
+			DrawCircle((int)pos.x, (int)pos.y, 1, GREEN);
 		}
 	}
 
@@ -420,6 +420,7 @@ void Bliss_App::load_textures() {
 	santa_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small.png");
 	popper_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small - Inverted.png");
 	santa_cropped_tex = LoadTexture("data/santa/Idle (1) - Cropped.png");
+	snowball_tex = LoadTexture("data/snowball/snowball_01_sm_mirrored.png");
 }
 
 Bliss_App::~Bliss_App()
@@ -434,4 +435,5 @@ Bliss_App::~Bliss_App()
 	UnloadTexture(santa_sm_tex);
 	UnloadTexture(popper_sm_tex);
 	UnloadTexture(santa_cropped_tex);
+	UnloadTexture(snowball_tex);
 }
