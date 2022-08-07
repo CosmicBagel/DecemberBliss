@@ -278,22 +278,16 @@ void Bliss_App::simulation_step()
 	}
 
 	for (Entity e : e_enemies) {
-		int enemies_created_this_enemy = 0;
 		for (Entity b : e_bullets) {
+			// enemies and bullets are not removed from the list immediately
+			// they are removed on update, however the is_active flag is immediately 
+			// updated so we can read that to see if this overlap is real
 			if (e.is_active() && b.is_active() && check_for_overlap(e, b)) {
 				// enemy dies
 				e_man.remove_entity(b);
 				e_man.remove_entity(e);
-				TraceLog(LOG_INFO, "enemy (id: %u) bullet (id: %u) overlap", e.get_id(), b.get_id());
 				create_enemy(1);
-				enemies_created_this_enemy++;
-				// creating an enemy executes a push_back on this vector we're
-				// looping over, which invalidates our iterator
-				// create_enemy_count++;
 			}
-		}
-		if (enemies_created_this_enemy > 0) {
-			TraceLog(LOG_INFO, "enemies created this enemy (id: %u): %d", e.get_id(), enemies_created_this_enemy);
 		}
 	}
 
