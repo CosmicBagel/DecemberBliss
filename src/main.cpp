@@ -15,9 +15,10 @@ TODO death state with "you died press P to reset" message
 TODO P to reset
 TODO enemies move in some semi-random way (sinusoidal patterns)
 TODO enemy touching kills player
-TODO player can shoot snowballs at enemy with mouse
+TODO snowball sprite rotates with direction
 TODO snowballs kill enemies on impact
 TODO points?
+TODO change movement velocities to be framerate independent
 */
 
 #include "bliss_app.h"
