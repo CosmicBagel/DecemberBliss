@@ -18,6 +18,8 @@ TODO enemy touching kills player
 TODO snowball sprite rotates with direction
 TODO points?
 TODO change movement velocities to be framerate independent
+TODO spawning system
+TODO controller support
 */
 
 #include "bliss_app.h"
