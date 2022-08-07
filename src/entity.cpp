@@ -6,7 +6,7 @@
 
 //default constructor *intentionally* not declared
 
-bool Entity::is_active() 
+const bool Entity::is_active() 
 {
     return Entity_Memory_Pool::instance().is_entity_active(id);
 }

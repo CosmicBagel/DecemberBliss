@@ -17,7 +17,6 @@ class Entity
     friend class Entity_Memory_Pool;
 private:
     size_t id;
-    bool is_active();
 
     // only Entity_Memory_Pool and Entity_Manager are allowed to construct entities
     Entity(size_t id) : id(id) {};
@@ -25,6 +24,7 @@ private:
 public:
     const size_t get_id();
     const std::string& get_tag();
+    const bool is_active();
 
     template <typename T>
     T& get_component()
