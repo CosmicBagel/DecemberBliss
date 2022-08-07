@@ -32,8 +32,6 @@ Entity Entity_Manager::add_entity(const std::string& tag)
     Entity e = Entity_Memory_Pool::instance().add_entity(tag);
     entities_to_add.push_back(e);
 
-    //update the tag map
-    entity_map[tag].push_back(e);
     return e;
 }
 
@@ -50,7 +48,12 @@ void Entity_Manager::update_manager()
     // add new entities
     while (!entities_to_add.empty())
     {
-        entities.push_back(entities_to_add.back());
+        auto& e = entities_to_add.back();
+        entities.push_back(e);
+
+        auto& tag = e.get_tag();
+        entity_map[tag].push_back(e);
+
         entities_to_add.pop_back();
     }
 
