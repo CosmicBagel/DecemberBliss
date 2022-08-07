@@ -34,18 +34,19 @@ void Bliss_App::create_player()
 
 void Bliss_App::create_enemy(int count)
 {
+	static std::string enemy_tag = "enemy";
 	auto& man = Entity_Manager::instance();
 	for (int i = 0; i < count; i++) {
 		// std::ostringstream s;
 		// s << "popper_" << i;
-		auto e = man.add_entity("enemy");
+		auto e = man.add_entity(enemy_tag);
 
 		e.add_component<C_Enemy>();
 
 		// random pos within screen size
 		int x = GetRandomValue(0, GetScreenWidth());
 		int y = GetRandomValue(0, GetScreenHeight());
-		TraceLog(LOG_INFO, "popper %d, created at %d, %d", i, x, y);
+		// TraceLog(LOG_INFO, "popper %d, created at %d, %d", i, x, y);
 
 		auto& pos = e.add_component<C_Position>();
 		pos.x = (float)x;
@@ -65,8 +66,10 @@ void Bliss_App::create_enemy(int count)
 
 void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y)
 {
+	static std::string bullet_tag = "bullet";
+
 	auto& man = Entity_Manager::instance();
-	auto e = man.add_entity("bullet");
+	auto e = man.add_entity(bullet_tag);
 
 	e.add_component<C_PlayerBullet>();
 
@@ -244,6 +247,7 @@ void Bliss_App::simulation_step()
 			float vel_y = 12 * vector_y;
 
 			create_bullet(pos.x, pos.y, vel_x, vel_y);
+			// create_bullet(pos.x, pos.y, 12, 0);
 		}
 	}
 
@@ -274,10 +278,22 @@ void Bliss_App::simulation_step()
 	}
 
 	for (Entity e : e_enemies) {
+		int enemies_created_this_enemy = 0;
 		for (Entity b : e_bullets) {
-			if (check_for_overlap(e, b)) {
+			if (e.is_active() && b.is_active() && check_for_overlap(e, b)) {
 				// enemy dies
+				e_man.remove_entity(b);
+				e_man.remove_entity(e);
+				TraceLog(LOG_INFO, "enemy (id: %u) bullet (id: %u) overlap", e.get_id(), b.get_id());
+				create_enemy(1);
+				enemies_created_this_enemy++;
+				// creating an enemy executes a push_back on this vector we're
+				// looping over, which invalidates our iterator
+				// create_enemy_count++;
 			}
+		}
+		if (enemies_created_this_enemy > 0) {
+			TraceLog(LOG_INFO, "enemies created this enemy (id: %u): %d", e.get_id(), enemies_created_this_enemy);
 		}
 	}
 
