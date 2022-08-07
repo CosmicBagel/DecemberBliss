@@ -82,7 +82,7 @@ void Entity_Manager::update_manager()
         {
             auto e_id = entities[e_ind].id;
             //update the tag map the entity belongs to
-            std::string tag = Entity_Memory_Pool::instance().get_tag(e_ind);
+            std::string tag = Entity_Memory_Pool::instance().get_tag(e_id);
             std::vector<Entity>& e_tag_vec = entity_map[tag];
 
             size_t tag_ind = 0;
