@@ -15,7 +15,6 @@ TODO death state with "you died press P to reset" message
 TODO P to reset
 TODO enemies move in some semi-random way (sinusoidal patterns)
 TODO enemy touching kills player
-TODO snowball sprite rotates with direction
 TODO points?
 TODO change movement velocities to be framerate independent
 TODO spawning system
