@@ -16,7 +16,8 @@ Entity_Memory_Pool::Entity_Memory_Pool(size_t max_entities)
         std::vector<C_Texture>(max_entities),
         std::vector<C_Enemy>(max_entities),
         std::vector<C_Player>(max_entities),
-        std::vector<C_PlayerBullet>(max_entities)
+        std::vector<C_PlayerBullet>(max_entities),
+        std::vector<C_Rotation>(max_entities)
     );
     tags = std::vector<std::string>(max_entities);
     active = std::vector<bool>(max_entities);

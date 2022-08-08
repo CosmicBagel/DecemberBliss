@@ -10,6 +10,29 @@
 
 #include <sstream>
 
+typedef struct Matrix2d {
+	float a, b; // top row
+	float c, d; // bottom row
+} Matrix2d;
+
+Vector2 apply_transformation(Matrix2d t_mat, Vector2 vec) {
+	return Vector2 {
+		t_mat.a * vec.x + t_mat.b * vec.y,
+		t_mat.c * vec.x + t_mat.d * vec.y
+	};
+}
+
+// 2d rotation matrix
+// cos theta, sin theta
+// -sin theta, cos theta
+Matrix2d create_rotation_mat(float degrees) {
+	float rads = degrees * DEG2RAD;
+	return Matrix2d {
+		cosf(rads), sinf(rads),
+		-sinf(rads), cosf(rads)
+	};
+}
+
 void Bliss_App::create_player()
 {
 	auto& man = Entity_Manager::instance();
@@ -64,7 +87,7 @@ void Bliss_App::create_enemy(int count)
 	}
 }
 
-void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y)
+void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y, float rot)
 {
 	static std::string bullet_tag = "bullet";
 
@@ -86,6 +109,9 @@ void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x, float vel_y
 
 	auto& tex = e.add_component<C_Texture>();
 	tex.texture = snowball_tex;
+
+	auto& r = e.add_component<C_Rotation>();
+	r.rotation = rot;
 }
 
 Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance())
@@ -107,7 +133,7 @@ void Bliss_App::run()
 	load_textures();
 
 	// raylib set fps
-	SetTargetFPS(144);
+	// SetTargetFPS(144);
 
 	TraceLog(LOG_INFO, "Initializing sim");
 	Entity_Manager& man = Entity_Manager::instance();
@@ -247,7 +273,7 @@ void Bliss_App::simulation_step()
 			float vel_x = 200 * vector_x;
 			float vel_y = 200 * vector_y;
 
-			create_bullet(pos.x, pos.y, vel_x, vel_y);
+			create_bullet(pos.x, pos.y, vel_x, vel_y, 45.0f);
 			// create_bullet(pos.x, pos.y, 12, 0);
 		}
 	}
@@ -273,7 +299,7 @@ void Bliss_App::simulation_step()
 		for (Entity e : e_enemies) {
 			if (check_for_overlap(p, e)) {
 				// player dies
-				TraceLog(LOG_INFO, "Player overlap with enemy");
+				// TraceLog(LOG_INFO, "Player overlap with enemy");
 			}
 		}
 	}
@@ -324,11 +350,33 @@ void Bliss_App::draw_scene()
 		{
 			C_Position& pos = e.get_component<C_Position>();
 			C_Texture& tex = e.get_component<C_Texture>();
-			DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, WHITE);
-			DrawCircle((int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, 1, BLUE);
-			//note in case I want to let something rotate or scale (I suspect the above function
-			//is faster tho)
-			//DrawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint);  
+			if (e.has_component<C_Rotation>()) {
+				C_Rotation& rot = e.get_component<C_Rotation>();
+				//note in case I want to let something rotate or scale (I suspect the above function
+				//is faster tho)
+
+				Matrix2d rot_mat = create_rotation_mat(rot.rotation);
+				// top left corner relative to the center of the texture
+				// to be consistent with the pixel space, the unit vectors
+				// point down and right
+				Vector2 top_left {
+					-(float)tex.texture.width / 2,
+					-(float)tex.texture.height / 2
+				};
+				Vector2 rotated_corner = apply_transformation(rot_mat, top_left);
+				
+				Vector2 renderPos {
+					pos.x + rotated_corner.x,
+					pos.y + rotated_corner.y
+				};
+
+				//raylib's degrees are inverted for some reason
+				DrawTextureEx(tex.texture, renderPos, 360 - rot.rotation, 1.0f, WHITE);  
+				DrawCircle((int)renderPos.x, (int)renderPos.y, 1, BLUE);
+			} else {
+				DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, WHITE);
+				DrawCircle((int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, 1, BLUE);
+			}
 		}
 
 		// bounding circle debug
@@ -431,7 +479,7 @@ void Bliss_App::load_textures() {
 	santa_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small.png");
 	popper_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small - Inverted.png");
 	santa_cropped_tex = LoadTexture("data/santa/Idle (1) - Cropped.png");
-	snowball_tex = LoadTexture("data/snowball/snowball_01_sm_mirrored.png");
+	snowball_tex = LoadTexture("data/snowball/snowball_01_sm_mirrored - arrow.png");
 }
 
 Bliss_App::~Bliss_App()

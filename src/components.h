@@ -31,6 +31,12 @@ public:
     float x, y;
 };
 
+struct C_Rotation : public I_Component
+{
+public:
+    float rotation;
+};
+
 struct C_Velocity : public I_Component
 {
     //9 bytes

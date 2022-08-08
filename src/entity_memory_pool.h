@@ -17,7 +17,8 @@ typedef std::tuple<
     std::vector<C_Texture>,
     std::vector<C_Enemy>,
     std::vector<C_Player>,
-    std::vector<C_PlayerBullet>
+    std::vector<C_PlayerBullet>,
+    std::vector<C_Rotation>
 > Entity_Component_Vector_Tuple;
 
 const int MAX_ENTITIES = 10'000;
