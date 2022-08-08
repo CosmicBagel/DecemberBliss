@@ -25,8 +25,8 @@ Vector2 apply_transformation(Matrix2d t_mat, Vector2 vec) {
 // 2d rotation matrix
 // cos theta, sin theta
 // -sin theta, cos theta
-Matrix2d create_rotation_mat(float degrees) {
-	float rads = degrees * DEG2RAD;
+Matrix2d create_rotation_mat(float rads) {
+	// float rads = degrees * DEG2RAD;
 	return Matrix2d {
 		cosf(rads), sinf(rads),
 		-sinf(rads), cosf(rads)
@@ -261,6 +261,7 @@ void Bliss_App::simulation_step()
 		if (input_state.fire || input_state.alt_fire) {
 			auto& pos = p.get_component<C_Position>();
 
+			// determine velocity vector
 			float distance_x = input_state.target_pos.x - pos.x;
 			float distance_y = input_state.target_pos.y - pos.y;
 
@@ -273,8 +274,12 @@ void Bliss_App::simulation_step()
 			float vel_x = 200 * vector_x;
 			float vel_y = 200 * vector_y;
 
-			create_bullet(pos.x, pos.y, vel_x, vel_y, 45.0f);
-			// create_bullet(pos.x, pos.y, 12, 0);
+			// determine rotation using the distance vector
+			// note our y distance is screen space (unit_y is pointing down)
+			// so we need to flip it for standard coordinates
+			float rads = atan2(-distance_y, distance_x);
+
+			create_bullet(pos.x, pos.y, vel_x, vel_y, rads);
 		}
 	}
 
@@ -371,7 +376,7 @@ void Bliss_App::draw_scene()
 				};
 
 				//raylib's degrees are inverted for some reason
-				DrawTextureEx(tex.texture, renderPos, 360 - rot.rotation, 1.0f, WHITE);  
+				DrawTextureEx(tex.texture, renderPos, 360 - rot.rotation * RAD2DEG, 1.0f, WHITE);  
 				DrawCircle((int)renderPos.x, (int)renderPos.y, 1, BLUE);
 			} else {
 				DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, WHITE);
@@ -479,7 +484,7 @@ void Bliss_App::load_textures() {
 	santa_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small.png");
 	popper_sm_tex = LoadTexture("data/santa/Idle (1) - Cropped - Small - Inverted.png");
 	santa_cropped_tex = LoadTexture("data/santa/Idle (1) - Cropped.png");
-	snowball_tex = LoadTexture("data/snowball/snowball_01_sm_mirrored - arrow.png");
+	snowball_tex = LoadTexture("data/snowball/snowball_01_sm_mirrored.png");
 }
 
 Bliss_App::~Bliss_App()
