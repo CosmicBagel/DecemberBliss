@@ -12,6 +12,7 @@ struct Metrics
     MetricsGuiMetric draw_prep_time;
     MetricsGuiMetric drawing_time;
     MetricsGuiMetric dev_ui_time;
+    MetricsGuiMetric game_ui_time;
     MetricsGuiMetric dev_ui_render_time;
     MetricsGuiMetric ecs_bookkeeping_time;
 };

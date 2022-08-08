@@ -148,6 +148,7 @@ void Bliss_App::run()
 		handle_input();
 		simulation_step();
 		draw_scene();
+		draw_game_ui();
 		draw_dev_ui();
 
 		render_dev_ui();
@@ -414,6 +415,19 @@ void Bliss_App::draw_scene()
 	DrawTextEx(font_roboto_mono, BLISS_FULL_HEADER, text_pos,
 		(float)font_roboto_mono.baseSize, 0, DARKGRAY);
 }
+
+void Bliss_App::draw_game_ui()
+{
+	Perf_Timer t(dev_ui.metrics.game_ui_time);
+	std::ostringstream s;
+	s << "Lives: " << lives;
+
+	Vector2 text_pos {40, 40};
+	DrawRectangle(30, 30, 120, 50, BLACK);
+	DrawTextEx(font_roboto_mono, s.str().c_str(), text_pos,
+		(float)font_roboto_mono.baseSize, 0, WHITE);
+}
+
 
 void Bliss_App::draw_dev_ui()
 {

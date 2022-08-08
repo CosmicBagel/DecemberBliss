@@ -14,11 +14,15 @@ public:
     void render_scene();
     void draw_dev_ui();
     void draw_scene();
+    void draw_game_ui();
     void simulation_step();
     void handle_input();
 private:
     int screen_width  = 800;
     int screen_height = 600;
+
+    const int STARTING_LIVES = 3;
+    int lives = STARTING_LIVES;
 
     Dev_UI& dev_ui;
 
@@ -37,7 +41,7 @@ private:
     Input_State input_state;
 
     void create_player();
-    void create_enemy(int count = 50);
+    void create_enemy(int count = 7);
     void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y, float rot);
 };
 

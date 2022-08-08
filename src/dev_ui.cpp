@@ -157,6 +157,10 @@ void Dev_UI::init_metrics_gui_metrics()
     metrics.draw_prep_time.mUnits = UNITS;
     metrics.draw_prep_time.mFlags = FLAG;
 
+    metrics.game_ui_time.mDescription = "Draw Prep UI";
+    metrics.game_ui_time.mUnits = UNITS;
+    metrics.game_ui_time.mFlags = FLAG;
+
     metrics.drawing_time.mDescription = "RL EndDrawing";
     metrics.drawing_time.mUnits = UNITS;
     metrics.drawing_time.mFlags = FLAG;
@@ -177,6 +181,7 @@ void Dev_UI::init_metrics_gui_metrics()
     plot.AddMetric(&metrics.input_time);
     plot.AddMetric(&metrics.simulation_time);
     plot.AddMetric(&metrics.draw_prep_time);
+    plot.AddMetric(&metrics.game_ui_time);
     plot.AddMetric(&metrics.drawing_time);
     plot.AddMetric(&metrics.dev_ui_time);
     plot.AddMetric(&metrics.dev_ui_render_time);
