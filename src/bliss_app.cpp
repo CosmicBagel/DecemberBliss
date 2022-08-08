@@ -306,6 +306,20 @@ void Bliss_App::simulation_step()
 			if (check_for_overlap(p, e)) {
 				// player dies
 				// TraceLog(LOG_INFO, "Player overlap with enemy");
+				e_man.remove_entity(p);
+				if (lives > 0) {
+					lives--;
+					create_player();
+				}
+				
+				int enemy_count = e_enemies.size();
+
+				for (Entity e2 :e_enemies) {
+					e_man.remove_entity(e2);
+				}
+
+				create_enemy(enemy_count);
+				break;
 			}
 		}
 	}
@@ -378,10 +392,12 @@ void Bliss_App::draw_scene()
 
 				//raylib's degrees are inverted for some reason
 				DrawTextureEx(tex.texture, renderPos, 360 - rot.rotation * RAD2DEG, 1.0f, WHITE);  
+				// DrawRectangle((int)renderPos.x, (int)renderPos.y, 3, 3, BLUE);
 				DrawCircle((int)renderPos.x, (int)renderPos.y, 1, BLUE);
 			} else {
 				DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, WHITE);
 				DrawCircle((int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, 1, BLUE);
+				// DrawRectangle((int)pos.x - tex.texture.width / 2, (int)pos.y - tex.texture.height / 2, 3, 3, BLUE);
 			}
 		}
 
@@ -400,6 +416,7 @@ void Bliss_App::draw_scene()
 		{
 			C_Position& pos = e.get_component<C_Position>();
 			DrawCircle((int)pos.x, (int)pos.y, 1, GREEN);
+			// DrawRectangle((int)pos.x, (int)pos.y, 3, 3, GREEN);
 		}
 	}
 
