@@ -11,6 +11,7 @@ TODO: Memory usage tracking
 */
 
 /*
+TODO don't spawn enemy on player!!!
 TODO death state with "you died press P to reset" message
 TODO P to reset
 TODO enemies move in some semi-random way (sinusoidal patterns)

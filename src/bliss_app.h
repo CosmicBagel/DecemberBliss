@@ -4,6 +4,8 @@
 #include "dev_ui.h"
 #include "input_state.h"
 
+class Entity;
+
 class Bliss_App
 {
 public:
@@ -18,10 +20,11 @@ public:
     void simulation_step();
     void handle_input();
 private:
-    int screen_width  = 800;
-    int screen_height = 600;
+    static const int screen_width  = 800;
+    static const int screen_height = 600;
+    static const float no_spawn_radius;
 
-    const int STARTING_LIVES = 3;
+    static const int STARTING_LIVES = 3;
     int lives = STARTING_LIVES;
 
     Dev_UI& dev_ui;
@@ -40,8 +43,8 @@ private:
 
     Input_State input_state;
 
-    void create_player();
-    void create_enemy(int count = 7);
+    Entity create_player();
+    void create_enemy(int count, Vector2 no_spawn_center, float no_spawn_radius);
     void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y, float rot);
 };
 

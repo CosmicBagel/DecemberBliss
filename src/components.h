@@ -29,6 +29,9 @@ struct C_Position : public I_Component
     //9 bytes
 public:
     float x, y;
+    C_Position() : x { 0.0f }, y { 0.0f } {};
+    C_Position(Vector2 vec) : x { vec.x }, y { vec.y } {};
+    operator Vector2() const { return Vector2 {x,y}; }
 };
 
 struct C_Rotation : public I_Component
@@ -42,6 +45,9 @@ struct C_Velocity : public I_Component
     //9 bytes
 public:
     float x, y;
+    C_Velocity() : x { 0.0f }, y { 0.0f } {};
+    C_Velocity(Vector2 vec) : x { vec.x }, y { vec.y } {};
+    operator Vector2() const { return Vector2 {x,y}; }
 };
 
 struct C_Bounding_Circle : public I_Component

@@ -10,12 +10,14 @@
 
 #include <sstream>
 
+const float Bliss_App::no_spawn_radius = 100.0f;
+
 typedef struct Matrix2d {
 	float a, b; // top row
 	float c, d; // bottom row
 } Matrix2d;
 
-Vector2 apply_transformation(Matrix2d t_mat, Vector2 vec) {
+inline Vector2 apply_transformation(Matrix2d t_mat, Vector2 vec) {
 	return Vector2 {
 		t_mat.a * vec.x + t_mat.b * vec.y,
 		t_mat.c * vec.x + t_mat.d * vec.y
@@ -25,7 +27,7 @@ Vector2 apply_transformation(Matrix2d t_mat, Vector2 vec) {
 // 2d rotation matrix
 // cos theta, sin theta
 // -sin theta, cos theta
-Matrix2d create_rotation_mat(float rads) {
+inline Matrix2d create_rotation_mat(float rads) {
 	// float rads = degrees * DEG2RAD;
 	return Matrix2d {
 		cosf(rads), sinf(rads),
@@ -33,7 +35,13 @@ Matrix2d create_rotation_mat(float rads) {
 	};
 }
 
-void Bliss_App::create_player()
+inline bool check_circle_overlap(Vector2 a, Vector2 b, float ra, float rb) {
+	auto squared_distance = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y);
+	auto squared_radius = (ra + rb) * (ra + rb);
+	return squared_distance < squared_radius;
+}
+
+Entity Bliss_App::create_player()
 {
 	auto& man = Entity_Manager::instance();
 	auto e = man.add_entity("player");
@@ -53,13 +61,16 @@ void Bliss_App::create_player()
 
 	auto& player_tex = e.add_component<C_Texture>();
 	player_tex.texture = santa_sm_tex;
+
+	return e;
 }
 
-void Bliss_App::create_enemy(int count)
+void Bliss_App::create_enemy(int count, Vector2 no_spawn_center, float no_spawn_radius)
 {
 	static std::string enemy_tag = "enemy";
 	auto& man = Entity_Manager::instance();
 	for (int i = 0; i < count; i++) {
+		float enemy_radius = 50.0f;
 		// std::ostringstream s;
 		// s << "popper_" << i;
 		auto e = man.add_entity(enemy_tag);
@@ -67,13 +78,26 @@ void Bliss_App::create_enemy(int count)
 		e.add_component<C_Enemy>();
 
 		// random pos within screen size
-		int x = GetRandomValue(0, GetScreenWidth());
-		int y = GetRandomValue(0, GetScreenHeight());
-		// TraceLog(LOG_INFO, "popper %d, created at %d, %d", i, x, y);
+		auto rnd_vec = Vector2{ 
+			(float)GetRandomValue(0, GetScreenWidth()),
+			(float)GetRandomValue(0, GetScreenHeight())
+		};
+
+		// A is the resulting vector of difference of two positions
+		auto A = Vector2 { rnd_vec.x - no_spawn_center.x, rnd_vec.y - no_spawn_center.y };
+		auto squared_magintude = A.x * A.x + A.y * A.y;
+		auto sum_radius = enemy_radius + no_spawn_radius;
+		auto squared_radius = sum_radius * sum_radius;
+
+		// check if the enemy overlaps with the no spawn radius
+		if (squared_magintude < squared_radius) { 
+			auto magnitude = sqrtf(squared_magintude);
+			auto A_normalized = Vector2 { A.x / magnitude, A.y / magnitude };
+			rnd_vec = Vector2 { A_normalized.x * sum_radius, A_normalized.y * sum_radius };
+		}
 
 		auto& pos = e.add_component<C_Position>();
-		pos.x = (float)x;
-		pos.y = (float)y;
+		pos = rnd_vec;
 
 		auto& vel = e.add_component<C_Velocity>();
 		vel.x = 0;
@@ -138,8 +162,9 @@ void Bliss_App::run()
 	TraceLog(LOG_INFO, "Initializing sim");
 	Entity_Manager& man = Entity_Manager::instance();
 	
-	create_player();
-	create_enemy();
+	auto p = create_player();
+	auto& p_pos = p.get_component<C_Position>();
+	create_enemy(5, p_pos, Bliss_App::no_spawn_radius);
 	man.update_manager();
 
 	TraceLog(LOG_INFO, "Starting sim loop");
@@ -209,13 +234,10 @@ bool check_for_overlap(Entity e1, Entity e2)
 	auto r1 = e1.get_component<C_Bounding_Circle>().radius;
 	auto r2 = e2.get_component<C_Bounding_Circle>().radius;
 
-	auto p1 = e1.get_component<C_Position>();
-	auto p2 = e2.get_component<C_Position>();
+	auto p1 = (Vector2)e1.get_component<C_Position>();
+	auto p2 = (Vector2)e2.get_component<C_Position>();
 
-	auto squared_distance = (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
-	auto squared_radius = (r1 + r2) * (r1 + r2);
-
-	return squared_distance < squared_radius;
+	return check_circle_overlap(p1, p2, r1, r2);
 }
 
 void Bliss_App::simulation_step()
@@ -318,7 +340,8 @@ void Bliss_App::simulation_step()
 					e_man.remove_entity(e2);
 				}
 
-				create_enemy(enemy_count);
+				auto& p_pos = p.get_component<C_Position>();
+				create_enemy(enemy_count, p_pos, Bliss_App::no_spawn_radius);
 				break;
 			}
 		}
@@ -333,7 +356,10 @@ void Bliss_App::simulation_step()
 				// enemy dies
 				e_man.remove_entity(b);
 				e_man.remove_entity(e);
-				create_enemy(1);
+
+				auto p = e_man.get_entities("player")[0];
+				auto& p_pos = p.get_component<C_Position>();
+				create_enemy(1, p_pos, Bliss_App::no_spawn_radius);
 			}
 		}
 	}
