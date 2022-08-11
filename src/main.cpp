@@ -8,10 +8,12 @@ TODO: Switch to consistent naming convention everywhere (Title_Case for types \
 snake_case for vars and funcs, SCREAMING_SNAKE_CASE for constants) Title_Case \
 for files
 TODO: Memory usage tracking
+TODO: cross compiler compatible strcpy_s (use c11? https://en.cppreference.com/w/c/string/byte/strcpy)
 */
 
 /*
 TODO don't spawn enemy on player!!!
+TODO fix enemies not rendering in first wave
 TODO death state with "you died press P to reset" message
 TODO P to reset
 TODO enemies move in some semi-random way (sinusoidal patterns)

@@ -57,7 +57,7 @@ Entity Bliss_App::create_player()
 	inital_vel.y = 0;
 
 	auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-	bounding_circle.radius = 50;
+	bounding_circle.radius = 100;
 
 	auto& player_tex = e.add_component<C_Texture>();
 	player_tex.texture = santa_sm_tex;
@@ -357,9 +357,15 @@ void Bliss_App::simulation_step()
 				e_man.remove_entity(b);
 				e_man.remove_entity(e);
 
-				auto p = e_man.get_entities("player")[0];
-				auto& p_pos = p.get_component<C_Position>();
-				create_enemy(1, p_pos, Bliss_App::no_spawn_radius);
+				Vector2 pos {GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+				auto p_entities = e_man.get_entities("player");
+				if (p_entities.size() > 0) {
+					auto p = p_entities[0];
+					auto& p_pos = p.get_component<C_Position>();
+					pos = p_pos;
+				}
+				
+				create_enemy(1, pos, Bliss_App::no_spawn_radius);
 			}
 		}
 	}
