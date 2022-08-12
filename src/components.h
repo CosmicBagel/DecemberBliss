@@ -30,7 +30,9 @@ struct C_Position : public I_Component
 public:
     float x, y;
     C_Position() : x { 0.0f }, y { 0.0f } {};
-    C_Position(Vector2 vec) : x { vec.x }, y { vec.y } {};
+    // not allowing this constructor because the 'active' state of the 
+    // component is overwritten
+    // C_Position(Vector2 vec) : x { vec.x }, y { vec.y } {};
     operator Vector2() const { return Vector2 {x,y}; }
 };
 
@@ -46,7 +48,9 @@ struct C_Velocity : public I_Component
 public:
     float x, y;
     C_Velocity() : x { 0.0f }, y { 0.0f } {};
-    C_Velocity(Vector2 vec) : x { vec.x }, y { vec.y } {};
+    // not allowing this constructor because the 'active' state of the 
+    // component is overwritten
+    // C_Velocity(Vector2 vec) : x { vec.x }, y { vec.y } {};
     operator Vector2() const { return Vector2 {x,y}; }
 };
 

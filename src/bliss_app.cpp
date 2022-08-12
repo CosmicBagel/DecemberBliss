@@ -97,7 +97,8 @@ void Bliss_App::create_enemy(int count, Vector2 no_spawn_center, float no_spawn_
 		}
 
 		auto& pos = e.add_component<C_Position>();
-		pos = rnd_vec;
+		pos.x = rnd_vec.x;
+		pos.y = rnd_vec.y;
 
 		auto& vel = e.add_component<C_Velocity>();
 		vel.x = 0;
