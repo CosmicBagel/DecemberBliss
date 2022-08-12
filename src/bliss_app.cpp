@@ -36,8 +36,10 @@ inline Matrix2d create_rotation_mat(float rads) {
 }
 
 inline bool check_circle_overlap(Vector2 a, Vector2 b, float ra, float rb) {
-	auto squared_distance = (b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y);
-	auto squared_radius = (ra + rb) * (ra + rb);
+	auto A = Vector2{ b.x - a.x, b.y - a.y };
+	auto squared_distance = A.x * A.x + A.y * A.y;
+	auto radius_sum = ra + rb;
+	auto squared_radius = radius_sum * radius_sum;
 	return squared_distance < squared_radius;
 }
 
@@ -57,7 +59,7 @@ Entity Bliss_App::create_player()
 	inital_vel.y = 0;
 
 	auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-	bounding_circle.radius = 100;
+	bounding_circle.radius = 50;
 
 	auto& player_tex = e.add_component<C_Texture>();
 	player_tex.texture = santa_sm_tex;
@@ -78,6 +80,11 @@ void Bliss_App::create_enemy(int count, Vector2 no_spawn_center, float no_spawn_
 		e.add_component<C_Enemy>();
 
 		// random pos within screen size
+		// auto rnd_vec = Vector2{ 
+		// 	no_spawn_center.x + (float)GetRandomValue(-100, 100),
+		// 	no_spawn_center.y + (float)GetRandomValue(-100, 100)
+		// };
+
 		auto rnd_vec = Vector2{ 
 			(float)GetRandomValue(0, GetScreenWidth()),
 			(float)GetRandomValue(0, GetScreenHeight())
@@ -93,7 +100,7 @@ void Bliss_App::create_enemy(int count, Vector2 no_spawn_center, float no_spawn_
 		if (squared_magintude < squared_radius) { 
 			auto magnitude = sqrtf(squared_magintude);
 			auto A_normalized = Vector2 { A.x / magnitude, A.y / magnitude };
-			rnd_vec = Vector2 { A_normalized.x * sum_radius, A_normalized.y * sum_radius };
+			rnd_vec = Vector2 { A_normalized.x * sum_radius + no_spawn_center.x, A_normalized.y * sum_radius + no_spawn_center.y};
 		}
 
 		auto& pos = e.add_component<C_Position>();
@@ -165,14 +172,17 @@ void Bliss_App::run()
 	
 	auto p = create_player();
 	auto& p_pos = p.get_component<C_Position>();
-	create_enemy(5, p_pos, Bliss_App::no_spawn_radius);
+	create_enemy(5, (Vector2)p_pos, Bliss_App::no_spawn_radius);
 	man.update_manager();
 
 	TraceLog(LOG_INFO, "Starting sim loop");
 	while (!input_state.exit_window)
 	{
 		handle_input();
-		simulation_step();
+		// step sim once
+		if (IsKeyPressed(KEY_EQUAL)|| IsKeyDown(KEY_SPACE)) {
+			simulation_step();
+		}
 		draw_scene();
 		draw_game_ui();
 		draw_dev_ui();
@@ -326,13 +336,15 @@ void Bliss_App::simulation_step()
 
 	for (Entity p : e_player) {
 		for (Entity e : e_enemies) {
-			if (check_for_overlap(p, e)) {
+			if (p.is_active() && e.is_active() && check_for_overlap(p, e)) {
 				// player dies
 				// TraceLog(LOG_INFO, "Player overlap with enemy");
+				auto& p_pos = p.get_component<C_Position>();
 				e_man.remove_entity(p);
 				if (lives > 0) {
 					lives--;
-					create_player();
+					auto new_p = create_player();
+					p_pos = new_p.get_component<C_Position>();
 				}
 				
 				int enemy_count = e_enemies.size();
@@ -340,9 +352,7 @@ void Bliss_App::simulation_step()
 				for (Entity e2 :e_enemies) {
 					e_man.remove_entity(e2);
 				}
-
-				auto& p_pos = p.get_component<C_Position>();
-				create_enemy(enemy_count, p_pos, Bliss_App::no_spawn_radius);
+				create_enemy(enemy_count, (Vector2)p_pos, Bliss_App::no_spawn_radius);
 				break;
 			}
 		}
@@ -363,7 +373,7 @@ void Bliss_App::simulation_step()
 				if (p_entities.size() > 0) {
 					auto p = p_entities[0];
 					auto& p_pos = p.get_component<C_Position>();
-					pos = p_pos;
+					pos = (Vector2)p_pos;
 				}
 				
 				create_enemy(1, pos, Bliss_App::no_spawn_radius);

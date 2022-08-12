@@ -33,7 +33,7 @@ public:
     // not allowing this constructor because the 'active' state of the 
     // component is overwritten
     // C_Position(Vector2 vec) : x { vec.x }, y { vec.y } {};
-    operator Vector2() const { return Vector2 {x,y}; }
+    explicit operator Vector2() const { return Vector2 {x,y}; }
 };
 
 struct C_Rotation : public I_Component
@@ -51,7 +51,7 @@ public:
     // not allowing this constructor because the 'active' state of the 
     // component is overwritten
     // C_Velocity(Vector2 vec) : x { vec.x }, y { vec.y } {};
-    operator Vector2() const { return Vector2 {x,y}; }
+    explicit operator Vector2() const { return Vector2 {x,y}; }
 };
 
 struct C_Bounding_Circle : public I_Component
