@@ -180,7 +180,8 @@ void Bliss_App::run()
 	{
 		handle_input();
 		// step sim once
-		if (IsKeyPressed(KEY_EQUAL)|| IsKeyDown(KEY_SPACE)) {
+		// if (IsKeyPressed(KEY_EQUAL)|| IsKeyDown(KEY_SPACE)) 
+		{
 			simulation_step();
 		}
 		draw_scene();
