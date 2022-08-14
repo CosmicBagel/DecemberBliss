@@ -5,50 +5,31 @@
 #ifndef IMGUI_RAYLIB_H
 #define IMGUI_RAYLIB_H
 
+#include <float.h>
 #include <imconfig.h>
 #include <imgui.h>
-#include <float.h>
+
 #include "ray_includes.h"
 
 static double last_new_frame_time = 0.0;
 
 static const int imkeys[] = {
-    KEY_TAB,
-    KEY_LEFT,
-    KEY_RIGHT,
-    KEY_UP,
-    KEY_DOWN,
-    KEY_PAGE_UP,
-    KEY_PAGE_DOWN,
-    KEY_HOME,
-    KEY_END,
-    KEY_INSERT,
-    KEY_DELETE,
-    KEY_BACKSPACE,
-    KEY_SPACE,
-    KEY_ENTER,
-    KEY_ESCAPE,
-    KEY_KP_ENTER,
-    KEY_A,
-    KEY_C,
-    KEY_V,
-    KEY_X,
-    KEY_Y,
-    KEY_Z,
+    KEY_TAB,      KEY_LEFT,      KEY_RIGHT, KEY_UP,    KEY_DOWN,
+    KEY_PAGE_UP,  KEY_PAGE_DOWN, KEY_HOME,  KEY_END,   KEY_INSERT,
+    KEY_DELETE,   KEY_BACKSPACE, KEY_SPACE, KEY_ENTER, KEY_ESCAPE,
+    KEY_KP_ENTER, KEY_A,         KEY_C,     KEY_V,     KEY_X,
+    KEY_Y,        KEY_Z,
 };
 
-static const char *ImGui_ImplRaylib_GetClipboardText(void *_)
-{
+static const char *ImGui_ImplRaylib_GetClipboardText(void *_) {
     return GetClipboardText();
 }
 
-static void ImGui_ImplRaylib_SetClipboardText(void *_, const char *text)
-{
+static void ImGui_ImplRaylib_SetClipboardText(void *_, const char *text) {
     SetClipboardText(text);
 }
 
-bool ImGui_ImplRaylib_Init()
-{
+bool ImGui_ImplRaylib_Init() {
     rlEnableScissorTest();
     ImGuiIO &io = ImGui::GetIO();
 
@@ -85,35 +66,27 @@ bool ImGui_ImplRaylib_Init()
     return true;
 }
 
-void ImGui_ImplRaylib_Shutdown()
-{
-    last_new_frame_time = 0.0;
-}
+void ImGui_ImplRaylib_Shutdown() { last_new_frame_time = 0.0; }
 
-static void ImGui_ImplRaylib_UpdateMouseCursor()
-{
+static void ImGui_ImplRaylib_UpdateMouseCursor() {
     ImGuiIO &io = ImGui::GetIO();
-    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)
-        return;
+    if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) return;
 
     ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
-    if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None)
-    {
+    if (io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None) {
         // Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
         HideCursor();
-    }
-    else
-    {
+    } else {
         // Show OS mouse cursor
         ShowCursor();
     }
 }
 
-static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
-{
+static void ImGui_ImplRaylib_UpdateMousePosAndButtons() {
     ImGuiIO &io = ImGui::GetIO();
 
-    // Set OS mouse position if requested (rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
+    // Set OS mouse position if requested (rarely used, only when
+    // ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
     if (io.WantSetMousePos)
         SetMousePosition((int)io.MousePos.x, (int)io.MousePos.y);
     else
@@ -123,21 +96,20 @@ static void ImGui_ImplRaylib_UpdateMousePosAndButtons()
     io.MouseDown[1] = IsMouseButtonDown(MOUSE_RIGHT_BUTTON);
     io.MouseDown[2] = IsMouseButtonDown(MOUSE_MIDDLE_BUTTON);
 
-    if (!IsWindowMinimized())
-    {
+    if (!IsWindowMinimized()) {
         io.MousePos = {(float)GetTouchX(), (float)GetTouchY()};
     }
 }
 
-void ImGui_ImplRaylib_NewFrame()
-{
+void ImGui_ImplRaylib_NewFrame() {
     ImGuiIO &io = ImGui::GetIO();
 
     io.DisplaySize = {(float)GetScreenWidth(), (float)GetScreenHeight()};
 
     double current_time = GetTime();
-    io.DeltaTime = last_new_frame_time > 0.0 ? 
-        (float)(current_time - last_new_frame_time) : (float)(1.0f / 60.0f);
+    io.DeltaTime = last_new_frame_time > 0.0
+                       ? (float)(current_time - last_new_frame_time)
+                       : (float)(1.0f / 60.0f);
     last_new_frame_time = current_time;
 
     io.KeyCtrl = IsKeyDown(KEY_RIGHT_CONTROL) || IsKeyDown(KEY_LEFT_CONTROL);
@@ -153,14 +125,11 @@ void ImGui_ImplRaylib_NewFrame()
     else if (GetMouseWheelMove() < 0)
         io.MouseWheel -= 1;
 
-    for (int key : imkeys)
-    {
-        if (IsKeyPressed(key))
-        {
+    for (int key : imkeys) {
+        if (IsKeyPressed(key)) {
             io.KeysDown[key] = true;
         }
-        if (IsKeyUp(key))
-        {
+        if (IsKeyUp(key)) {
             io.KeysDown[key] = false;
         }
     }
@@ -177,8 +146,7 @@ void ImGui_ImplRaylib_NewFrame()
     ImGui::NewFrame();
 }
 
-void draw_triangle_vertex(ImDrawVert idx_vert)
-{
+void draw_triangle_vertex(ImDrawVert idx_vert) {
     Color *c;
     c = (Color *)&idx_vert.col;
     rlColor4ub(c->r, c->g, c->b, c->a);
@@ -186,11 +154,12 @@ void draw_triangle_vertex(ImDrawVert idx_vert)
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 }
 
-void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx *idx_buffer, const ImDrawVert *idx_vert, unsigned int texture_id)
-{
+void raylib_render_draw_triangles(unsigned int count,
+                                  const ImDrawIdx *idx_buffer,
+                                  const ImDrawVert *idx_vert,
+                                  unsigned int texture_id) {
     // Draw the imgui triangle data
-    for (unsigned int i = 0; i <= (count - 3); i += 3)
-    {
+    for (unsigned int i = 0; i <= (count - 3); i += 3) {
         rlPushMatrix();
         rlBegin(RL_TRIANGLES);
         rlSetTexture(texture_id);
@@ -215,23 +184,21 @@ void raylib_render_draw_triangles(unsigned int count, const ImDrawIdx *idx_buffe
     }
 }
 
-void raylib_render_imgui(ImDrawData *draw_data)
-{
+void raylib_render_imgui(ImDrawData *draw_data) {
     rlDisableBackfaceCulling();
-    for (int n = 0; n < draw_data->CmdListsCount; n++)
-    {
+    for (int n = 0; n < draw_data->CmdListsCount; n++) {
         const ImDrawList *cmd_list = draw_data->CmdLists[n];
-        const ImDrawVert *vtx_buffer = cmd_list->VtxBuffer.Data; // vertex buffer generated by Dear ImGui
-        const ImDrawIdx *idx_buffer = cmd_list->IdxBuffer.Data;  // index buffer generated by Dear ImGui
-        for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++)
-        {
-            const ImDrawCmd *pcmd = &(cmd_list->CmdBuffer.Data)[cmd_i]; // cmd_list->CmdBuffer->data[cmd_i];
-            if (pcmd->UserCallback)
-            {
+        const ImDrawVert *vtx_buffer =
+            cmd_list->VtxBuffer.Data;  // vertex buffer generated by Dear ImGui
+        const ImDrawIdx *idx_buffer =
+            cmd_list->IdxBuffer.Data;  // index buffer generated by Dear ImGui
+        for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
+            const ImDrawCmd *pcmd =
+                &(cmd_list->CmdBuffer
+                      .Data)[cmd_i];  // cmd_list->CmdBuffer->data[cmd_i];
+            if (pcmd->UserCallback) {
                 pcmd->UserCallback(cmd_list, pcmd);
-            }
-            else
-            {
+            } else {
                 ImVec2 pos = draw_data->DisplayPos;
                 int rectX = (int)(pcmd->ClipRect.x - pos.x);
                 int rectY = (int)(pcmd->ClipRect.y - pos.y);
@@ -240,7 +207,8 @@ void raylib_render_imgui(ImDrawData *draw_data)
                 BeginScissorMode(rectX, rectY, rectW, rectH);
                 {
                     unsigned int *ti = (unsigned int *)pcmd->TextureId;
-                    raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer, vtx_buffer, *ti);
+                    raylib_render_draw_triangles(pcmd->ElemCount, idx_buffer,
+                                                 vtx_buffer, *ti);
                 }
             }
             idx_buffer += pcmd->ElemCount;
@@ -250,4 +218,4 @@ void raylib_render_imgui(ImDrawData *draw_data)
     rlEnableBackfaceCulling();
 }
 
-#endif // IMGUI_RAYLIB_H
+#endif  // IMGUI_RAYLIB_H

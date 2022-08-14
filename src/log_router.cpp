@@ -1,6 +1,8 @@
 #include "log_router.h"
-#include "ray_includes.h"
+
 #include <stdio.h>
+
+#include "ray_includes.h"
 
 Log_Gui log_gui;
 
@@ -12,37 +14,33 @@ void log_router_enable() {
     SetTraceLogLevel(LOG_INFO);
 }
 
-void log_router_disable() {
-    SetTraceLogCallback(nullptr);
-}
+void log_router_disable() { SetTraceLogCallback(nullptr); }
 
 #define LOG_LINE_BUFFER_SIZE 1024
 char logLineBuffer[LOG_LINE_BUFFER_SIZE] = {};
-void log_callback_func(int logType, const char *text, va_list args)
-{
+void log_callback_func(int logType, const char* text, va_list args) {
     char logTypeStr[10] = {};
-    switch (logType)
-    {
-    case LOG_TRACE:
-        strcpy_s(logTypeStr, 10, "TRACE: ");
-        break;
-    case LOG_DEBUG:
-        strcpy_s(logTypeStr, 10, "DEBUG: ");
-        break;
-    case LOG_INFO:
-        strcpy_s(logTypeStr, 10, "INFO: ");
-        break;
-    case LOG_WARNING:
-        strcpy_s(logTypeStr, 10, "WARNING: ");
-        break;
-    case LOG_ERROR:
-        strcpy_s(logTypeStr, 10, "ERROR: ");
-        break;
-    case LOG_FATAL:
-        strcpy_s(logTypeStr, 10, "FATAL: ");
-        break;
-    default:
-        break;
+    switch (logType) {
+        case LOG_TRACE:
+            strcpy_s(logTypeStr, 10, "TRACE: ");
+            break;
+        case LOG_DEBUG:
+            strcpy_s(logTypeStr, 10, "DEBUG: ");
+            break;
+        case LOG_INFO:
+            strcpy_s(logTypeStr, 10, "INFO: ");
+            break;
+        case LOG_WARNING:
+            strcpy_s(logTypeStr, 10, "WARNING: ");
+            break;
+        case LOG_ERROR:
+            strcpy_s(logTypeStr, 10, "ERROR: ");
+            break;
+        case LOG_FATAL:
+            strcpy_s(logTypeStr, 10, "FATAL: ");
+            break;
+        default:
+            break;
     }
     log_gui.add_log("%s", logTypeStr);
     printf("%s", logTypeStr);

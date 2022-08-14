@@ -1,17 +1,16 @@
 #pragma once
 
-#include "ray_includes.h"
 #include "dev_ui.h"
 #include "input_state.h"
+#include "ray_includes.h"
 
 class Entity;
 
-class Bliss_App
-{
-public:
-	Bliss_App();
+class Bliss_App {
+   public:
+    Bliss_App();
     ~Bliss_App();
-	void run();
+    void run();
     void render_dev_ui();
     void render_scene();
     void draw_dev_ui();
@@ -19,8 +18,9 @@ public:
     void draw_game_ui();
     void simulation_step();
     void handle_input();
-private:
-    static const int screen_width  = 800;
+
+   private:
+    static const int screen_width = 800;
     static const int screen_height = 600;
     static const float no_spawn_radius;
 
@@ -44,10 +44,8 @@ private:
     Input_State input_state;
 
     Entity create_player();
-    void create_enemy(int count, Vector2 no_spawn_center, float no_spawn_radius);
-    void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y, float rot);
+    void create_enemy(int count, Vector2 no_spawn_center,
+                      float no_spawn_radius);
+    void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y,
+                       float rot);
 };
-
-
-
-

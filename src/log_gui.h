@@ -2,11 +2,12 @@
 #include <imgui.h>
 
 struct Log_Gui {
-
-    ImGuiTextBuffer     buf;
-    ImGuiTextFilter     filter;
-    ImVector<int>       line_offsets;        // Index to lines offset. We maintain this with AddLog() calls, allowing us to have a random access on lines
-    bool                auto_scroll;     // Keep scrolling if already at the bottom
+    ImGuiTextBuffer buf;
+    ImGuiTextFilter filter;
+    ImVector<int>
+        line_offsets;  // Index to lines offset. We maintain this with AddLog()
+                       // calls, allowing us to have a random access on lines
+    bool auto_scroll;  // Keep scrolling if already at the bottom
 
     Log_Gui();
     void clear();

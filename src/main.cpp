@@ -8,7 +8,8 @@ TODO: Switch to consistent naming convention everywhere (Title_Case for types \
 snake_case for vars and funcs, SCREAMING_SNAKE_CASE for constants) Title_Case \
 for files
 TODO: Memory usage tracking
-TODO: cross compiler compatible strcpy_s (use c11? https://en.cppreference.com/w/c/string/byte/strcpy)
+TODO: cross compiler compatible strcpy_s (use c11?
+https://en.cppreference.com/w/c/string/byte/strcpy)
 */
 
 /*
@@ -29,8 +30,7 @@ TODO controller support
 
 #include "bliss_app.h"
 
-int main()
-{
+int main() {
     Bliss_App app;
     app.run();
 }
