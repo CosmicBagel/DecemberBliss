@@ -1,5 +1,5 @@
 # full list of checks https://clang.llvm.org/extra/clang-tidy/checks/list.html
-# selecting checkshttps://clang.llvm.org/extra/clang-tidy/index.html#id2
+# selecting checks https://clang.llvm.org/extra/clang-tidy/index.html#id2
 Checks: 'bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, 
          google-*, misc-*, modernize-* performance-*, portability-*, 
          readability-*,
