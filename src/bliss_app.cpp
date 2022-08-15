@@ -10,7 +10,7 @@
 #include "log_router.h"
 #include "perf_timer.h"
 
-const float Bliss_App::no_spawn_radius = 100.0f;
+const float Bliss_App::no_spawn_radius = 100.0F;
 
 typedef struct Matrix2d {
     float a, b;  // top row
@@ -438,7 +438,7 @@ void Bliss_App::draw_scene() {
 
         if (hasPos) {
             C_Position& pos = e.get_component<C_Position>();
-            DrawCircle((int)pos.x, (int)pos.y, 1, GREEN);
+            DrawCircle((int)pos.x, (int)pos.y, 1.0F, GREEN);
             // DrawRectangle((int)pos.x, (int)pos.y, 3, 3, GREEN);
         }
     }

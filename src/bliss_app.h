@@ -10,6 +10,15 @@ class Bliss_App {
    public:
     Bliss_App();
     ~Bliss_App();
+
+    // no copy ctor, move ctor, copy assn, move assn
+    // since this class is meant to be the program
+    // when this class destructs, the program ends
+    Bliss_App(const Bliss_App&) = delete;
+    Bliss_App(Bliss_App&&) = delete;
+    Bliss_App& operator=(Bliss_App) = delete;
+    Bliss_App& operator=(Bliss_App&&) = delete;
+
     void run();
     void render_dev_ui();
     void render_scene();
