@@ -5,6 +5,9 @@
 #include "ray_includes.h"
 
 class Entity;
+//struct forward declaration is silly
+typedef struct C_Position C_Position;
+typedef struct C_Velocity C_Velocity;
 
 class Bliss_App {
    public:
@@ -31,7 +34,6 @@ class Bliss_App {
    private:
     static const int screen_width = 800;
     static const int screen_height = 600;
-    static const float no_spawn_radius;
 
     static const int STARTING_LIVES = 3;
     int lives = STARTING_LIVES;
@@ -53,8 +55,6 @@ class Bliss_App {
     Input_State input_state;
 
     Entity create_player();
-    void create_enemy(int count, Vector2 no_spawn_center,
-                      float no_spawn_radius);
-    void create_bullet(float pos_x, float pos_y, float vel_x, float vel_y,
-                       float rot);
+    void create_enemy(int count, Vector2 no_spawn_center);
+    void Bliss_App::create_bullet(C_Position initial_pos, C_Velocity initial_vel, float initial_rot);
 };

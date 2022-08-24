@@ -10,8 +10,6 @@
 #include "log_router.h"
 #include "perf_timer.h"
 
-const float Bliss_App::no_spawn_radius = 100.0F;
-
 typedef struct Matrix2d {
     float a, b;  // top row
     float c, d;  // bottom row
@@ -30,114 +28,118 @@ inline Matrix2d create_rotation_mat(float rads) {
     return Matrix2d{cosf(rads), sinf(rads), -sinf(rads), cosf(rads)};
 }
 
-inline bool check_circle_overlap(Vector2 a, Vector2 b, float ra, float rb) {
-    auto A = Vector2{b.x - a.x, b.y - a.y};
-    auto squared_distance = A.x * A.x + A.y * A.y;
-    auto radius_sum = ra + rb;
+inline bool check_circle_overlap(Vector2 pos_a, Vector2 pos_b, float radius_a,
+                                 float radius_b) {
+    auto pos_diff = Vector2{pos_b.x - pos_a.x, pos_b.y - pos_a.y};
+    auto squared_distance = pos_diff.x * pos_diff.x + pos_diff.y * pos_diff.y;
+    auto radius_sum = radius_a + radius_b;
     auto squared_radius = radius_sum * radius_sum;
     return squared_distance < squared_radius;
 }
 
 Entity Bliss_App::create_player() {
+    const Vector2 initial_pos = {200, 200};
+    const Vector2 initial_vel = {0, 0};
+    const float collision_radius = 50;
+
     auto& man = Entity_Manager::instance();
-    auto e = man.add_entity("player");
+    auto entity = man.add_entity("player");
 
-    e.add_component<C_Player>();
+    entity.add_component<C_Player>();
 
-    auto& initial_pos = e.add_component<C_Position>();
-    initial_pos.x = 200;
-    initial_pos.y = 200;
+    auto& pos = entity.add_component<C_Position>();
+    pos = initial_pos;
 
-    auto& inital_vel = e.add_component<C_Velocity>();
-    inital_vel.x = 0;
-    inital_vel.y = 0;
+    auto& vel = entity.add_component<C_Velocity>();
+    vel = initial_vel;
 
-    auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-    bounding_circle.radius = 50;
+    auto& bounding_circle = entity.add_component<C_Bounding_Circle>();
+    bounding_circle.radius = collision_radius;
 
-    auto& player_tex = e.add_component<C_Texture>();
+    auto& player_tex = entity.add_component<C_Texture>();
     player_tex.texture = santa_sm_tex;
 
-    return e;
+    return entity;
 }
 
-void Bliss_App::create_enemy(int count, Vector2 no_spawn_center,
-                             float no_spawn_radius) {
+void Bliss_App::create_enemy(int count, Vector2 no_spawn_center) {
     static std::string enemy_tag = "enemy";
-    auto& man = Entity_Manager::instance();
+    const Vector2 initial_vel = {0, 0};
+    const float collision_radius = 50.0F;
+    const float no_spawn_radius = 100.0F;
+
+    auto& e_man = Entity_Manager::instance();
     for (int i = 0; i < count; i++) {
-        float enemy_radius = 50.0f;
         // std::ostringstream s;
         // s << "popper_" << i;
-        auto e = man.add_entity(enemy_tag);
+        auto entity = e_man.add_entity(enemy_tag);
 
-        e.add_component<C_Enemy>();
+        entity.add_component<C_Enemy>();
 
         // random pos within screen size
-        // auto rnd_vec = Vector2{
-        // 	no_spawn_center.x + (float)GetRandomValue(-100, 100),
-        // 	no_spawn_center.y + (float)GetRandomValue(-100, 100)
-        // };
-
-        auto rnd_vec = Vector2{(float)GetRandomValue(0, GetScreenWidth()),
-                               (float)GetRandomValue(0, GetScreenHeight())};
+        auto rnd_vec =
+            Vector2{static_cast<float>(GetRandomValue(0, GetScreenWidth())),
+                    static_cast<float>(GetRandomValue(0, GetScreenHeight()))};
 
         // A is the resulting vector of difference of two positions
-        auto A = Vector2{rnd_vec.x - no_spawn_center.x,
-                         rnd_vec.y - no_spawn_center.y};
-        auto squared_magintude = A.x * A.x + A.y * A.y;
-        auto sum_radius = enemy_radius + no_spawn_radius;
+        auto diff = Vector2{rnd_vec.x - no_spawn_center.x,
+                            rnd_vec.y - no_spawn_center.y};
+        auto squared_magintude = diff.x * diff.x + diff.y * diff.y;
+        auto sum_radius = collision_radius + no_spawn_radius;
         auto squared_radius = sum_radius * sum_radius;
 
         // check if the enemy overlaps with the no spawn radius
         if (squared_magintude < squared_radius) {
             auto magnitude = sqrtf(squared_magintude);
-            auto A_normalized = Vector2{A.x / magnitude, A.y / magnitude};
+            auto A_normalized = Vector2{diff.x / magnitude, diff.y / magnitude};
             rnd_vec = Vector2{A_normalized.x * sum_radius + no_spawn_center.x,
                               A_normalized.y * sum_radius + no_spawn_center.y};
         }
 
-        auto& pos = e.add_component<C_Position>();
+        auto& pos = entity.add_component<C_Position>();
         pos.x = rnd_vec.x;
         pos.y = rnd_vec.y;
 
-        auto& vel = e.add_component<C_Velocity>();
-        vel.x = 0;
-        vel.y = 0;
+        auto& vel = entity.add_component<C_Velocity>();
+        vel = initial_vel;
 
-        auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-        bounding_circle.radius = 50;
+        auto& bounding_circle = entity.add_component<C_Bounding_Circle>();
+        bounding_circle.radius = collision_radius;
 
-        auto& tex = e.add_component<C_Texture>();
+        auto& tex = entity.add_component<C_Texture>();
         tex.texture = popper_sm_tex;
     }
 }
 
-void Bliss_App::create_bullet(float pos_x, float pos_y, float vel_x,
-                              float vel_y, float rot) {
+void Bliss_App::create_bullet(C_Position initial_pos, C_Velocity initial_vel,
+                              float initial_rot) {
+    const float collision_radius = 5.0F;
+
     static std::string bullet_tag = "bullet";
 
     auto& man = Entity_Manager::instance();
-    auto e = man.add_entity(bullet_tag);
+    auto entity = man.add_entity(bullet_tag);
 
-    e.add_component<C_PlayerBullet>();
+    entity.add_component<C_PlayerBullet>();
 
-    auto& pos = e.add_component<C_Position>();
-    pos.x = (float)pos_x;
-    pos.y = (float)pos_y;
+    auto& pos = entity.add_component<C_Position>();
+    // can't copy the component whole, as the `active` bool will be overwritten
+    pos.x = initial_pos.x;
+    pos.y = initial_pos.y;
 
-    auto& vel = e.add_component<C_Velocity>();
-    vel.x = vel_x;
-    vel.y = vel_y;
+    auto& vel = entity.add_component<C_Velocity>();
+    // can't copy the component whole, as the `active` bool will be overwritten
+    vel.x = initial_vel.x;
+    vel.y = initial_vel.y;
 
-    auto& bounding_circle = e.add_component<C_Bounding_Circle>();
-    bounding_circle.radius = 5;
+    auto& bounding_circle = entity.add_component<C_Bounding_Circle>();
+    bounding_circle.radius = collision_radius;
 
-    auto& tex = e.add_component<C_Texture>();
+    auto& tex = entity.add_component<C_Texture>();
     tex.texture = snowball_tex;
 
-    auto& r = e.add_component<C_Rotation>();
-    r.rotation = rot;
+    auto& rot = entity.add_component<C_Rotation>();
+    rot.rotation = initial_rot;
 }
 
 Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance()) { log_router_enable(); }
@@ -162,7 +164,7 @@ void Bliss_App::run() {
 
     auto p = create_player();
     auto& p_pos = p.get_component<C_Position>();
-    create_enemy(5, (Vector2)p_pos, Bliss_App::no_spawn_radius);
+    create_enemy(5, (Vector2)p_pos);
     man.update_manager();
 
     TraceLog(LOG_INFO, "Starting sim loop");
@@ -224,7 +226,7 @@ void Bliss_App::handle_input() {
     }
 }
 
-bool check_for_overlap(Entity e1, Entity e2) {
+inline bool check_for_overlap(Entity e1, Entity e2) {
     auto r1 = e1.get_component<C_Bounding_Circle>().radius;
     auto r2 = e2.get_component<C_Bounding_Circle>().radius;
 
@@ -288,15 +290,15 @@ void Bliss_App::simulation_step() {
             float vector_x = distance_x / magnitude;
             float vector_y = distance_y / magnitude;
 
-            float vel_x = 200 * vector_x;
-            float vel_y = 200 * vector_y;
+            Vector2 vel {200 * vector_x, 200 * vector_y};
 
             // determine rotation using the distance vector
             // note our y distance is screen space (unit_y is pointing down)
             // so we need to flip it for standard coordinates
             float rads = atan2(-distance_y, distance_x);
 
-            create_bullet(pos.x, pos.y, vel_x, vel_y, rads);
+            C_Velocity c_vel {vel};
+            create_bullet(pos, c_vel, rads);
         }
     }
 
@@ -333,8 +335,7 @@ void Bliss_App::simulation_step() {
                 for (Entity e2 : e_enemies) {
                     e_man.remove_entity(e2);
                 }
-                create_enemy(enemy_count, (Vector2)p_pos,
-                             Bliss_App::no_spawn_radius);
+                create_enemy(enemy_count, static_cast<Vector2>(p_pos));
                 break;
             }
         }
@@ -359,7 +360,7 @@ void Bliss_App::simulation_step() {
                     pos = (Vector2)p_pos;
                 }
 
-                create_enemy(1, pos, Bliss_App::no_spawn_radius);
+                create_enemy(1, pos);
             }
         }
     }
