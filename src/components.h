@@ -25,10 +25,20 @@ struct C_Position : public I_Component {
    public:
     float x, y;
     C_Position() : x{0.0F}, y{0.0F}, I_Component{} {};
-    // not allowing this constructor because the 'active' state of the
-    // component is overwritten
-    // C_Position(Vector2 vec) : x { vec.x }, y { vec.y } {};
+
+    // allowing this constructor, but only with explict, do not directly assign from Vec2 plz
+    //careful with this one, can overwrite an active component's status with false
+    explicit C_Position(Vector2 vec) : x {vec.x}, y{vec.y}, I_Component{} {};
+
+    // copy constructor TO Vector2
     explicit operator Vector2() const { return Vector2{x, y}; }
+
+    // copy assignment FROM Vector2 (active bool is preserved)
+    C_Position& operator=(const Vector2 vec) {
+        x = vec.x;
+        y = vec.y;
+        return *this;
+    };
 };
 
 struct C_Rotation : public I_Component {
@@ -40,11 +50,24 @@ struct C_Velocity : public I_Component {
     // 9 bytes
    public:
     float x, y;
+
     C_Velocity() : x{0.0F}, y{0.0F}, I_Component{} {};
-    // not allowing this constructor because the 'active' state of the
-    // component is overwritten
-    // C_Velocity(Vector2 vec) : x { vec.x }, y { vec.y } {};
+
+    // allowing this constructor, but only with explict, do not directly assign from Vec2 plz
+    //careful with this one, can overwrite an active component's status with false
+    explicit C_Velocity(Vector2 vec) : x {vec.x}, y{vec.y}, I_Component{} {};
+
+    // copy constructor TO Vector2
     explicit operator Vector2() const { return Vector2{x, y}; }
+
+    // copy assignment FROM Vector2 (active bool is preserved)
+    C_Velocity& operator=(const Vector2 vec) {
+        x = vec.x;
+        y = vec.y;
+        return *this;
+    };
+
+    
 };
 
 struct C_Bounding_Circle : public I_Component {
