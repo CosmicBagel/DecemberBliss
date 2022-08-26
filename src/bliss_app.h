@@ -56,5 +56,5 @@ class Bliss_App {
 
     Entity create_player();
     void create_enemy(int count, Vector2 no_spawn_center);
-    void Bliss_App::create_bullet(C_Position initial_pos, C_Velocity initial_vel, float initial_rot);
+    void create_bullet(C_Position initial_pos, C_Velocity initial_vel, float initial_rot);
 };

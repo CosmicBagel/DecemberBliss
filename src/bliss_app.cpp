@@ -142,9 +142,22 @@ void Bliss_App::create_bullet(C_Position initial_pos, C_Velocity initial_vel,
     rot.rotation = initial_rot;
 }
 
-Bliss_App::Bliss_App() : dev_ui(Dev_UI::instance()) { log_router_enable(); }
+Bliss_App::Bliss_App()
+    : dev_ui(Dev_UI::instance()),
+      santa_tex({}),
+      santa_cropped_tex({}),
+      santa_sm_tex({}),
+      snowball_tex({}),
+      font_roboto_mono({}),
+      font_roboto_mono_sm({}),
+      font({}),
+      popper_sm_tex({}) {
+    log_router_enable();
+}
 
 void Bliss_App::run() {
+    const int initial_enemy_count = 5;
+
     TraceLog(LOG_INFO, "Starting " BLISS_FULL_HEADER "...\n");
     InitWindow(screen_width, screen_height, BLISS_FULL_HEADER);
 
@@ -155,16 +168,15 @@ void Bliss_App::run() {
 
     TraceLog(LOG_INFO, "Loading textures");
     load_textures();
-
     // raylib set fps
     // SetTargetFPS(144);
 
     TraceLog(LOG_INFO, "Initializing sim");
     Entity_Manager& man = Entity_Manager::instance();
 
-    auto p = create_player();
-    auto& p_pos = p.get_component<C_Position>();
-    create_enemy(5, (Vector2)p_pos);
+    auto player = create_player();
+    auto& p_pos = player.get_component<C_Position>();
+    create_enemy(initial_enemy_count, static_cast<Vector2>(p_pos));
     man.update_manager();
 
     TraceLog(LOG_INFO, "Starting sim loop");
@@ -196,7 +208,7 @@ void Bliss_App::handle_input() {
     //       waiting is finished!) so effectively processing input here (at the
     //       start of the frame) is as good as processing right after polling
     //       for input.
-    Perf_Timer t(dev_ui.metrics.input_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.input_time);
     // Entity_Manager& man = Entity_Manager::instance();
 
     input_state.exit_window = WindowShouldClose();
@@ -226,20 +238,20 @@ void Bliss_App::handle_input() {
     }
 }
 
-inline bool check_for_overlap(Entity e1, Entity e2) {
-    auto r1 = e1.get_component<C_Bounding_Circle>().radius;
-    auto r2 = e2.get_component<C_Bounding_Circle>().radius;
+inline bool check_for_overlap(Entity entity_a, Entity entity_b) {
+    auto radius_a = entity_a.get_component<C_Bounding_Circle>().radius;
+    auto radius_b = entity_b.get_component<C_Bounding_Circle>().radius;
 
-    auto p1 = (Vector2)e1.get_component<C_Position>();
-    auto p2 = (Vector2)e2.get_component<C_Position>();
+    auto center_a = static_cast<Vector2>(entity_a.get_component<C_Position>());
+    auto center_b = static_cast<Vector2>(entity_b.get_component<C_Position>());
 
-    return check_circle_overlap(p1, p2, r1, r2);
+    return check_circle_overlap(center_a, center_b, radius_a, radius_b);
 }
 
 void Bliss_App::simulation_step() {
     // Simulation
     //----------------------------------------------------------------------------------
-    Perf_Timer t(dev_ui.metrics.simulation_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.simulation_time);
     // simulate go here
 
     auto& e_man = Entity_Manager::instance();
@@ -251,33 +263,37 @@ void Bliss_App::simulation_step() {
     auto& e_bullets = e_man.get_entities("bullet");
 
     // update player velocity based on input
-    for (Entity p : e_player) {
-        auto& v = p.get_component<C_Velocity>();
+    for (Entity player : e_player) {
+        const float move_velocity = 400;
 
-        v.y = 0;
-        v.x = 0;
+        auto& p_vel = player.get_component<C_Velocity>();
+
+        p_vel.y = 0;
+        p_vel.x = 0;
 
         if (input_state.up) {
-            v.y -= 1.0;
+            p_vel.y -= 1.0;
         }
 
         if (input_state.down) {
-            v.y += 1.0;
+            p_vel.y += 1.0;
         }
 
         if (input_state.left) {
-            v.x -= 1.0;
+            p_vel.x -= 1.0;
         }
 
         if (input_state.right) {
-            v.x += 1.0;
+            p_vel.x += 1.0;
         }
 
-        v.y *= 400;
-        v.x *= 400;
+        p_vel.y *= move_velocity;
+        p_vel.x *= move_velocity;
 
         if (input_state.fire || input_state.alt_fire) {
-            auto& pos = p.get_component<C_Position>();
+            const float bullet_velocity = 200;
+
+            auto& pos = player.get_component<C_Position>();
 
             // determine velocity vector
             float distance_x = input_state.target_pos.x - pos.x;
@@ -290,14 +306,14 @@ void Bliss_App::simulation_step() {
             float vector_x = distance_x / magnitude;
             float vector_y = distance_y / magnitude;
 
-            Vector2 vel {200 * vector_x, 200 * vector_y};
+            Vector2 vel{bullet_velocity * vector_x, bullet_velocity * vector_y};
 
             // determine rotation using the distance vector
             // note our y distance is screen space (unit_y is pointing down)
             // so we need to flip it for standard coordinates
             float rads = atan2(-distance_y, distance_x);
 
-            C_Velocity c_vel {vel};
+            C_Velocity c_vel{vel};
             create_bullet(pos, c_vel, rads);
         }
     }
@@ -308,22 +324,24 @@ void Bliss_App::simulation_step() {
     // between different memory regions.
 
     // update position based on velocity
-    for (Entity e : entities) {
-        if (e.has_component<C_Velocity>() && e.has_component<C_Position>()) {
-            auto& pos = e.get_component<C_Position>();
-            auto& vel = e.get_component<C_Velocity>();
+    for (Entity entity : entities) {
+        if (entity.has_component<C_Velocity>() &&
+            entity.has_component<C_Position>()) {
+            auto& pos = entity.get_component<C_Position>();
+            auto& vel = entity.get_component<C_Velocity>();
             pos.x += vel.x * GetFrameTime();
             pos.y += vel.y * GetFrameTime();
         }
     }
 
-    for (Entity p : e_player) {
-        for (Entity e : e_enemies) {
-            if (p.is_active() && e.is_active() && check_for_overlap(p, e)) {
+    for (Entity player : e_player) {
+        for (Entity enemy : e_enemies) {
+            if (player.is_active() && enemy.is_active() &&
+                check_for_overlap(player, enemy)) {
                 // player dies
                 // TraceLog(LOG_INFO, "Player overlap with enemy");
-                auto& p_pos = p.get_component<C_Position>();
-                e_man.remove_entity(p);
+                auto& p_pos = player.get_component<C_Position>();
+                e_man.remove_entity(player);
                 if (lives > 0) {
                     lives--;
                     auto new_p = create_player();
@@ -332,8 +350,9 @@ void Bliss_App::simulation_step() {
 
                 int enemy_count = e_enemies.size();
 
-                for (Entity e2 : e_enemies) {
-                    e_man.remove_entity(e2);
+                // clear all enemies
+                for (Entity enemy_removing : e_enemies) {
+                    e_man.remove_entity(enemy_removing);
                 }
                 create_enemy(enemy_count, static_cast<Vector2>(p_pos));
                 break;
@@ -341,35 +360,46 @@ void Bliss_App::simulation_step() {
         }
     }
 
-    for (Entity e : e_enemies) {
-        for (Entity b : e_bullets) {
+    for (Entity enemy : e_enemies) {
+        for (Entity bullet : e_bullets) {
             // enemies and bullets are not removed from the list immediately
             // they are removed on update, however the is_active flag is
             // immediately updated so we can read that to see if this overlap is
             // real
-            if (e.is_active() && b.is_active() && check_for_overlap(e, b)) {
+            if (enemy.is_active() && bullet.is_active() &&
+                check_for_overlap(enemy, bullet)) {
                 // enemy dies
-                e_man.remove_entity(b);
-                e_man.remove_entity(e);
+                e_man.remove_entity(bullet);
+                e_man.remove_entity(enemy);
 
-                Vector2 pos{GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f};
+                const float half_divisor = 2.0F;
+                // determine default position (screen center) if player doesn't
+                // exist
+                Vector2 pos{
+                    static_cast<float>(GetScreenWidth()) / half_divisor,
+                    static_cast<float>(GetScreenHeight()) / half_divisor};
+
                 auto p_entities = e_man.get_entities("player");
-                if (p_entities.size() > 0) {
-                    auto p = p_entities[0];
-                    auto& p_pos = p.get_component<C_Position>();
-                    pos = (Vector2)p_pos;
+                if (!p_entities.empty()) {
+                    auto first_player = p_entities[0];
+                    auto& p_pos = first_player.get_component<C_Position>();
+                    pos = static_cast<Vector2>(p_pos);
                 }
 
+                // pos is used as center to NOT spawn at (no spawn zone)
                 create_enemy(1, pos);
             }
         }
     }
 
-    for (Entity e : e_bullets) {
+    for (Entity bullet : e_bullets) {
+        const float boundary_square_size = 1000.0F;
+
         // clean up out of bounds bullets
-        auto& pos = e.get_component<C_Position>();
-        if (pos.x < -1000 || pos.x > 1000 || pos.y < -1000 || pos.y > 1000) {
-            e_man.remove_entity(e);
+        auto& pos = bullet.get_component<C_Position>();
+        if (pos.x < -boundary_square_size || pos.x > boundary_square_size ||
+            pos.y < -boundary_square_size || pos.y > boundary_square_size) {
+            e_man.remove_entity(bullet);
         }
     }
 }
@@ -377,7 +407,7 @@ void Bliss_App::simulation_step() {
 void Bliss_App::draw_scene() {
     // Draw prep
     //----------------------------------------------------------------------------------
-    Perf_Timer t(dev_ui.metrics.draw_prep_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.draw_prep_time);
     BeginDrawing();
 
     Entity_Manager& man = Entity_Manager::instance();
@@ -389,13 +419,13 @@ void Bliss_App::draw_scene() {
     //	screen_height / 2 - santa_tex.height / 2, WHITE);
 
     // draw
-    for (Entity e : man.get_entities()) {
-        bool hasPos = e.has_component<C_Position>();
-        if (hasPos && e.has_component<C_Texture>()) {
-            C_Position& pos = e.get_component<C_Position>();
-            C_Texture& tex = e.get_component<C_Texture>();
-            if (e.has_component<C_Rotation>()) {
-                C_Rotation& rot = e.get_component<C_Rotation>();
+    for (Entity entity : man.get_entities()) {
+        bool hasPos = entity.has_component<C_Position>();
+        if (hasPos && entity.has_component<C_Texture>()) {
+            C_Position& pos = entity.get_component<C_Position>();
+            C_Texture& tex = entity.get_component<C_Texture>();
+            if (entity.has_component<C_Rotation>()) {
+                C_Rotation& rot = entity.get_component<C_Rotation>();
                 // note in case I want to let something rotate or scale (I
                 // suspect the above function is faster tho)
 
@@ -403,8 +433,8 @@ void Bliss_App::draw_scene() {
                 // top left corner relative to the center of the texture
                 // to be consistent with the pixel space, the unit vectors
                 // point down and right
-                Vector2 top_left{-(float)tex.texture.width / 2,
-                                 -(float)tex.texture.height / 2};
+                Vector2 top_left{static_cast<float>(tex.texture.width) / -2,
+                                 static_cast<float>(tex.texture.height) / -2};
                 Vector2 rotated_corner =
                     apply_transformation(rot_mat, top_left);
 
@@ -412,49 +442,61 @@ void Bliss_App::draw_scene() {
                                   pos.y + rotated_corner.y};
 
                 // raylib's degrees are inverted for some reason
+                const float DEGREES = 360;
+                const float scale = 1.0F;
                 DrawTextureEx(tex.texture, renderPos,
-                              360 - rot.rotation * RAD2DEG, 1.0f, WHITE);
+                              DEGREES - rot.rotation * RAD2DEG, scale, WHITE);
                 // DrawRectangle((int)renderPos.x, (int)renderPos.y, 3, 3,
                 // BLUE);
-                DrawCircle((int)renderPos.x, (int)renderPos.y, 1, BLUE);
+                DrawCircle(static_cast<int>(renderPos.x),
+                           static_cast<int>(renderPos.y), 1.0F, BLUE);
             } else {
-                DrawTexture(tex.texture, (int)pos.x - tex.texture.width / 2,
-                            (int)pos.y - tex.texture.height / 2, WHITE);
-                DrawCircle((int)pos.x - tex.texture.width / 2,
-                           (int)pos.y - tex.texture.height / 2, 1, BLUE);
+                DrawTexture(tex.texture,
+                            static_cast<int>(pos.x) - tex.texture.width / 2,
+                            static_cast<int>(pos.y) - tex.texture.height / 2,
+                            WHITE);
+                DrawCircle(static_cast<int>(pos.x) - tex.texture.width / 2,
+                           static_cast<int>(pos.y) - tex.texture.height / 2, 1,
+                           BLUE);
                 // DrawRectangle((int)pos.x - tex.texture.width / 2, (int)pos.y
                 // - tex.texture.height / 2, 3, 3, BLUE);
             }
         }
 
         // bounding circle debug
-        if (hasPos && e.has_component<C_Bounding_Circle>()) {
-            C_Position& pos = e.get_component<C_Position>();
-            C_Bounding_Circle& bounds = e.get_component<C_Bounding_Circle>();
+        if (hasPos && entity.has_component<C_Bounding_Circle>()) {
+            C_Position& pos = entity.get_component<C_Position>();
+            C_Bounding_Circle& bounds =
+                entity.get_component<C_Bounding_Circle>();
             Color translucentRed = RED;
-            translucentRed.a = 128;
-            DrawCircleLines((int)pos.x, (int)pos.y, bounds.radius, RED);
-            DrawCircle((int)pos.x, (int)pos.y, bounds.radius, translucentRed);
+            const int SEMI_TRANSPARENT_ALPHA = 128;
+            translucentRed.a = SEMI_TRANSPARENT_ALPHA;
+            DrawCircleLines(static_cast<int>(pos.x), static_cast<int>(pos.y),
+                            bounds.radius, RED);
+            DrawCircle(static_cast<int>(pos.x), static_cast<int>(pos.y),
+                       bounds.radius, translucentRed);
         }
 
         if (hasPos) {
-            C_Position& pos = e.get_component<C_Position>();
-            DrawCircle((int)pos.x, (int)pos.y, 1.0F, GREEN);
+            C_Position& pos = entity.get_component<C_Position>();
+            DrawCircle(static_cast<int>(pos.x), static_cast<int>(pos.y), 1.0F,
+                       GREEN);
             // DrawRectangle((int)pos.x, (int)pos.y, 3, 3, GREEN);
         }
     }
 
     Vector2 text_dim = MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
-                                     (float)font_roboto_mono.baseSize, 0);
+                                     static_cast<float>(font_roboto_mono.baseSize), 0);
     Vector2 text_pos;
-    text_pos.x = ((float)screen_width - text_dim.x) / 2.0f;
-    text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
+    const float HALF_DIVISOR = 2.0F;
+    text_pos.x = (static_cast<float>(screen_width) - text_dim.x) / HALF_DIVISOR;
+    text_pos.y = (static_cast<float>(screen_height) - text_dim.y) / HALF_DIVISOR;
 
     // text_pos.x = ((float)screen_width  - text_dim.x) / 2.0f;
     // text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
 
     DrawTextEx(font_roboto_mono, BLISS_FULL_HEADER, text_pos,
-               (float)font_roboto_mono.baseSize, 0, DARKGRAY);
+               static_cast<float>(font_roboto_mono.baseSize), 0, DARKGRAY);
 }
 
 void Bliss_App::draw_game_ui() {
