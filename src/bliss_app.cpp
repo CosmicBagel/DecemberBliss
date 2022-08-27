@@ -485,12 +485,14 @@ void Bliss_App::draw_scene() {
         }
     }
 
-    Vector2 text_dim = MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
-                                     static_cast<float>(font_roboto_mono.baseSize), 0);
+    Vector2 text_dim =
+        MeasureTextEx(font_roboto_mono, BLISS_FULL_HEADER,
+                      static_cast<float>(font_roboto_mono.baseSize), 0);
     Vector2 text_pos;
     const float HALF_DIVISOR = 2.0F;
     text_pos.x = (static_cast<float>(screen_width) - text_dim.x) / HALF_DIVISOR;
-    text_pos.y = (static_cast<float>(screen_height) - text_dim.y) / HALF_DIVISOR;
+    text_pos.y =
+        (static_cast<float>(screen_height) - text_dim.y) / HALF_DIVISOR;
 
     // text_pos.x = ((float)screen_width  - text_dim.x) / 2.0f;
     // text_pos.y = ((float)screen_height - text_dim.y) / 2.0f;
@@ -500,46 +502,55 @@ void Bliss_App::draw_scene() {
 }
 
 void Bliss_App::draw_game_ui() {
-    Perf_Timer t(dev_ui.metrics.game_ui_time);
-    std::ostringstream s;
-    s << "Lives: " << lives;
+    Perf_Timer function_perf_timer(dev_ui.metrics.game_ui_time);
+    std::ostringstream lives_display_string;
 
-    Vector2 text_pos{40, 40};
-    DrawRectangle(30, 30, 120, 50, BLACK);
-    DrawTextEx(font_roboto_mono, s.str().c_str(), text_pos,
-               (float)font_roboto_mono.baseSize, 0, WHITE);
+    lives_display_string << "Lives: " << lives;
+
+    const Vector2 text_pos{40, 40};
+
+    const Vector2 text_bg_pos{30, 30};
+    const Vector2 text_bg_dim{120, 50};
+    DrawRectangle(static_cast<int>(text_bg_pos.x),
+                  static_cast<int>(text_bg_pos.y),
+                  static_cast<int>(text_bg_dim.x),
+                  static_cast<int>(text_bg_dim.y), BLACK);
+    DrawTextEx(font_roboto_mono, lives_display_string.str().c_str(), text_pos,
+               static_cast<float>(font_roboto_mono.baseSize), 0, WHITE);
 }
 
 void Bliss_App::draw_dev_ui() {
     static size_t current_entity = 0;
     //----------------------------------------------------------------------------------
     // Dev UI
-    Perf_Timer t(dev_ui.metrics.dev_ui_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_time);
 
     dev_ui.new_frame();
     dev_ui.draw();
 
-    ImVec2 vec2_zero = {0.0f, 0.0f};
-    ImVec2 vec2_one = {1.0f, 1.0f};
-    ImVec4 vec4_zero = {0.0f, 0.0f, 0.0f, 0.0f};
-    ImVec4 vec4_one = {1.0f, 1.0f, 1.0f, 1.0f};
+    ImVec2 vec2_zero = {0, 0};
+    ImVec2 vec2_one = {1.0F, 1.0F};
+    ImVec4 vec4_zero = {0, 0, 0, 0};
+    ImVec4 vec4_one = {1.0F, 1.0F, 1.0F, 1.0F};
     ImVec2 size;
-    size.x = (float)santa_tex.width / 4.0f;
-    size.y = (float)santa_tex.height / 4.0f;
+    const float quarter_divisor = 4.0F;
+    size.x = static_cast<float>(santa_tex.width) / quarter_divisor;
+    size.y = static_cast<float>(santa_tex.height) / quarter_divisor;
+
     if (ImGui::Begin("Entity viewer", nullptr, 0)) {
         // ImGui::InputInt("current_entity", &current_entity);
-        size_t step = 1;
-        size_t fast_step = 10;
+        const size_t step = 1;
+        const size_t fast_step = 10;
         ImGui::InputScalar("", ImGuiDataType_U64, &current_entity, &step,
                            &fast_step);
 
         auto& man = Entity_Manager::instance();
         auto& entities = man.get_entities();
-        for (auto e : entities) {
-            if (e.get_id() == current_entity) {
-                ImGui::Text("Tag: %s", e.get_tag().c_str());
-                if (e.has_component<C_Position>()) {
-                    auto& pos = e.get_component<C_Position>();
+        for (auto entity : entities) {
+            if (entity.get_id() == current_entity) {
+                ImGui::Text("Tag: %s", entity.get_tag().c_str());
+                if (entity.has_component<C_Position>()) {
+                    auto& pos = entity.get_component<C_Position>();
                     ImGui::Text("Pos X: %f", pos.x);
                     ImGui::Text("Pos Y: %f", pos.y);
                 }
@@ -555,21 +566,32 @@ void Bliss_App::draw_dev_ui() {
 }
 
 void Bliss_App::render_dev_ui() {
-    Perf_Timer t(dev_ui.metrics.dev_ui_render_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_render_time);
     dev_ui.render();
 }
 
 void Bliss_App::render_scene() {
-    Perf_Timer t(dev_ui.metrics.drawing_time);
+    Perf_Timer function_perf_timer(dev_ui.metrics.drawing_time);
     EndDrawing();
 }
 
 void Bliss_App::load_fonts() {
+    const int regular_size = 28;
+    const int regular_small_size = 14;
+    const int small_size = 12;
+    const int roboto_mono_glyph_count = 255;
+    const int merriweather_glyph_count = 255;
+
     font_roboto_mono =
-        LoadFontEx("data/fonts/RobotoMono-Regular.ttf", 28, nullptr, 255);
+        LoadFontEx("data/fonts/RobotoMono-Regular.ttf", regular_size, nullptr,
+                   roboto_mono_glyph_count);
+
     font_roboto_mono_sm =
-        LoadFontEx("data/fonts/RobotoMono-Regular.ttf", 12, nullptr, 255);
-    font = LoadFontEx("data/fonts/Merriweather-Regular.ttf", 14, nullptr, 255);
+        LoadFontEx("data/fonts/RobotoMono-Regular.ttf", small_size, nullptr,
+                   roboto_mono_glyph_count);
+
+    font = LoadFontEx("data/fonts/Merriweather-Regular.ttf", regular_small_size,
+                      nullptr, merriweather_glyph_count);
 }
 
 void Bliss_App::load_textures() {
