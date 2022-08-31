@@ -208,7 +208,7 @@ void Bliss_App::handle_input() {
     //       waiting is finished!) so effectively processing input here (at the
     //       start of the frame) is as good as processing right after polling
     //       for input.
-    Perf_Timer function_perf_timer(dev_ui.metrics.input_time);
+    Perf_Timer function_perf_timer(Metrics::instance().input_time);
     // Entity_Manager& man = Entity_Manager::instance();
 
     input_state.exit_window = WindowShouldClose();
@@ -240,7 +240,7 @@ inline bool check_for_overlap(Entity entity_a, Entity entity_b) {
 void Bliss_App::simulation_step() {
     // Simulation
     //----------------------------------------------------------------------------------
-    Perf_Timer function_perf_timer(dev_ui.metrics.simulation_time);
+    Perf_Timer function_perf_timer(Metrics::instance().simulation_time);
 
     // for systems
     // separate loops for separate components, we want to access components
@@ -418,7 +418,7 @@ void Bliss_App::enforce_bullet_boundary() {
 void Bliss_App::draw_scene() {
     // Draw prep
     //----------------------------------------------------------------------------------
-    Perf_Timer function_perf_timer(dev_ui.metrics.draw_prep_time);
+    Perf_Timer function_perf_timer(Metrics::instance().draw_prep_time);
     BeginDrawing();
 
     Entity_Manager& man = Entity_Manager::instance();
@@ -513,7 +513,7 @@ void Bliss_App::draw_scene() {
 }
 
 void Bliss_App::draw_game_ui() {
-    Perf_Timer function_perf_timer(dev_ui.metrics.game_ui_time);
+    Perf_Timer function_perf_timer(Metrics::instance().game_ui_time);
     std::ostringstream lives_display_string;
 
     lives_display_string << "Lives: " << lives;
@@ -534,7 +534,7 @@ void Bliss_App::draw_dev_ui() {
     static size_t current_entity = 0;
     //----------------------------------------------------------------------------------
     // Dev UI
-    Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_time);
+    Perf_Timer function_perf_timer(Metrics::instance().dev_ui_time);
 
     Dev_UI::new_frame();
     dev_ui.draw();
@@ -577,12 +577,12 @@ void Bliss_App::draw_dev_ui() {
 }
 
 void Bliss_App::render_dev_ui() {
-    Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_render_time);
+    Perf_Timer function_perf_timer(Metrics::instance().dev_ui_render_time);
     Dev_UI::render();
 }
 
 void Bliss_App::render_scene() {
-    Perf_Timer function_perf_timer(dev_ui.metrics.drawing_time);
+    Perf_Timer function_perf_timer(Metrics::instance().drawing_time);
     EndDrawing();
 }
 

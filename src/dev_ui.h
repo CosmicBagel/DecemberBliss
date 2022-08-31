@@ -5,7 +5,13 @@
 
 #include "ray_includes.h"
 
-struct Metrics {
+class Metrics {
+   public:
+    static Metrics& instance() {
+        static Metrics inst;
+        return inst;
+    };
+
     MetricsGuiMetric frame_time;
     MetricsGuiMetric input_time;
     MetricsGuiMetric simulation_time;
@@ -42,11 +48,9 @@ class Dev_UI {
 
     void update_plot_axis() { plot.UpdateAxes(); }
 
-    Metrics metrics;
-
    private:
-    // Dev_UI();
-    Dev_UI() = default;
+    Dev_UI();
+    // Dev_UI() = default;
     ~Dev_UI();
     void draw_resource_counter();
     void init_metrics_gui_plot();

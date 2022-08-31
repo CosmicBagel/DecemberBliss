@@ -8,7 +8,8 @@ Dev_UI& Dev_UI::instance() {
     return inst;
 }
 
-// Dev_UI::Dev_UI() {}
+Dev_UI::Dev_UI()
+    : ig_io(nullptr), font_atlas_tex({}), gui_context(nullptr) {}
 
 // need to wait for raylib window to init, which can happen after we construct
 // Dev_UI, hence init
@@ -141,6 +142,8 @@ void Dev_UI::init_metrics_gui_metrics() {
 
     auto const FLAG = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
     const auto* const UNITS = "us";
+
+    auto& metrics = Metrics::instance();
 
     metrics.frame_time.mDescription = "Frame Time";
     metrics.frame_time.mUnits = UNITS;

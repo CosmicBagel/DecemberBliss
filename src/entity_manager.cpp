@@ -36,7 +36,7 @@ void Entity_Manager::remove_entity(const Entity e) {
 
 // OPTI: this smells, but need to profile first
 void Entity_Manager::update_manager() {
-    Perf_Timer t(Dev_UI::instance().metrics.ecs_bookkeeping_time);
+    Perf_Timer t(Metrics::instance().ecs_bookkeeping_time);
 
     // add new entities
     while (!entities_to_add.empty()) {
