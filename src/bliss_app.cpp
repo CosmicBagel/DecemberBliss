@@ -62,7 +62,7 @@ Entity Bliss_App::create_player() {
     return entity;
 }
 
-void Bliss_App::create_enemy(int count, Vector2 no_spawn_center) {
+void Bliss_App::create_enemy(size_t count, Vector2 no_spawn_center) {
     static std::string enemy_tag = "enemy";
     const Vector2 initial_vel = {0, 0};
     const float collision_radius = 50.0F;
@@ -252,17 +252,23 @@ void Bliss_App::simulation_step() {
     // Simulation
     //----------------------------------------------------------------------------------
     Perf_Timer function_perf_timer(dev_ui.metrics.simulation_time);
-    // simulate go here
 
-    auto& e_man = Entity_Manager::instance();
-    auto& entities = e_man.get_entities();
+    // for systems
+    // separate loops for separate components, we want to access components
+    // across their respective arrays (sequentially in memory), not hopping
+    // between different memory regions.
 
-    // for logic on specific "kinds" of entities
-    auto& e_player = e_man.get_entities("player");
-    auto& e_enemies = e_man.get_entities("enemy");
-    auto& e_bullets = e_man.get_entities("bullet");
+    update_players();
+    update_velocity();
+    update_enemy_player_collisions();
+    update_enemy_bullet_collisions();
+    enforce_bullet_boundary();
+}
 
+void Bliss_App::update_players() {
     // update player velocity based on input
+    auto& e_man = Entity_Manager::instance();
+    auto& e_player = e_man.get_entities("player");
     for (Entity player : e_player) {
         const float move_velocity = 400;
 
@@ -317,11 +323,11 @@ void Bliss_App::simulation_step() {
             create_bullet(pos, c_vel, rads);
         }
     }
+}
 
-    // for systems
-    // separate loops for separate components, we want to access components
-    // across their respective arrays (sequentially in memory), not hopping
-    // between different memory regions.
+void Bliss_App::update_velocity() {
+    auto& e_man = Entity_Manager::instance();
+    auto& entities = e_man.get_entities();
 
     // update position based on velocity
     for (Entity entity : entities) {
@@ -333,6 +339,11 @@ void Bliss_App::simulation_step() {
             pos.y += vel.y * GetFrameTime();
         }
     }
+}
+void Bliss_App::update_enemy_player_collisions() {
+    auto& e_man = Entity_Manager::instance();
+    auto& e_player = e_man.get_entities("player");
+    auto& e_enemies = e_man.get_entities("enemy");
 
     for (Entity player : e_player) {
         for (Entity enemy : e_enemies) {
@@ -348,7 +359,7 @@ void Bliss_App::simulation_step() {
                     p_pos = new_p.get_component<C_Position>();
                 }
 
-                int enemy_count = e_enemies.size();
+                size_t enemy_count = e_enemies.size();
 
                 // clear all enemies
                 for (Entity enemy_removing : e_enemies) {
@@ -359,6 +370,12 @@ void Bliss_App::simulation_step() {
             }
         }
     }
+}
+
+void Bliss_App::update_enemy_bullet_collisions() {
+    auto& e_man = Entity_Manager::instance();
+    auto& e_enemies = e_man.get_entities("enemy");
+    auto& e_bullets = e_man.get_entities("bullet");
 
     for (Entity enemy : e_enemies) {
         for (Entity bullet : e_bullets) {
@@ -391,6 +408,11 @@ void Bliss_App::simulation_step() {
             }
         }
     }
+}
+
+void Bliss_App::enforce_bullet_boundary() {
+    auto& e_man = Entity_Manager::instance();
+    auto& e_bullets = e_man.get_entities("bullet");
 
     for (Entity bullet : e_bullets) {
         const float boundary_square_size = 1000.0F;
