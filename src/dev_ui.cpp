@@ -4,7 +4,7 @@
 #include "ray_includes.h"
 
 Dev_UI& Dev_UI::instance() {
-    static Dev_UI inst{};
+    static Dev_UI inst;
     return inst;
 }
 

@@ -40,12 +40,13 @@ class Dev_UI {
     void draw();
     static void new_frame();
 
-    void update_plot_axis() { plot.UpdateAxes();}
+    void update_plot_axis() { plot.UpdateAxes(); }
 
     Metrics metrics;
 
    private:
     // Dev_UI();
+    Dev_UI() = default;
     ~Dev_UI();
     void draw_resource_counter();
     void init_metrics_gui_plot();
