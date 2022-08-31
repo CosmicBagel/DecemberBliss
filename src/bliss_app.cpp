@@ -195,7 +195,7 @@ void Bliss_App::run() {
         man.update_manager();
 
         // Update metrics plot
-        dev_ui.plot.UpdateAxes();
+        dev_ui.update_plot_axis();
     }
 
     CloseWindow();
@@ -224,17 +224,6 @@ void Bliss_App::handle_input() {
 
     if (IsKeyPressed(KEY_E)) {
         TraceLog(LOG_INFO, "hi");
-    }
-
-    if (!dev_ui.ig_io->WantCaptureMouse) {
-        // only take mouse input in the game if imgui isn't catching it
-        // clicks and input shouldn't go through a window
-    }
-    if (!dev_ui.ig_io->WantCaptureKeyboard) {
-        // check keyboard inputs
-    }
-    if (!dev_ui.ig_io->WantTextInput) {
-        // for on mobile & consoles
     }
 }
 
@@ -547,7 +536,7 @@ void Bliss_App::draw_dev_ui() {
     // Dev UI
     Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_time);
 
-    dev_ui.new_frame();
+    Dev_UI::new_frame();
     dev_ui.draw();
 
     ImVec2 vec2_zero = {0, 0};
@@ -589,7 +578,7 @@ void Bliss_App::draw_dev_ui() {
 
 void Bliss_App::render_dev_ui() {
     Perf_Timer function_perf_timer(dev_ui.metrics.dev_ui_render_time);
-    dev_ui.render();
+    Dev_UI::render();
 }
 
 void Bliss_App::render_scene() {

@@ -8,7 +8,7 @@ Dev_UI& Dev_UI::instance() {
     return inst;
 }
 
-Dev_UI::Dev_UI() {}
+// Dev_UI::Dev_UI() {}
 
 // need to wait for raylib window to init, which can happen after we construct
 // Dev_UI, hence init
@@ -23,7 +23,9 @@ void Dev_UI::init() {
     // ImGui: Init font
     // ImFont* font = io.Fonts->AddFontDefault();
     unsigned char* pixels = NULL;
-    int atlas_width, atlas_height;
+
+    int atlas_width = 0;
+    int atlas_height = 0;
     ig_io->Fonts->Build();
     ig_io->Fonts->GetTexDataAsRGBA32(&pixels, &atlas_width, &atlas_height,
                                      NULL);
@@ -33,12 +35,13 @@ void Dev_UI::init() {
     // 'io.Fonts->TexID'.  This will be passed back to your via the renderer.
     // Basically ImTextureID == void*. Read FAQ for details about ImTextureID.
 
-    Image fontAtlasImage = load_image_from_pixels(
-        pixels, atlas_width, atlas_height,
+    IntVector2 atlas_dims = {atlas_width, atlas_height};
+    Image fontAtlasImage = Dev_UI::load_image_from_pixels(
+        pixels, atlas_dims,
         rlPixelFormat::RL_PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
 
     font_atlas_tex = LoadTextureFromImage(fontAtlasImage);
-    ig_io->Fonts->TexID = (ImTextureID)&font_atlas_tex.id;
+    ig_io->Fonts->TexID = static_cast<ImTextureID>(&font_atlas_tex.id);
 
     init_metrics_gui_plot();
     init_metrics_gui_metrics();
@@ -62,8 +65,10 @@ Dev_UI::~Dev_UI() {
 
 // Draw the FPS counter window
 void Dev_UI::draw_resource_counter() {
-    ImGui::SetNextWindowPos({10, 10}, ImGuiCond_Appearing, {0, 0});
-    ImGui::SetNextWindowBgAlpha(0.40f);
+    const ImVec2 fps_draw_pos = {10, 10};
+    const float fps_alpha = 0.40F;
+    ImGui::SetNextWindowPos(fps_draw_pos, ImGuiCond_Appearing, {0, 0});
+    ImGui::SetNextWindowBgAlpha(fps_alpha);
 
     ImGuiWindowFlags windowFlags =  // ImGuiWindowFlags_NoDecoration |
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove |
@@ -72,19 +77,23 @@ void Dev_UI::draw_resource_counter() {
 
     if (is_resource_counter_open) {
         //        ImGui::SetNextWindowSize({780, 290});
-        ImGui::SetNextWindowBgAlpha(1.0f);
+        ImGui::SetNextWindowBgAlpha(1.0F);
     } else {
         // sizing is switched to auto resize above
-        ImGui::SetNextWindowBgAlpha(0.40f);
+        ImGui::SetNextWindowBgAlpha(fps_alpha);
     }
 
     ImGui::Begin("Metrics", nullptr, windowFlags);
 
-    ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "FPS: %.2f", ig_io->Framerate);
-    is_resource_counter_open =
-        is_resource_counter_open ^
-        (ImGui::IsWindowHovered(0) & ImGui::IsMouseClicked(0, false) &
-         ImGui::IsItemClicked(0));
+    ImGui::TextColored({0.0F, 1.0F, 0.0F, 1.0F}, "FPS: %.2F", ig_io->Framerate);
+
+    bool is_clicked = ImGui::IsWindowHovered(0) &&
+                      ImGui::IsMouseClicked(0, false) &&
+                      ImGui::IsItemClicked(0);
+    if (is_clicked) {
+        is_resource_counter_open = !is_resource_counter_open;
+    }
+
     if (is_resource_counter_open) {
         ImGui::Separator();
         //		ImGui::Text("Frame times (last 120 frames)");
@@ -97,11 +106,14 @@ void Dev_UI::draw_resource_counter() {
 }
 
 void Dev_UI::init_metrics_gui_plot() {
-    plot.mMinPlotHeight = 250.0f;
-    plot.mMinPlotWidth = 535.0f;
-    plot.mBarRounding = 0.f;  // amount of rounding on bars
+    // this whole function is literally just assigning numbers to named values
+    // declaring them before hand as constants would not make this more readable
+    // NOLINTBEGIN(*-magic-numbers)
+    plot.mMinPlotHeight = 250.0F;
+    plot.mMinPlotWidth = 535.0F;
+    plot.mBarRounding = 0.0F;  // amount of rounding on bars
     plot.mRangeDampening =
-        0.95f;  // weight of historic range on axis range [0,1]
+        0.95F;  // weight of historic range on axis range [0,1]
     plot.mInlinePlotRowCount =
         2;                   // height of DrawList() inline plots, in text rows
     plot.mPlotRowCount = 5;  // height of DrawHistory() plots, in text rows
@@ -121,13 +133,14 @@ void Dev_UI::init_metrics_gui_plot() {
     plot.mSharedAxis = false;          // use first series' axis range
     plot.mFilterHistory = true;  // allow single plot point to represent more
                                  // than on history value
+    // NOLINTEND(*-magic-numbers)
 }
 
 void Dev_UI::init_metrics_gui_metrics() {
     TraceLog(LOG_INFO, "Initializing metric trackers");
 
     auto const FLAG = MetricsGuiMetric::USE_SI_UNIT_PREFIX;
-    auto const UNITS = "us";
+    const auto* const UNITS = "us";
 
     metrics.frame_time.mDescription = "Frame Time";
     metrics.frame_time.mUnits = UNITS;
@@ -177,13 +190,13 @@ void Dev_UI::init_metrics_gui_metrics() {
 }
 
 // Load raw pixel data into an image
-Image Dev_UI::load_image_from_pixels(unsigned char* pixels, int width,
-                                     int height, int format) {
+Image Dev_UI::load_image_from_pixels(unsigned char* pixels,
+                                     IntVector2 dimensions, int format) {
     Image srcImage = {0};
 
     srcImage.data = pixels;
-    srcImage.width = width;
-    srcImage.height = height;
+    srcImage.width = dimensions.x;
+    srcImage.height = dimensions.y;
     srcImage.mipmaps = 1;
     srcImage.format = format;
 
