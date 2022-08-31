@@ -5,7 +5,7 @@
 #include "ray_includes.h"
 
 class Entity;
-//struct forward declaration is silly
+// struct forward declaration is silly
 typedef struct C_Position C_Position;
 typedef struct C_Velocity C_Velocity;
 
@@ -31,6 +31,12 @@ class Bliss_App {
     void simulation_step();
     void handle_input();
 
+    void update_players();
+    static void update_velocity();
+    void update_enemy_player_collisions();
+    void update_enemy_bullet_collisions();
+    static void enforce_bullet_boundary();
+
    private:
     static const int screen_width = 800;
     static const int screen_height = 600;
@@ -55,6 +61,7 @@ class Bliss_App {
     Input_State input_state;
 
     Entity create_player();
-    void create_enemy(int count, Vector2 no_spawn_center);
-    void create_bullet(C_Position initial_pos, C_Velocity initial_vel, float initial_rot);
+    void create_enemy(size_t count, Vector2 no_spawn_center);
+    void create_bullet(C_Position initial_pos, C_Velocity initial_vel,
+                       float initial_rot);
 };
