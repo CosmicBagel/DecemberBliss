@@ -85,7 +85,7 @@ class ImGui_ImplRaylib {
 
     static void UpdateMouseCursor() {
         ImGuiIO &imgui_io = ImGui::GetIO();
-        if (imgui_io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) {
+        if ((imgui_io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) != 0) {
             return;
         }
 
