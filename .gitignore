@@ -5,13 +5,18 @@
 !rguistyler.exe
 !raylib_static.pdb
 *vcxproj.filters
-/temp
-/build
-/out
-/.vscode
-/.idea
-/ImGuiDemo
-/CMakeFiles
+temp/
+build/
+out/
+
+.vscode/**
+!.vscode/c_cpp_properties.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+.idea/
+ImGuiDemo/
+CMakeFiles/
 CMakeCache.txt
 raylib.dll
 

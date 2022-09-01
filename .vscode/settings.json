@@ -1,0 +1,63 @@
+{
+    "cmake.configureOnOpen": true,
+    // "cmake.configureSettings": {
+    //     "BLISS_ARCH": "x64",
+    //     "CMAKE_BUILD_TYPE": "${buildType}"
+    // },
+    "cmake.generator": "Ninja",
+    "cSpell.words": [
+        "appendfv",
+        "backface",
+        "bugprone",
+        "cmake",
+        "cppcoreguidelines",
+        "DARKGRAY",
+        "entt",
+        "imgui",
+        "imkeys",
+        "Merriweather",
+        "mipmaps",
+        "OPTI",
+        "osstringstream",
+        "pcmd",
+        "PIXELFORMAT",
+        "Raylib",
+        "Roboto",
+        "structs",
+        "vararg",
+        "Wunused"
+    ],
+    "files.associations": {
+        "*.m": "cpp",
+        "charconv": "cpp",
+        "cstdio": "cpp",
+        "chrono": "cpp",
+        "xiosbase": "cpp",
+        "forward_list": "cpp",
+        "future": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "iosfwd": "cpp"
+    },
+    "C_Cpp.clang_format_path": "C:\\Program Files\\LLVM\\bin\\clang-format.exe",
+    "C_Cpp.codeAnalysis.clangTidy.path": "C:\\Program Files\\LLVM\\bin\\clang-tidy.exe",
+    "C_Cpp.codeAnalysis.exclude": {
+        "external/**": true,
+        "build/**": true,
+        "out/**": true,
+        "data/**": true,
+    },
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "cSpell.globRoot": "${workspaceFolder}",
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/objects",
+        ".vscode",
+        ".vscode-insiders",
+        "external"
+    ]
+}
