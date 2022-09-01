@@ -23,8 +23,8 @@ class Bliss_App {
     Bliss_App& operator=(Bliss_App&&) = delete;
 
     void run();
-    void render_dev_ui();
-    void render_scene();
+    static void render_dev_ui();
+    static void render_scene();
     void draw_dev_ui();
     void draw_scene();
     void draw_game_ui();
