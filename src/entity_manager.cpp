@@ -30,7 +30,17 @@ Entity Entity_Manager::add_entity(const std::string& tag) {
     return e;
 }
 
-void Entity_Manager::remove_entity(const Entity e) {
+void Entity_Manager::remove_entity(Entity e) {
+    // we need to disable all possible components
+    e.remove_component<C_Position>();
+    e.remove_component<C_Rotation>();
+    e.remove_component<C_Velocity>();
+    e.remove_component<C_Bounding_Circle>();
+    e.remove_component<C_Texture>();
+    e.remove_component<C_PlayerBullet>();
+    e.remove_component<C_Enemy>();
+    e.remove_component<C_Player>();
+
     Entity_Memory_Pool::instance().remove_entity(e.id);
 }
 
