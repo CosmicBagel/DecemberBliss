@@ -139,6 +139,12 @@ void ImguiImplRaylib::new_frame() {
         imgui_io.MouseWheel -= 1;
     }
 
+    // Accessing the KeysDown array this way is necessary for imgui's interface
+    // we need to update imgui's internal keydown state, we created a map
+    // (in our init function), now we fullfil that map.
+    // Additionally these key integers are all hardcoded (imkeys is a constant 
+    // array), and will never dip below zero, or cause weird behaviour
+    // NOLINTBEGIN(cppcoreguidelines-pro-bounds-constant-array-index)
     for (int key : imkeys) {
         if (IsKeyPressed(key)) {
             imgui_io.KeysDown[key] = true;
@@ -147,6 +153,7 @@ void ImguiImplRaylib::new_frame() {
             imgui_io.KeysDown[key] = false;
         }
     }
+    // NOLINTEND(cppcoreguidelines-pro-bounds-constant-array-index)
 
     imgui_io.KeyCtrl =
         IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
