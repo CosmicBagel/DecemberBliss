@@ -16,7 +16,7 @@ K&R style braces (e.g. opening curly brace is on line below if statement)
 Try to format member declarations "spreadsheet" style e.g.:
 ```
 Metrics        metrics;
-ImGuiIO*	   ig_io;
+ImGuiIO*	     ig_io;
 MetricsGuiPlot plot;
 
 font_roboto_mono =    LoadFontEx("resources/fonts/RobotoMono-Regular.ttf",   28, nullptr, 255);
