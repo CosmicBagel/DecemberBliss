@@ -41,8 +41,6 @@
         "xstring": "cpp",
         "iosfwd": "cpp"
     },
-    "C_Cpp.clang_format_path": "C:\\Program Files\\LLVM\\bin\\clang-format.exe",
-    "C_Cpp.codeAnalysis.clangTidy.path": "C:\\Program Files\\LLVM\\bin\\clang-tidy.exe",
     "C_Cpp.codeAnalysis.exclude": {
         "external/**": true,
         "build/**": true,
