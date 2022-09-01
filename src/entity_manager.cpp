@@ -1,11 +1,11 @@
-#include "entity_manager.h"
+#include "entity_manager.hpp"
 
 #include <unordered_map>
 
-#include "dev_ui.h"
-#include "entity.h"
-#include "entity_memory_pool.h"
-#include "perf_timer.h"
+#include "dev_ui.hpp"
+#include "entity.hpp"
+#include "entity_memory_pool.hpp"
+#include "perf_timer.hpp"
 
 Entity_Manager::Entity_Manager() {
     entities.reserve(MAX_ENTITIES);

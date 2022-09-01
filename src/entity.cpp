@@ -1,6 +1,6 @@
-#include "entity.h"
+#include "entity.hpp"
 
-#include "entity_memory_pool.h"
+#include "entity_memory_pool.hpp"
 
 //---------------------------------------------------------
 // private funcs

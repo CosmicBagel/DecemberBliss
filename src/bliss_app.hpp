@@ -1,8 +1,8 @@
 #pragma once
 
-#include "dev_ui.h"
-#include "input_state.h"
-#include "ray_includes.h"
+#include "dev_ui.hpp"
+#include "input_state.hpp"
+#include "ray_includes.hpp"
 
 class Entity;
 // struct forward declaration is silly

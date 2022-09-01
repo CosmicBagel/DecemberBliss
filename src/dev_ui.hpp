@@ -3,7 +3,7 @@
 #include <../MetricsGui/include/metrics_gui/metrics_gui.h>
 #include <imgui.h>
 
-#include "ray_includes.h"
+#include "ray_includes.hpp"
 
 class Metrics {
    public:

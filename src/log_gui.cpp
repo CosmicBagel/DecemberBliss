@@ -1,4 +1,4 @@
-#include "log_gui.h"
+#include "log_gui.hpp"
 
 // Usage:
 //  static ExampleAppLog my_log;

@@ -1,4 +1,4 @@
-#include "perf_timer.h"
+#include "perf_timer.hpp"
 
 #include <chrono>
 

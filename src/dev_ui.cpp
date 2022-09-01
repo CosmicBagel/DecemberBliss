@@ -1,7 +1,7 @@
-#include "dev_ui.h"
+#include "dev_ui.hpp"
 
-#include "imgui_impl_raylib.h"
-#include "ray_includes.h"
+#include "imgui_impl_raylib.hpp"
+#include "ray_includes.hpp"
 
 Dev_UI& Dev_UI::instance() {
     static Dev_UI inst;

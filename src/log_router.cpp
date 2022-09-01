@@ -1,8 +1,8 @@
-#include "log_router.h"
+#include "log_router.hpp"
 
 #include <stdio.h>
 
-#include "ray_includes.h"
+#include "ray_includes.hpp"
 
 Log_Gui log_gui;
 

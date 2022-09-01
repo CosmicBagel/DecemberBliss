@@ -28,7 +28,7 @@ TODO alt fire clears the screen with fast moving circle
 TODO controller support
 */
 
-#include "bliss_app.h"
+#include "bliss_app.hpp"
 
 int main() {
     Bliss_App app;

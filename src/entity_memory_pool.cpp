@@ -1,7 +1,7 @@
-#include "entity_memory_pool.h"
+#include "entity_memory_pool.hpp"
 
-#include "entity.h"
-#include "ray_includes.h"
+#include "entity.hpp"
+#include "ray_includes.hpp"
 
 //---------------------------------------------------------
 // private funcs

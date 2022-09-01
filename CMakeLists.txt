@@ -101,7 +101,7 @@ execute_process(
 )
 
 # ## Pass name and version to code via defines (as opposed to having it in multiple places)
-configure_file(build_info.h.in build_info.h)
+configure_file(build_info.hpp.in build_info.hpp)
 
 # the resulting buildInfo.h will be put into the build results, so we need to include that
 target_include_directories(DecemberBliss PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

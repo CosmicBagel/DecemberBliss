@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "components.h"
+#include "components.hpp"
 
 class Entity;
 
@@ -17,7 +17,8 @@ typedef std::tuple<std::vector<C_Position>, std::vector<C_Velocity>,
                    std::vector<C_PlayerBullet>, std::vector<C_Rotation>>
     Entity_Component_Vector_Tuple;
 
-const int MAX_ENTITIES = 10'000;
+// const int MAX_ENTITIES = 10'000;
+const int MAX_ENTITIES = 500;
 
 class Entity_Memory_Pool {
    private:
