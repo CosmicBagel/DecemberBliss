@@ -19,7 +19,7 @@ void Dev_UI::init() {
     ig_io = &ImGui::GetIO();
 
     // ImGui: Initialize keyboard and mouse events
-    ImGui_ImplRaylib::Init();
+    ImguiImplRaylib::init();
 
     // ImGui: Init font
     // ImFont* font = io.Fonts->AddFontDefault();
@@ -48,14 +48,14 @@ void Dev_UI::init() {
     init_metrics_gui_metrics();
 }
 
-void Dev_UI::new_frame() { ImGui_ImplRaylib::NewFrame(); }
+void Dev_UI::new_frame() { ImguiImplRaylib::new_frame(); }
 
 // Updates the DevUI state and prepares all of the draw calls for the DevUI
 void Dev_UI::draw() { draw_resource_counter(); }
 
 void Dev_UI::render() {
     ImGui::Render();
-    ImGui_ImplRaylib::raylib_render_imgui(ImGui::GetDrawData());
+    ImguiImplRaylib::raylib_render_imgui(ImGui::GetDrawData());
 }
 
 Dev_UI::~Dev_UI() {
