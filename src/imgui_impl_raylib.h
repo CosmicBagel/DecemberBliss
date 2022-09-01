@@ -175,12 +175,17 @@ class ImGui_ImplRaylib {
     };
 
     static void draw_triangle_vertex(ImDrawVert idx_vert) {
-        Color *vert_color = nullptr;
+        Color vert_color = {};
 
-        // vert_color = (Color *)(&idx_vert.col);
-        vert_color = reinterpret_cast<Color *>(&idx_vert.col);
+        // the numbers are just bit offsets for each byte of the uint32
+        // NOLINTBEGIN(*-magic-numbers)
+        vert_color.r = static_cast<unsigned char>(idx_vert.col >> 0);
+        vert_color.g = static_cast<unsigned char>(idx_vert.col >> 8);
+        vert_color.b = static_cast<unsigned char>(idx_vert.col >> 16);
+        vert_color.a = static_cast<unsigned char>(idx_vert.col >> 24);
+        // NOLINTEND(*-magic-numbers)
 
-        rlColor4ub(vert_color->r, vert_color->g, vert_color->b, vert_color->a);
+        rlColor4ub(vert_color.r, vert_color.g, vert_color.b, vert_color.a);
         rlTexCoord2f(idx_vert.uv.x, idx_vert.uv.y);
         rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
     };
