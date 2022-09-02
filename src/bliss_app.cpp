@@ -432,7 +432,7 @@ void Bliss_App::draw_scene() {
             C_Texture& tex = entity.get_component<C_Texture>();
             if (entity.has_component<C_Rotation>()) {
                 C_Rotation& rot = entity.get_component<C_Rotation>();
-                // (CosmicBagele) note in case I want to let something rotate or
+                // (CosmicBagel) note in case I want to let something rotate or
                 // scale (I suspect the above function is faster tho)
 
                 Matrix2d rot_mat = create_rotation_mat(rot.rotation);
