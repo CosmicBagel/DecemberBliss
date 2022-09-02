@@ -6,6 +6,8 @@
 double ImguiImplRaylib::last_new_frame_time = 0.0;
 // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
+// (CosmicBagel) this must match with the what keys are added in the KeyMap
+// under the init func
 const std::array<int, 22> ImguiImplRaylib::imkeys = {
     KEY_TAB,      KEY_LEFT,      KEY_RIGHT, KEY_UP,    KEY_DOWN,
     KEY_PAGE_UP,  KEY_PAGE_DOWN, KEY_HOME,  KEY_END,   KEY_INSERT,
@@ -14,8 +16,8 @@ const std::array<int, 22> ImguiImplRaylib::imkeys = {
     KEY_Y,        KEY_Z,
 };
 
-// void* user_data is unused, but necessary to match the function sig
-// expected by imgui as a function pointer for both the get clipboard text
+// (CosmicBagel) void* user_data is unused, but necessary to match the function
+// sig expected by imgui as a function pointer for both the get clipboard text
 // func and the set clipboard text func
 
 // NOLINTBEGIN(misc-unused-parameters)
@@ -40,6 +42,8 @@ bool ImguiImplRaylib::init() {
 
     imgui_io.BackendPlatformName = "imgui_impl_raylib";
 
+    // (CosmicBagel) note the largest index of KeyMap is 512, all of Raylib's
+    // keycodes are within this boundary
     imgui_io.KeyMap[ImGuiKey_Tab] = KEY_TAB;
     imgui_io.KeyMap[ImGuiKey_LeftArrow] = KEY_LEFT;
     imgui_io.KeyMap[ImGuiKey_RightArrow] = KEY_RIGHT;
@@ -81,11 +85,11 @@ void ImguiImplRaylib::update_mouse_cursor() {
 
     ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
     if (imgui_io.MouseDrawCursor || imgui_cursor == ImGuiMouseCursor_None) {
-        // Hide OS mouse cursor if imgui is drawing it or if it wants no
-        // cursor
+        // (CosmicBagel) Hide OS mouse cursor if imgui is drawing it or if it
+        // wants no cursor
         HideCursor();
     } else {
-        // Show OS mouse cursor
+        // (CosmicBagel) Show OS mouse cursor
         ShowCursor();
     }
 };
@@ -93,7 +97,7 @@ void ImguiImplRaylib::update_mouse_cursor() {
 void ImguiImplRaylib::update_mouse_pos_and_buttons() {
     ImGuiIO &imgui_io = ImGui::GetIO();
 
-    // Set OS mouse position if requested (rarely used, only when
+    // (CosmicBagel) Set OS mouse position if requested (rarely used, only when
     // ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
     if (imgui_io.WantSetMousePos) {
         SetMousePosition(static_cast<int>(imgui_io.MousePos.x),
@@ -143,10 +147,10 @@ void ImguiImplRaylib::new_frame() {
         imgui_io.MouseWheel -= 1;
     }
 
-    // Accessing the KeysDown array this way is necessary for imgui's interface
-    // we need to update imgui's internal keydown state, we created a map
-    // (in our init function), now we fullfil that map.
-    // Additionally these key integers are all hardcoded (imkeys is a constant 
+    // (CosmicBagel) Accessing the KeysDown array this way is necessary for
+    // imgui's interface we need to update imgui's internal keydown state, we
+    // created a map (in our init function), now we fullfil that map.
+    // Additionally these key integers are all hardcoded (imkeys is a constant
     // array), and will never dip below zero, or cause weird behaviour
     // NOLINTBEGIN(cppcoreguidelines-pro-bounds-constant-array-index)
     for (int key : imkeys) {
@@ -172,10 +176,11 @@ void ImguiImplRaylib::new_frame() {
     ImGui::NewFrame();
 };
 
-void ImguiImplRaylib::draw_triangle_vertex(ImDrawVert idx_vert) {
+inline void ImguiImplRaylib::draw_triangle_vertex(ImDrawVert idx_vert) {
     Color vert_color = {};
 
-    // the numbers are just bit offsets for each byte of the uint32
+    // (CosmicBagel) the numbers are just bit offsets for each byte of the
+    // uint32
     // NOLINTBEGIN(*-magic-numbers)
     vert_color.r = static_cast<unsigned char>(idx_vert.col >> 0);
     vert_color.g = static_cast<unsigned char>(idx_vert.col >> 8);
@@ -188,11 +193,10 @@ void ImguiImplRaylib::draw_triangle_vertex(ImDrawVert idx_vert) {
     rlVertex2f(idx_vert.pos.x, idx_vert.pos.y);
 };
 
-void ImguiImplRaylib::raylib_render_draw_triangles(unsigned int count,
-                                                   const ImDrawIdx *idx_buffer,
-                                                   const ImDrawVert *idx_vert,
-                                                   unsigned int texture_id) {
-    // Draw the imgui triangle data
+inline void ImguiImplRaylib::raylib_render_draw_triangles(
+    unsigned int count, const ImDrawIdx *idx_buffer, const ImDrawVert *idx_vert,
+    unsigned int texture_id) {
+    // (CosmicBagel) Draw the imgui triangle data
     for (unsigned int i = 0; i <= (count - 3); i += 3) {
         rlPushMatrix();
         rlBegin(RL_TRIANGLES);
@@ -201,17 +205,26 @@ void ImguiImplRaylib::raylib_render_draw_triangles(unsigned int count,
         ImDrawIdx index = 0;
         ImDrawVert vertex = {};
 
+        // TODO(CosmicBagel): figure out if there's anything that can be done
+        // (with ZERO overhead) about this lint warning
+        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         index = idx_buffer[i];
         vertex = idx_vert[index];
+        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         draw_triangle_vertex(vertex);
 
+        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         index = idx_buffer[i + 2];
         vertex = idx_vert[index];
+        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         draw_triangle_vertex(vertex);
 
+        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         index = idx_buffer[i + 1];
         vertex = idx_vert[index];
+        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         draw_triangle_vertex(vertex);
+
         rlSetTexture(0);
         rlEnd();
         rlPopMatrix();
@@ -221,15 +234,21 @@ void ImguiImplRaylib::raylib_render_draw_triangles(unsigned int count,
 void ImguiImplRaylib::raylib_render_imgui(ImDrawData *draw_data) {
     rlDisableBackfaceCulling();
     for (int ind = 0; ind < draw_data->CmdListsCount; ind++) {
+        // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         const ImDrawList *cmd_list = draw_data->CmdLists[ind];
+        // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+
         const ImDrawVert *vtx_buffer =
             cmd_list->VtxBuffer.Data;  // vertex buffer generated by Dear ImGui
         const ImDrawIdx *idx_buffer =
             cmd_list->IdxBuffer.Data;  // index buffer generated by Dear ImGui
         for (int cmd_i = 0; cmd_i < cmd_list->CmdBuffer.Size; cmd_i++) {
+            // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             const ImDrawCmd *pcmd =
                 &(cmd_list->CmdBuffer
                       .Data)[cmd_i];  // cmd_list->CmdBuffer->data[cmd_i];
+            // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+
             if (pcmd->UserCallback != nullptr) {
                 pcmd->UserCallback(cmd_list, pcmd);
             } else {
@@ -246,7 +265,10 @@ void ImguiImplRaylib::raylib_render_imgui(ImDrawData *draw_data) {
                                                  vtx_buffer, *texture_id);
                 }
             }
+
+            // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             idx_buffer += pcmd->ElemCount;
+            // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
         }
     }
     EndScissorMode();
