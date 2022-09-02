@@ -15,7 +15,13 @@
 
 class ImguiImplRaylib {
    private:
+    // (CosmicBagel) I do not know why, but making this variable static makes
+    // clang-tidy think its a globally accessible variable, despite it being
+    // private. Possible linter bug?
+    // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
     static double last_new_frame_time;
+    // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
+
     static const std::array<int, 22> imkeys;
 
    public:

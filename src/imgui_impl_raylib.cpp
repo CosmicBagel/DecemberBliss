@@ -1,6 +1,10 @@
 #include "imgui_impl_raylib.hpp"
 
+// (CosmicBagel) This variable is a private member, and has no methods exposing
+// it. It is not globally accessible. Possible linter bug?
+// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
 double ImguiImplRaylib::last_new_frame_time = 0.0;
+// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 const std::array<int, 22> ImguiImplRaylib::imkeys = {
     KEY_TAB,      KEY_LEFT,      KEY_RIGHT, KEY_UP,    KEY_DOWN,
