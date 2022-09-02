@@ -24,23 +24,22 @@ class ImguiImplRaylib {
 
     static const std::array<int, 22> imkeys;
 
-   public:
-    static const char *imgui_get_clipboard_text(void *user_data);
-    static void imgui_set_clipboard_text(void *user_data, const char *text);
-
-    static bool init();
-    static void shutdown();
-
-    static void update_mouse_cursor();
-    static void update_mouse_pos_and_buttons();
-
-    static void new_frame();
-
     static void draw_triangle_vertex(ImDrawVert idx_vert);
     static void raylib_render_draw_triangles(unsigned int count,
                                              const ImDrawIdx *idx_buffer,
                                              const ImDrawVert *idx_vert,
                                              unsigned int texture_id);
+
+    static void update_mouse_cursor();
+    static void update_mouse_pos_and_buttons();
+
+    static const char *imgui_get_clipboard_text(void *user_data);
+    static void imgui_set_clipboard_text(void *user_data, const char *text);
+
+   public:
+    static bool init();
+    static void shutdown();
+    static void new_frame();
     static void raylib_render_imgui(ImDrawData *draw_data);
 };
 
