@@ -5,10 +5,12 @@
 //  my_log.AddLog("Hello %d world\n", 123);
 //  my_log.Draw("title");
 
+// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
 bool LogGui::auto_scroll = true;
 ImGuiTextBuffer LogGui::buf = {};
 ImGuiTextFilter LogGui::filter = {};
 ImVector<int> LogGui::line_offsets = {};
+// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 void LogGui::clear() {
     buf.clear();
@@ -18,12 +20,15 @@ void LogGui::clear() {
 
 void LogGui::add_log(const char* fmt, ...) {
     int old_size = buf.size();
-    va_list args;
+    va_list args = {};
     va_start(args, fmt);
     buf.appendfv(fmt, args);
     va_end(args);
-    for (int new_size = buf.size(); old_size < new_size; old_size++)
-        if (buf[old_size] == '\n') line_offsets.push_back(old_size + 1);
+    for (int new_size = buf.size(); old_size < new_size; old_size++) {
+        if (buf[old_size] == '\n') {
+            line_offsets.push_back(old_size + 1);
+        }
+    }
 }
 
 void LogGui::draw(const char* title, bool* p_open) {
@@ -39,21 +44,38 @@ void LogGui::draw(const char* title, bool* p_open) {
     }
 
     // Main window
-    if (ImGui::Button("Options")) ImGui::OpenPopup("Options");
+    if (ImGui::Button("Options")) {
+        ImGui::OpenPopup("Options");
+    }
     ImGui::SameLine();
     bool clear_req = ImGui::Button("Clear");
     ImGui::SameLine();
     bool copy = ImGui::Button("Copy");
     ImGui::SameLine();
-    filter.Draw("Filter", -100.0f);
+    filter.Draw("Filter", -100.0F);
 
     ImGui::Separator();
     ImGui::BeginChild("scrolling", ImVec2(0, 0), false,
                       ImGuiWindowFlags_HorizontalScrollbar);
 
-    if (clear_req) clear();
-    if (copy) ImGui::LogToClipboard();
+    if (clear_req) {
+        clear();
+    }
+    if (copy) {
+        ImGui::LogToClipboard();
+    }
 
+    draw_text();
+
+    if (auto_scroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+        ImGui::SetScrollHereY(1.0F);
+    }
+
+    ImGui::EndChild();
+    ImGui::End();
+}
+
+void LogGui::draw_text() {
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     const char* buf_start = buf.begin();
     const char* buf_end = buf.end();
@@ -64,13 +86,16 @@ void LogGui::draw(const char* title, bool* p_open) {
         // entries may want to store the result of search/filter. especially if
         // the filtering function is not trivial (e.g. reg-exp).
         for (int line_no = 0; line_no < line_offsets.Size; line_no++) {
+            // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             const char* line_start = buf_start + line_offsets[line_no];
             const char* line_end =
                 (line_no + 1 < line_offsets.Size)
                     ? (buf_start + line_offsets[line_no + 1] - 1)
                     : buf_end;
-            if (filter.PassFilter(line_start, line_end))
+            // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+            if (filter.PassFilter(line_start, line_end)) {
                 ImGui::TextUnformatted(line_start, line_end);
+            }
         }
     } else {
         // The simplest and easy way to display the entire buffer:
@@ -93,21 +118,17 @@ void LogGui::draw(const char* title, bool* p_open) {
         while (clipper.Step()) {
             for (int line_no = clipper.DisplayStart;
                  line_no < clipper.DisplayEnd; line_no++) {
+                // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
                 const char* line_start = buf_start + line_offsets[line_no];
                 const char* line_end =
                     (line_no + 1 < line_offsets.Size)
                         ? (buf_start + line_offsets[line_no + 1] - 1)
                         : buf_end;
+                // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
                 ImGui::TextUnformatted(line_start, line_end);
             }
         }
         clipper.End();
     }
     ImGui::PopStyleVar();
-
-    if (auto_scroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-        ImGui::SetScrollHereY(1.0F);
-
-    ImGui::EndChild();
-    ImGui::End();
 }

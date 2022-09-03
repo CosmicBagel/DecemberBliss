@@ -3,6 +3,7 @@
 
 class LogGui {
    private:
+    // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
     static ImGuiTextBuffer buf;
     static ImGuiTextFilter filter;
 
@@ -11,6 +12,9 @@ class LogGui {
     static ImVector<int> line_offsets;
 
     static bool auto_scroll;  // Keep scrolling if already at the bottom
+    // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
+
+    static void draw_text();
 
    public:
     static void clear();
