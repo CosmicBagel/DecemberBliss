@@ -339,7 +339,7 @@ void Bliss_App::update_enemy_player_collisions() {
                 // (CosmicBagel) player dies
                 // TraceLog(LOG_INFO, "Player overlap with enemy");
                 auto& p_pos = player.get_component<C_Position>();
-                e_man.remove_entity(player);
+                Entity_Manager::remove_entity(player);
                 if (lives > 0) {
                     lives--;
                     auto new_p = create_player();
@@ -350,7 +350,7 @@ void Bliss_App::update_enemy_player_collisions() {
 
                 // (CosmicBagel) clear all enemies
                 for (Entity enemy_removing : e_enemies) {
-                    e_man.remove_entity(enemy_removing);
+                    Entity_Manager::remove_entity(enemy_removing);
                 }
                 create_enemy(enemy_count, static_cast<Vector2>(p_pos));
                 break;
@@ -373,8 +373,8 @@ void Bliss_App::update_enemy_bullet_collisions() {
             if (enemy.is_active() && bullet.is_active() &&
                 check_for_overlap(enemy, bullet)) {
                 // enemy dies
-                e_man.remove_entity(bullet);
-                e_man.remove_entity(enemy);
+                Entity_Manager::remove_entity(bullet);
+                Entity_Manager::remove_entity(enemy);
 
                 const float half_divisor = 2.0F;
                 // (CosmicBagel) determine default position (screen center) if
@@ -408,7 +408,7 @@ void Bliss_App::enforce_bullet_boundary() {
         auto& pos = bullet.get_component<C_Position>();
         if (pos.x < -boundary_square_size || pos.x > boundary_square_size ||
             pos.y < -boundary_square_size || pos.y > boundary_square_size) {
-            e_man.remove_entity(bullet);
+            Entity_Manager::remove_entity(bullet);
         }
     }
 }
