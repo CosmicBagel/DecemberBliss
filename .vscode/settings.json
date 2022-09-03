@@ -68,5 +68,15 @@
             "color": "#F25548",
         },
         80,
+    ],
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "OPTI"
     ]
 }
