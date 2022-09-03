@@ -9,6 +9,7 @@
 #include "entity_memory_pool.hpp"
 #include "log_router.hpp"
 #include "perf_timer.hpp"
+#include "log_gui.hpp"
 
 typedef struct Matrix2d {
     float a, b;  // top row
@@ -152,7 +153,7 @@ Bliss_App::Bliss_App()
       font_roboto_mono_sm({}),
       font({}),
       popper_sm_tex({}) {
-    log_router_enable();
+    LogRouter::log_router_enable();
 }
 
 void Bliss_App::run() {
@@ -568,7 +569,7 @@ void Bliss_App::draw_dev_ui() {
 
     // ImGui::ShowDemoWindow();
 
-    log_gui.draw("Log");
+    LogGui::draw("Log");
 }
 
 void Bliss_App::render_dev_ui() {

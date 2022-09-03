@@ -5,18 +5,18 @@
 //  my_log.AddLog("Hello %d world\n", 123);
 //  my_log.Draw("title");
 
-Log_Gui::Log_Gui() {
-    auto_scroll = true;
-    clear();
-}
+bool LogGui::auto_scroll = true;
+ImGuiTextBuffer LogGui::buf = {};
+ImGuiTextFilter LogGui::filter = {};
+ImVector<int> LogGui::line_offsets = {};
 
-void Log_Gui::clear() {
+void LogGui::clear() {
     buf.clear();
     line_offsets.clear();
     line_offsets.push_back(0);
 }
 
-void Log_Gui::add_log(const char* fmt, ...) {
+void LogGui::add_log(const char* fmt, ...) {
     int old_size = buf.size();
     va_list args;
     va_start(args, fmt);
@@ -26,7 +26,7 @@ void Log_Gui::add_log(const char* fmt, ...) {
         if (buf[old_size] == '\n') line_offsets.push_back(old_size + 1);
 }
 
-void Log_Gui::draw(const char* title, bool* p_open) {
+void LogGui::draw(const char* title, bool* p_open) {
     if (!ImGui::Begin(title, p_open)) {
         ImGui::End();
         return;
@@ -106,7 +106,7 @@ void Log_Gui::draw(const char* title, bool* p_open) {
     ImGui::PopStyleVar();
 
     if (auto_scroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-        ImGui::SetScrollHereY(1.0f);
+        ImGui::SetScrollHereY(1.0F);
 
     ImGui::EndChild();
     ImGui::End();
