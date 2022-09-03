@@ -7,15 +7,15 @@
 
 // default constructor *intentionally* not declared
 
-const bool Entity::is_active() {
+bool Entity::is_active() const {
     return Entity_Memory_Pool::instance().is_entity_active(id);
 }
 
 //---------------------------------------------------------
 // public funcs
 
-const size_t Entity::get_id() { return this->id; }
+size_t Entity::get_id() const { return this->id; }
 
-const std::string& Entity::get_tag() {
+const std::string& Entity::get_tag() const {
     return Entity_Memory_Pool::instance().get_tag(id);
 }

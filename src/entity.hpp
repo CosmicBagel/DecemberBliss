@@ -21,13 +21,13 @@ class Entity {
 
     // only Entity_Memory_Pool and Entity_Manager are allowed to construct
     // entities
-    Entity(size_t id) : id(id){};
+    explicit Entity(size_t entity_id) : id(entity_id){};
     Entity();
 
    public:
-    const size_t get_id();
-    const std::string& get_tag();
-    const bool is_active();
+    size_t get_id() const;
+    const std::string& get_tag() const;
+    bool is_active() const;
 
     template <typename T>
     T& get_component() {
