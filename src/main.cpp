@@ -13,16 +13,12 @@ https://en.cppreference.com/w/c/string/byte/strcpy)
 */
 
 /*
-TODO don't spawn enemy on player!!!
-TODO fix enemies not rendering in first wave
 TODO death state with "you died press P to reset" message
 TODO P to reset
 TODO enemies move in some semi-random way (sinusoidal patterns)
-TODO enemy touching kills player
 TODO player death wipes screen with a circle radiating outward
 TODO player has 3 lives (P does a hard reset)
 TODO points?
-TODO change movement velocities to be framerate independent
 TODO spawning system
 TODO alt fire clears the screen with fast moving circle
 TODO controller support
