@@ -83,5 +83,9 @@
         "[ ]",
         "[x]",
         "OPTI"
+    ],
+    "todo-tree.filtering.excludeGlobs": [
+        "**/node_modules",
+        "external"
     ]
 }
