@@ -24,43 +24,44 @@ std::vector<Entity>& Entity_Manager::get_entities(const std::string& tag) {
 }
 
 Entity Entity_Manager::add_entity(const std::string& tag) {
-    Entity e = Entity_Memory_Pool::instance().add_entity(tag);
-    entities_to_add.push_back(e);
+    Entity entity = Entity_Memory_Pool::instance().add_entity(tag);
+    entities_to_add.push_back(entity);
 
-    return e;
+    return entity;
 }
 
-void Entity_Manager::remove_entity(Entity e) {
+void Entity_Manager::remove_entity(Entity entity) {
     // we need to disable all possible components
-    e.remove_component<C_Position>();
-    e.remove_component<C_Rotation>();
-    e.remove_component<C_Velocity>();
-    e.remove_component<C_Bounding_Circle>();
-    e.remove_component<C_Texture>();
-    e.remove_component<C_PlayerBullet>();
-    e.remove_component<C_Enemy>();
-    e.remove_component<C_Player>();
+    entity.remove_component<C_Position>();
+    entity.remove_component<C_Rotation>();
+    entity.remove_component<C_Velocity>();
+    entity.remove_component<C_Bounding_Circle>();
+    entity.remove_component<C_Texture>();
+    entity.remove_component<C_PlayerBullet>();
+    entity.remove_component<C_Enemy>();
+    entity.remove_component<C_Player>();
 
-    Entity_Memory_Pool::instance().remove_entity(e.id);
+    Entity_Memory_Pool::instance().remove_entity(entity.id);
 }
 
-// OPTI: this smells, but need to profile first
+// OPTI (CosmicBagel): this smells, but need to profile first
 void Entity_Manager::update_manager() {
-    Perf_Timer t(Metrics::instance().ecs_bookkeeping_time);
+    Perf_Timer function_perf_timer(Metrics::instance().ecs_bookkeeping_time);
 
     // add new entities
     while (!entities_to_add.empty()) {
-        auto& e = entities_to_add.back();
-        entities.push_back(e);
+        auto& entity = entities_to_add.back();
+        entities.push_back(entity);
 
-        auto& tag = e.get_tag();
-        entity_map[tag].push_back(e);
+        const auto& tag = entity.get_tag();
+        entity_map[tag].push_back(entity);
 
         entities_to_add.pop_back();
     }
 
-    // TODO: figure out how to make removing work nicely
-    // TODO: This remove loop is ass, each erase is (I'm guessing) O(N)
+    // TODO (CosmicBagel): figure out how to make removing work nicely
+    // TODO (CosmicBagel): This remove loop is ass, each erase is (I'm guessing)
+    // O(N)
     //       can probably get this down significantly
 
     // idea, have two entities vectors (A and B) that we flip flop between
@@ -100,14 +101,15 @@ void Entity_Manager::update_manager() {
                     LOG_WARNING,
                     "Unable to find entity in its tag vector to remove it");
             } else {
-                e_tag_vec.erase(e_tag_vec.begin() + tag_ind);
-                if (e_tag_vec.size() == 0) {
+                e_tag_vec.erase(e_tag_vec.begin() +
+                                static_cast<int64_t>(tag_ind));
+                if (e_tag_vec.empty()) {
                     entity_map.erase(tag);
                 }
             }
 
             // update the main entities vector
-            entities.erase(entities.begin() + e_ind);
+            entities.erase(entities.begin() + static_cast<int64_t>(e_ind));
         }
     }
 }

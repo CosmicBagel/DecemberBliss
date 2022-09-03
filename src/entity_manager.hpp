@@ -20,6 +20,6 @@ class Entity_Manager {
     std::vector<Entity>& get_entities();
     std::vector<Entity>& get_entities(const std::string& tag);
     Entity add_entity(const std::string& tag);
-    void remove_entity(const Entity e);
+    static void remove_entity(Entity entity);
     void update_manager();
 };
