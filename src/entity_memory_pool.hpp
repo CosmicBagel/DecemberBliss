@@ -18,7 +18,7 @@ typedef std::tuple<std::vector<C_Position>, std::vector<C_Velocity>,
     Entity_Component_Vector_Tuple;
 
 // const int MAX_ENTITIES = 10'000;
-const int MAX_ENTITIES = 500;
+const int MAX_ENTITIES = 400;
 
 class Entity_Memory_Pool {
    private:
@@ -29,7 +29,8 @@ class Entity_Memory_Pool {
     std::vector<bool> active;
 
     size_t get_next_entity_index();
-    Entity_Memory_Pool(size_t max_entities);
+    explicit Entity_Memory_Pool(size_t max_entities)
+        ;
 
    public:
     static Entity_Memory_Pool& instance();

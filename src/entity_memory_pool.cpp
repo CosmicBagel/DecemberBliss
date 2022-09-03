@@ -6,9 +6,10 @@
 //---------------------------------------------------------
 // private funcs
 
-Entity_Memory_Pool::Entity_Memory_Pool(size_t max_entities) {
-    num_entities = 0;
-    last_added = max_entities - 1;  // so that we start at index 0 on first add
+Entity_Memory_Pool::Entity_Memory_Pool(size_t max_entities)
+    : num_entities(0),
+      last_added(max_entities - 1)  // so that we start at index 0 on first add
+{
     pool = Entity_Component_Vector_Tuple(
         std::vector<C_Position>(max_entities),
         std::vector<C_Velocity>(max_entities),
@@ -36,8 +37,11 @@ size_t Entity_Memory_Pool::get_next_entity_index() {
     if (!slot_found) {
         TraceLog(LOG_ERROR,
                  "NO MORE ENTITY SLOTS AVAILABLE! (Memory Pool Saturated)");
-        // TODO: implement proper error handling
-        exit(1);
+        // TODO (CosmicBagel): implement proper error handling
+
+        // exit function is not thread safe (not an issue right now, but
+        // important to note)
+        exit(1); //NOLINT(concurrency-mt-unsafe)
     }
 
     return ind;
@@ -58,7 +62,7 @@ const std::string& Entity_Memory_Pool::get_tag(size_t entity_id) const {
 Entity Entity_Memory_Pool::add_entity(const std::string& tag) {
     size_t index = get_next_entity_index();
 
-    // TODO: find a way to zero out the components in a safe way
+    // TODO (CosmicBagel): find a way to zero out the components in a safe way
     // set all vectors[index] = 0
 
     tags[index] = tag;
