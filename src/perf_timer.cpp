@@ -2,14 +2,16 @@
 
 #include <chrono>
 
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::microseconds;
+
 Perf_Timer::Perf_Timer(MetricsGuiMetric& metric) : metric(metric) {
-    using namespace std::chrono;
     start = high_resolution_clock::now();
 }
 
 Perf_Timer::~Perf_Timer() {
-    using namespace std::chrono;
     microseconds elapsed =
         duration_cast<microseconds>(high_resolution_clock::now() - start);
-    metric.AddNewValue((float)elapsed.count());
+    metric.AddNewValue(static_cast<float>(elapsed.count()));
 }
