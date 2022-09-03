@@ -13,6 +13,7 @@
         "cppcoreguidelines",
         "DARKGRAY",
         "entt",
+        "FMTARGS",
         "imgui",
         "imkeys",
         "keycodes",

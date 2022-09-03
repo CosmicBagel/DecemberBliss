@@ -14,6 +14,6 @@ class LogGui {
 
    public:
     static void clear();
-    static void add_log(const char* fmt, ...) IM_FMTARGS(2);
+    static void add_log(const char* fmt, ...) IM_FMTARGS(1);
     static void draw(const char* title, bool* p_open = nullptr);
 };
