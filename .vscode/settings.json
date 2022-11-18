@@ -35,6 +35,7 @@
         "Wunused"
     ],
     "files.associations": {
+        ".clang-tidy": "yaml",
         "*.m": "cpp",
         "charconv": "cpp",
         "cstdio": "cpp",
@@ -47,7 +48,8 @@
         "vector": "cpp",
         "xstring": "cpp",
         "iosfwd": "cpp",
-        ".clang-tidy": "yaml"
+        "tuple": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.codeAnalysis.exclude": {
         "external/**": true,
