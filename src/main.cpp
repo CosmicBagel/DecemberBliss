@@ -10,6 +10,7 @@ for files
 TODO: Memory usage tracking
 TODO: cross compiler compatible strcpy_s (use c11?
 https://en.cppreference.com/w/c/string/byte/strcpy)
+TODO: redesign ECS without tuple (tuple is just too slow)
 */
 
 /*
