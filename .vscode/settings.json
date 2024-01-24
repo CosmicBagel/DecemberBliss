@@ -1,0 +1,93 @@
+{
+    "cmake.configureOnOpen": true,
+    // "cmake.configureSettings": {
+    //     "BLISS_ARCH": "x64",
+    //     "CMAKE_BUILD_TYPE": "${buildType}"
+    // },
+    "cmake.generator": "Ninja",
+    "cSpell.words": [
+        "appendfv",
+        "backface",
+        "bugprone",
+        "cmake",
+        "cout",
+        "cppcoreguidelines",
+        "DARKGRAY",
+        "entt",
+        "FMTARGS",
+        "funcs",
+        "imgui",
+        "imkeys",
+        "keycodes",
+        "Merriweather",
+        "mipmaps",
+        "msvc",
+        "nullptr",
+        "OPTI",
+        "osstringstream",
+        "pcmd",
+        "PIXELFORMAT",
+        "Raylib",
+        "Roboto",
+        "struct",
+        "structs",
+        "vararg",
+        "Wunused"
+    ],
+    "files.associations": {
+        ".clang-tidy": "yaml",
+        "*.m": "cpp",
+        "charconv": "cpp",
+        "cstdio": "cpp",
+        "chrono": "cpp",
+        "xiosbase": "cpp",
+        "forward_list": "cpp",
+        "future": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "iosfwd": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
+    },
+    "C_Cpp.codeAnalysis.exclude": {
+        "external/**": true,
+        "build/**": true,
+        "out/**": true,
+        "data/**": true,
+    },
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4 }",
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "cSpell.globRoot": "${workspaceFolder}",
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/objects",
+        ".vscode",
+        ".vscode-insiders",
+        "external"
+    ],
+    "editor.rulers": [
+        {
+            "column": 100,
+            "color": "#F25548",
+        },
+        80,
+    ],
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]",
+        "OPTI"
+    ],
+    "todo-tree.filtering.excludeGlobs": [
+        "**/node_modules",
+        "external"
+    ]
+}

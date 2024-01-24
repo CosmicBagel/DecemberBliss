@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode.cmake-tools",
+        "josetr.cmake-language-support-vscode",
+        "Gruntfuggly.todo-tree"
+    ]
+}

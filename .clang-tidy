@@ -1,0 +1,17 @@
+# full list of checks https://clang.llvm.org/extra/clang-tidy/checks/list.html
+# selecting checks https://clang.llvm.org/extra/clang-tidy/index.html#id2
+Checks: 'bugprone-*, clang-analyzer-*, concurrency-*, cppcoreguidelines-*, 
+         google-*, misc-*, modernize-* performance-*, portability-*, 
+         readability-*,
+         -cppcoreguidelines-pro-type-vararg,
+         -misc-non-private-member-variables-in-classes'
+# disabling cppcoreguidelines-pro-type-vararg because I just love printf too much
+# disabling misc-non-private-member-variables-in-classes because I have a lot of
+#   simple structs that are basically just public var holders
+#   also I disagree with this rule and believe it to be an anti-pattern
+
+# would like to filter out everything that isn't the main source folder /src
+# currently using vscode option C_Cpp.codeAnalysis.exclude to exclude other
+# folders, would like to figure out a way to do it with clang-tidy for a more
+# editor agnostic approach
+HeaderFilterRegex: '\/src\/'
